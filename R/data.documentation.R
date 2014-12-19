@@ -1,6 +1,6 @@
 #### Data Documentation ####
 
-#### Census 2009 ####
+#### Census 2009 data ####
 
 #' Population data of Towns and Cities of the US - 2009
 #'
