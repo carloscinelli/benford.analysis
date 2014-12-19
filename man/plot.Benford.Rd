@@ -1,0 +1,29 @@
+\name{plot.Benford}
+\alias{plot.Benford}
+\title{Plot method for Benford Analysis}
+\usage{
+\method{plot}{Benford}(x,except=c("mantissa","abs diff"), multiple=TRUE, ...)
+}
+\arguments{
+  \item{x}{a "Benford" object}
+
+  \item{except}{it specifies which plots are not going to
+  be plotted. Currently, you can choose from 7 plots:
+  "digits", "second order", "summation", "mantissa", "chi
+  square", "abs diff", "ex summation". If you want to plot
+  all, just put except = "none". The default is not to plot
+  the "mantissa" and "abs diff".}
+
+  \item{multiple}{if TRUE, all plots are grouped in the
+  same window.}
+
+  \item{...}{arguments to be passed to generic plot
+  functions,}
+}
+\value{
+Plots the Benford object.
+}
+\description{
+The \code{plot} method for "Benford" objects.
+}
+

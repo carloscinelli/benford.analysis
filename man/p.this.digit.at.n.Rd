@@ -1,0 +1,29 @@
+\name{p.this.digit.at.n}
+\alias{p.this.digit.at.n}
+\title{Probability of a digit at the nth position}
+\usage{
+p.this.digit.at.n(d,n)
+}
+\arguments{
+  \item{d}{a digit from 0 to 9 (except at position n=1,
+  where d cannot be 0, it wil give you NA).}
+
+  \item{n}{the nth position.}
+}
+\value{
+The probability of d at position n.
+}
+\description{
+It calculates the probability of digit "d" at the "n"th
+position.
+}
+\examples{
+p.this.digit.at.n(1,1) # 0.30103
+p.this.digit.at.n(1,2) # 0.1138901
+p.this.digit.at.n(9,3) # 0.09826716
+matrix <- as.data.frame(round(sapply(1:4, function(x) sapply(0:9,p.this.digit.at.n,n=x)),5))
+names(matrix) <- paste0("n=",1:4)
+rownames(matrix) <- paste0("d=",0:9)
+matrix # a table with the probabilities of digits 0 to 9 in positions 1 to 4.
+}
+

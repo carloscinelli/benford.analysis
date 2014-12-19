@@ -1,0 +1,23 @@
+\name{MAD}
+\alias{MAD}
+\title{Gets the MAD of a Benford object}
+\usage{
+MAD(bfd)
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+}
+\value{
+The MAD.
+}
+\description{
+It gets the Mean Absolute Deviation (MAD) of a Benford
+object. See the section value of \code{\link{benford}}.
+}
+\examples{
+data(census.2000_2010) #gets data
+c2010 <- benford(census.2000_2010$pop.2010) #generates benford object
+MAD(c2010) #equivalent to c2010$MAD
+}
+

@@ -1,0 +1,23 @@
+\name{duplicatesTable}
+\alias{duplicatesTable}
+\title{Shows the duplicates of the data}
+\usage{
+duplicatesTable(bfd)
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+}
+\value{
+A data frame with 2 variables: number and duplicates.
+}
+\description{
+It creates a data frame with the duplicates in decreasing
+order.
+}
+\examples{
+data(census.2009) #gets data
+c2009 <- benford(census.2009$pop.2009) #generates benford object
+duplicatesTable(c2009)
+}
+

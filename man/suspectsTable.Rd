@@ -1,0 +1,29 @@
+\name{suspectsTable}
+\alias{suspectsTable}
+\title{Shows the first digits ordered by the mains discrepancies from Benford's Law}
+\usage{
+suspectsTable(bfd, by="absolute.diff")
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+
+  \item{by}{a character string selecting how to order the
+  digits.It can be
+  'abs.excess.summation','difference','squared.diff'
+  or'absolute.diff'.}
+}
+\value{
+A data frame with 2 variables: digits and the group chosen
+in \code{by}.
+}
+\description{
+It creates a data frame with the first digits and the
+differences from Benford's Law in decreasing order.
+}
+\examples{
+data(corporate.payment) #gets data
+cp <- benford(corporate.payment$Amount) #generates benford object
+suspectsTable(cp)
+}
+

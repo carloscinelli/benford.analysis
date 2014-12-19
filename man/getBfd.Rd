@@ -1,0 +1,24 @@
+\name{getBfd}
+\alias{getBfd}
+\title{Gets the the statistics of the first Digits of a benford object}
+\usage{
+getBfd(bfd)
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+}
+\value{
+A data.frame with first digits and their statistics.
+}
+\description{
+It gets the statistics of the first digits (Frequencies,
+Squared Differences, Absolute Differences etc). See the
+section value of \code{\link{benford}}.
+}
+\examples{
+data(corporate.payment)
+cp <- benford(corporate.payment$Amount) #generates benford object
+getBfd(cp) # equivalent to cp$bfd
+}
+

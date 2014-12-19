@@ -1,0 +1,25 @@
+\name{getData}
+\alias{getData}
+\title{Gets the data used of a Benford object}
+\usage{
+getData(bfd)
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+}
+\value{
+A data.frame with the lines, values, mantissa and first
+digits of the data.
+}
+\description{
+It gets the lines, values, mantissa and first digits of the
+data used of a Benford object . See the section value of
+\code{\link{benford}}.
+}
+\examples{
+data(corporate.payment)
+cp <- benford(corporate.payment$Amount) #generates benford object
+getData(cp) # equivalent to cp$data
+}
+

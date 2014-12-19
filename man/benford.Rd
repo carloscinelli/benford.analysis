@@ -1,0 +1,106 @@
+\name{benford}
+\alias{benford}
+\title{Benford Analysis of a dataset}
+\usage{
+benford(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3)
+}
+\arguments{
+  \item{data}{a numeric vector.}
+
+  \item{number.of.digits}{how many first digits to analyse
+  .}
+
+  \item{sign}{The default value for sign is "positive" and
+  it analyzes only data greater than zero. There are also
+  the options "negative" and "both" that will analyze only
+  negative values or both positive and negative values of
+  the data, respectively. For large datasets with both
+  positive and negative numbers, it is usually recommended
+  to perform a separate analysis for each group, for the
+  incentives to manipulate the numbers are usually
+  different.}
+
+  \item{discrete}{most real data - like population numbers
+  or accounting data - are discrete, so the default is
+  TRUE. This paramater sets rounding to the differences of
+  the ordered data to avoid floating point number errors in
+  the second order distribution, that usually occurs when
+  data is discrete and the ordered numbers are very close
+  to each other. If your data is continuous (like a
+  simulated lognormal) you should run with discrete =
+  FALSE.}
+
+  \item{round}{it defines the number of digits that the
+  rounding will use if discrete = TRUE.}
+}
+\value{
+An object of class Benford containing the results of the
+analysis. It is a list of eight objects, namely:
+
+\item{info}{general information, including \itemize{ \item
+data.name: the name of the data used. \item n: the number
+of observations used. \item n.second.order: the number of
+observations used for second order analysis. \item
+number.of.digits: the number of first digits analysed. }}
+
+\item{data}{a data frame with: \itemize{ \item lines.used:
+the original lines of the dataset. \item data.used: the
+data used. \item data.mantissa: the log data's mantissa.
+\item data.digits: the first digits of the data. }}
+
+\item{s.o.data}{a data frame with: \itemize{ \item
+data.second.order: the differences of the ordered data.
+\item data.second.order.digits: the first digits of the
+second order analysis. }}
+
+\item{bfd}{a data frame with: \itemize{ \item digits: the
+groups of digits analysed. \item data.dist: the
+distribution of the first digits of the data. \item
+data.second.order.dist: the distribution of the first
+digits of the second order analysis. \item benford.dist:
+the theoretical benford distribution. \item
+data.second.order.dist.freq: the frequency distribution of
+the first digits of the second order analysis. \item
+data.dist.freq: the frequency distribution of the first
+digits of the data. \item benford.dist.freq: the
+theoretical benford frequency distribution. \item
+benford.so.dist.freq: the theoretical benford frequency
+distribution of the second order analysis. \item
+data.summation: the summation of the data values grouped by
+first digits. \item abs.excess.summation: the absolute
+excess summation of the data values grouped by first
+digits. \item difference: the difference between the data
+and benford frequencies. \item squared.diff: the
+chi-squared difference between data and benford
+frequencies. \item absolute.diff: the absolute difference
+between data and benford frequencies. }}
+
+\item{mantissa}{a data frame with: \itemize{ \item
+mean.mantissa: the mean of the mantissa. \item
+var.mantissa: the variance of the mantissa. \item
+ek.mantissa: the excess kurtosis of the mantissa. \item
+sk.mantissa: the skewness of the mantissa. }}
+
+\item{MAD}{the mean absolute deviation.}
+\item{distortion.factor}{the distortion factor}
+
+\item{stats}{list of "htest" class statistics: \itemize{
+\item chisq: Pearson's Chi-squared test. \item
+mantissa.arc.test: Mantissa Arc Test. }}
+}
+\description{
+This function validates a dataset using Benford's Law. Its
+main purposes are to find out where the dataset deviates
+from Benford's Law and to identify suspicious data that
+need further verification.
+
+For a more complete example, see the package help at
+\link{benford.analysis}.
+}
+\examples{
+data(corporate.payment) #loads data
+bfd.cp <- benford(corporate.payment$Amount) #generates benford object
+bfd.cp #prints
+plot(bfd.cp) #plots
+}
+

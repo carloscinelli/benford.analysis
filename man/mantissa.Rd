@@ -1,0 +1,24 @@
+\name{mantissa}
+\alias{mantissa}
+\title{Gets the main stats of the Mantissa of a Benford object}
+\usage{
+mantissa(bfd)
+}
+\arguments{
+  \item{bfd}{an object of class "Benford". See
+  \code{\link{benford}}.}
+}
+\value{
+A data.frame with the main stats of the Mantissa.
+}
+\description{
+It gets the Mean, Variance, Excess Kurtosis and Skewness of
+the Mantissa. See the section value of
+\code{\link{benford}}.
+}
+\examples{
+data(corporate.payment) #gets data
+cp <- benford(corporate.payment$Amount) #generates benford object
+mantissa(cp) # equivalent to cp$mantissa
+}
+

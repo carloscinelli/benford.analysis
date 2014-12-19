@@ -1,0 +1,21 @@
+\name{p.these.digits}
+\alias{p.these.digits}
+\title{Probability of a digit sequence}
+\usage{
+p.these.digits(d)
+}
+\arguments{
+  \item{d}{a digit sequence, like 1234 ou 999999.}
+}
+\value{
+The probability of the sequence d.
+}
+\description{
+It calculates the probability of a digit sequence "d".
+}
+\examples{
+p.these.digits(1) # 0.30103
+p.these.digits(11) # 0.03778856
+p.these.digits(999999) # 4.342947e-07
+}
+

@@ -1,0 +1,51 @@
+\name{extract.digits}
+\alias{extract.digits}
+\title{Extracts the leading digits from the data}
+\usage{
+extract.digits(data, number.of.digits = 2,
+               sign="positive", second.order = FALSE, discrete=TRUE, round=3)
+}
+\arguments{
+  \item{data}{a numeric vector.}
+
+  \item{number.of.digits}{how many first digits to analyse
+  .}
+
+  \item{sign}{The default value for sign is "positive" and
+  it analyzes only data greater than zero. There are also
+  the options "negative" and "both" that will analyze only
+  negative values or both positive and negative values of
+  the data, respectively. For large datasets with both
+  positive and negative numbers, it is usually recommended
+  to perform a separate analysis for each group, for the
+  incentives to manipulate the numbers are usually
+  different.}
+
+  \item{second.order}{If TRUE, the function will extract
+  the first digits of the second order distribution.}
+
+  \item{discrete}{Most real data - like population numbers
+  or accounting data - are discrete, so the default is
+  TRUE. This paramater sets rounding to the differences of
+  the ordered data to avoid floating point number errors in
+  the second order distribution, that usually occurs when
+  data is discrete and the ordered numbers are very close
+  to each other. If your data is continuous (like a
+  simulated lognormal) you should run with discrete =
+  FALSE.}
+
+  \item{round}{it defines the number of digits that the
+  rounding will use if discrete = TRUE and second.order =
+  TRUE.}
+}
+\value{
+A data.frame with the data and the first digits.
+}
+\description{
+It extracts the leading digits from the data.
+
+This function is used by the main function of the package
+\code{\link{benford}} to extract the leading digits of the
+data.
+}
+
