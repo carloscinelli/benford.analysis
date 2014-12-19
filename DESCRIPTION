@@ -14,3 +14,5 @@ License: GPL-3
 Suggests:
     testthat
 Packaged: 2014-04-30 22:26:18 UTC; depec.cinelli
+URL: http://github.com/carloscinelli/benford.analysis
+BugReports: http://github.com/carloscinelli/benford.analysis/issues
