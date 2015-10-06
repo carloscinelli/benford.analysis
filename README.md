@@ -109,7 +109,7 @@ After that you have the main statistics of the log mantissa of the data. If the 
 |--------------|-----------------|
 | Mean         | 0.5             |
 | Variance     | 1/12 (0.08333…) |
-| Ex. Kurtosis | 1.2             |
+| Ex. Kurtosis | -1.2            |
 | Skewness     | 0               |
 
 Printing also shows the 5 largest discrepancies. Notice that, as we had seen on the plot, the highest deviation is 50. These deviations are good candidates for closer inspections. It also shows the results of statistical tests like the Chi-squared test and the Mantissa Arc test.
