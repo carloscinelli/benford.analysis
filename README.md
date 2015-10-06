@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-![](http://cranlogs.r-pkg.org/badges/grand-total/benford.analysis)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/benford.analysis)](http://cran.r-project.org/web/packages/benford.analysis) ![](http://cranlogs.r-pkg.org/badges/grand-total/benford.analysis)
 
 The Benford Analysis (`benford.analysis`) package provides tools that make it easier to validate data using Benford's Law. The main purpose of the package is to identify suspicious data that need further verification.
 
