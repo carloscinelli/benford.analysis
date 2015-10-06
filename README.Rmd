@@ -6,7 +6,7 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/benford.analysis)](http://cran.r-project.org/web/packages/benford.analysis)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/benford.analysis)](http://cran.r-project.org/web/packages/benford.analysis) 
 ![](http://cranlogs.r-pkg.org/badges/grand-total/benford.analysis)
 
 ```{r, echo = FALSE}
