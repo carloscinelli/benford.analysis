@@ -91,3 +91,5 @@ The package provides some helper functions to further investigate the data. For 
 suspects <- getSuspects(bfd.cp, corporate.payment)
 suspects
 ```
+
+More information can be found on the help documentation and examples. The vignette will be ready soon.

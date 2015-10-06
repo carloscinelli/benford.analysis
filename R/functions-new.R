@@ -281,6 +281,10 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
 ##' @S3method plot Benford
 ##' 
 ##' @method plot Benford
+##' @importFrom graphics abline axis barplot legend lines par plot
+##' @importFrom stats pchisq var
+##' @importFrom utils head
+##' @importFrom stats setNames
 plot.Benford<- function(x, except=c("mantissa","abs diff"), multiple=TRUE ,...){
   
   old.par <- par(no.readonly=TRUE)

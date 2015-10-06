@@ -1,6 +1,6 @@
 Package: benford.analysis
 Type: Package
-Title: Benford Analysis for data validation and forensic analytics
+Title: Benford Analysis for Data Validation and Forensic Analytics
 Version: 0.1.2
 Author: Carlos Cinelli
 Maintainer: Carlos Cinelli <carloscinelli@hotmail.com>

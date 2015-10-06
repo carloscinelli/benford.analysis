@@ -132,3 +132,5 @@ suspects
 #> 17855:     52911 2010-02-01 270957401515   11.20
 #> 17856:     52934 2010-02-01 271745237617   11.88
 ```
+
+More information can be found on the help documentation and examples. The vignette will be ready soon.
