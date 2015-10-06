@@ -41,23 +41,21 @@ devtools::install_github("carloscinelli/benford.analysis", build_vignettes = TRU
 
 The `benford.analysis` package comes with 6 real datasets from Mark Nigrini's book [Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection](http://www.amazon.com/gp/product/B007KG9ZAI/ref=as_li_ss_tl?ie=UTF8&camp=1789&creative=390957&creativeASIN=B007KG9ZAI&linkCode=as2&tag=analreal-20).
 
-Here we will give an example using 189.470 records from the corporate payments data.
-
-Primeiramente, precisamos carregar o pacote (se você já o tiver instalado) e em seguida carregar os dados de exemplo:
+Here we will give an example using 189.470 records from the corporate payments data. First we need to load the package and the data:
 
 ```{r}
 library(benford.analysis) # loads package
 data(corporate.payment) # loads data
 ```
 
-To validade the data against benford's law you simply apply the function `benford` into the appropriate column which, in our case, it is the `Amount` column:
+Then to validade the data against Benford's law you simply use the function `benford` in the appropriate column:
 
 ```{r}
 bfd.cp <- benford(corporate.payment$Amount)
 ```
 
 
-With the command above you create an object of class "Benford" with the results for the analysis using the first two significant digits. You can choose a different number of digits, just change the `number.of.digits` paramater. For more information, see the help at `?benford`:
+The command above created an object of class "Benford" with the results for the analysis using the first two significant digits. You can choose a different number of digits changing the `number.of.digits` paramater. For more information and parameters see `?benford`:
 
 Let's check the main plots of the analysis:
 
@@ -65,9 +63,9 @@ Let's check the main plots of the analysis:
 plot(bfd.cp)
 ```
 
-The original data is in blue and the expected frequency according to Benford's law is in red. For instance, in our example, the first plot show that the data do have a tendency to follow Benford's law, but also that there is a clear discrepancy at 50.
+The original data is in blue and the expected frequency according to Benford's law is in red. For instance, in our example, the first plot shows that the data do have a tendency to follow Benford's law, but also that there is a clear discrepancy at 50.
 
-You can also print the main results of the analysis:
+You can print the main results of the analysis:
 
 ```{r}
 bfd.cp
@@ -77,7 +75,7 @@ The print method first shows the general information of the analysis, like the n
 
 After that you have the main statistics of the log mantissa of the data. If the data follows Benford's Law, the numbers should be close to:
 
-statistic| value
+Statistic| Value
 ---------|------
 Mean| 0.5
 Variance| 1/12 (0.08333…)
@@ -85,9 +83,9 @@ Ex. Kurtosis| 1.2
 Skewness| 0
 
 
-Then you have the 5 largest discrepancies. Notice that the highest deviation is 50, like we had seen on the plot. These deviations are good candidates for closer inspections. Finally, you see some statistical tests of fit like the Pearson's Chi-squared test and the Mantissa Arc Test.
+Printing also shows the 5 largest discrepancies. Notice that, as we had seen on the plot, the highest deviation is 50. These deviations are good candidates for closer inspections. It also shows the results of statistical tests like the Chi-squared test and the Mantissa Arc test.
 
-There are some helper functions to further investigate the data. For example, you can get the larger discrepancies by using the `getSuspects` functions. 
+The package provides some helper functions to further investigate the data. For example, you can easily extract the observations with the largest discrepancies by using the `getSuspects` function. 
 
 ```{r}
 suspects <- getSuspects(bfd.cp, corporate.payment)
