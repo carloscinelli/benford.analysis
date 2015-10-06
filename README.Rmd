@@ -79,7 +79,7 @@ Statistic| Value
 ---------|------
 Mean| 0.5
 Variance| 1/12 (0.08333…)
-Ex. Kurtosis| 1.2
+Ex. Kurtosis| -1.2
 Skewness| 0
 
 
