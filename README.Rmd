@@ -5,7 +5,7 @@ output:
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
+[![Travis-CI Build Status](https://travis-ci.org/carloscinelli/benford.analysis.svg?branch=master)](https://travis-ci.org/carloscinelli/benford.analysis)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/benford.analysis)](http://cran.r-project.org/web/packages/benford.analysis) 
 ![](http://cranlogs.r-pkg.org/badges/grand-total/benford.analysis)
 
