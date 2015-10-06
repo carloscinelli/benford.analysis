@@ -1,0 +1,95 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+![](http://cranlogs.r-pkg.org/badges/grand-total/benford.analysis)
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+The Benford Analysis (`benford.analysis`) package provides tools that make it easier to validate data using Benford's Law. The main purpose of the package is to identify suspicious data that need further verification.
+
+## CRAN
+
+You can install the package from CRAN by running:
+
+```{r, eval = FALSE}
+install.packages("benford.analysis")
+```
+
+
+## How to install the development version from GitHub
+
+To install the GitHub version you need to have the package `devtools` installed. Make sure to set the option `build_vignettes = TRUE` to compile the package vignette. 
+
+```{r, eval = FALSE}
+# install.packages("devtools") # run this to install the devtools package
+devtools::install_github("carloscinelli/benford.analysis", build_vignettes = TRUE)
+```
+
+## Example usage
+
+The `benford.analysis` package comes with 6 real datasets from Mark Nigrini's book [Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection](http://www.amazon.com/gp/product/B007KG9ZAI/ref=as_li_ss_tl?ie=UTF8&camp=1789&creative=390957&creativeASIN=B007KG9ZAI&linkCode=as2&tag=analreal-20).
+
+Here we will give an example using 189.470 records from the corporate payments data.
+
+Primeiramente, precisamos carregar o pacote (se você já o tiver instalado) e em seguida carregar os dados de exemplo:
+
+```{r}
+library(benford.analysis) # loads package
+data(corporate.payment) # loads data
+```
+
+To validade the data against benford's law you simply apply the function `benford` into the appropriate column which, in our case, it is the `Amount` column:
+
+```{r}
+bfd.cp <- benford(corporate.payment$Amount)
+```
+
+
+With the command above you create an object of class "Benford" with the results for the analysis using the first two significant digits. You can choose a different number of digits, just change the `number.of.digits` paramater. For more information, see the help at `?benford`:
+
+Let's check the main plots of the analysis:
+
+```{r}
+plot(bfd.cp)
+```
+
+The original data is in blue and the expected frequency according to Benford's law is in red. For instance, in our example, the first plot show that the data do have a tendency to follow Benford's law, but also that there is a clear discrepancy at 50.
+
+You can also print the main results of the analysis:
+
+```{r}
+bfd.cp
+```
+
+The print method first shows the general information of the analysis, like the name of the data used, the number of observations used and how many significant digits were analyzed.
+
+After that you have the main statistics of the log mantissa of the data. If the data follows Benford's Law, the numbers should be close to:
+
+statistic| value
+---------|------
+Mean| 0.5
+Variance| 1/12 (0.08333…)
+Ex. Kurtosis| 1.2
+Skewness| 0
+
+
+Then you have the 5 largest discrepancies. Notice that the highest deviation is 50, like we had seen on the plot. These deviations are good candidates for closer inspections. Finally, you see some statistical tests of fit like the Pearson's Chi-squared test and the Mantissa Arc Test.
+
+There are some helper functions to further investigate the data. For example, you can get the larger discrepancies by using the `getSuspects` functions. 
+
+```{r}
+suspects <- getSuspects(bfd.cp, corporate.payment)
+suspects
+```

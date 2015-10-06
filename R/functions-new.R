@@ -357,7 +357,11 @@ print.Benford <- function(x,how.many=5,...){
   
   cat("\n\nMantissa: \n")
   cat("\n")
-  print(sapply(x[["mantissa"]][,values], round,2))
+  pretty_print <- x$mantissa
+  pretty_print$statistic <- gsub("Mantissa|\\s", "", pretty_print$statistic)
+  pretty_print <- setNames(pretty_print, c("Statistic", "Value"))
+  print.data.frame(pretty_print, row.names = FALSE, digits = 2)
+  cat("\n")
   
   cat("\nThe", how.many, "largest deviations: \n")
   cat("\n")
