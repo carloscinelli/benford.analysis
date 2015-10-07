@@ -52,4 +52,35 @@ test_that("Negative numbers, simulated log-normal *(-1)",
          }
 )
           
-          
+test_that("Both signs, simulated log-normal, plots and print",
+          {
+            set.seed(1)
+            data <- rlnorm(1000, 10, 10)
+            data <- data*c(1, -1)
+            bfd <- benford(data, sign="both", discrete = FALSE)
+            plot(bfd, "none")
+            expect_error(plot(bfd, except = "xxx"))
+            ?plot.Benford
+            plot(bfd, except=c("mantissa","abs diff", "second order") )
+            plot(bfd, except=c("mantissa","abs diff", "second order", "summation") )
+            plot(bfd, except=c("mantissa","abs diff", "second order", "summation", 
+                               "chi square"))
+            plot(bfd, except=c("mantissa","abs diff", "second order", "summation", 
+                               "chi square", "ex summation"))
+            
+            print <- capture.output(print(bfd))
+            test_print <- c("", "Benford object:", " ", "Data: data ", "Number of observations used = 1000 ", 
+                            "Number of obs. for second order = 999 ", "First digits analysed = 2", 
+                            "", "Mantissa: ", "", "   Statistic  Value", "        Mean  0.476", 
+                            "         Var  0.084", " Ex.Kurtosis -1.205", "    Skewness  0.076", 
+                            "", "", "The 5 largest deviations: ", "", "  digits absolute.diff", 
+                            "1     10         13.61", "2     18         12.52", "3     31          9.21", 
+                            "4     11          9.21", "5     15          8.03", "", "Stats:", 
+                            "", "\tPearson's Chi-squared test", "", "data:  data", "X-squared = 83.095, df = 89, p-value = 0.6564", 
+                            "", "", "\tMantissa Arc Test", "", "data:  data", "L2 = 0.0013529, df = 2, p-value = 0.2585", 
+                            "", "Mean Absolute Deviation: 0.002609809", "Distortion Factor: -20.40362", 
+                            "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
+            expect_that(print, equals(test_print))
+          }
+)
+

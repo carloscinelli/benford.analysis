@@ -14,7 +14,7 @@
 #' suspectsTable(cp) 
 #' @export
 suspectsTable<- function(bfd, by="absolute.diff"){
-  if(class(bfd)!="Benford"){stop("bfd must be a 'Benford' object.")}
+  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
   if(!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
     stop("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
   }
@@ -41,14 +41,14 @@ suspectsTable<- function(bfd, by="absolute.diff"){
 #' suspects <- getSuspects(lk, lakes.perimeter)
 #' @export
 getSuspects <-function(bfd, data, by="absolute.diff", how.many=2){
-  if(class(bfd)!="Benford"){stop("bfd must be a 'Benford' object.")}
-  if(!is.data.frame(data)){stop("Data must be a data frame.")}
+  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
+  if(!is.data.frame(data)) stop("Data must be a data frame.")
   if(!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
     stop("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
   }
   digits <- bfd[["bfd"]][order(get(by), decreasing=TRUE)][,list(digits)][1:how.many]
   suspects.lines <- bfd[["data"]]$lines.used[bfd[["data"]]$data.digits %in% digits$digits]
-  data.table(data[suspects.lines,])
+  data.table(data[suspects.lines, ,drop = FALSE])
 }
 
 #' @title Shows the duplicates of the data
@@ -68,7 +68,7 @@ duplicatesTable <- function(bfd){
   data.used <- NULL
   v <- NULL
   V1 <- NULL
-  if(class(bfd)!="Benford"){stop("bfd must be a 'Benford' object.")}
+  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
   numbers <- bfd[["data"]]
   numbers <- numbers[,v:= data.used]
   duplicates.count <- numbers[,length(data.used), by=v][order(V1, decreasing=TRUE)]
@@ -94,13 +94,13 @@ getDuplicates <-function(bfd, data, how.many=2){
   v<- NULL
   data.used <- NULL
   V1 <- NULL
-  if(class(bfd)!="Benford"){stop("bfd must be a 'Benford' object.")}
-  if(!is.data.frame(data)){stop("Data must be a data frame.")}
+  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
+  if(!is.data.frame(data)) stop("Data must be a data frame.")
   numbers <- copy(bfd[["data"]])
   numbers <- numbers[,v:= data.used]
   duplicates.count <- numbers[,length(data.used), by=v][order(V1, decreasing=TRUE)][,list(v)][1:how.many]
   duplicates.lines <- bfd[["data"]]$lines.used[bfd[["data"]]$data.used %in% duplicates.count$v]
-  data.table(data[duplicates.lines,])
+  data.table(data[duplicates.lines, ,drop = FALSE])
 }
 
 #' @title Gets the data starting with some specific digits
@@ -122,7 +122,7 @@ getDuplicates <-function(bfd, data, how.many=2){
 #' digits.10.25 <- getDigits(c2010, census.2000_2010, c(10,25)) 
 #' @export
 getDigits <- function(bfd, data, digits){
-  data <- data.table(data[bfd[["data"]]$lines.used[bfd[["data"]]$data.digits %in% digits],])
+  data <- data.table(data[bfd[["data"]]$lines.used[bfd[["data"]]$data.digits %in% digits], ,drop=FALSE])
   return(data)
 }
 

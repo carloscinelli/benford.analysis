@@ -1,15 +1,3 @@
-#### internals ####
-no.dimnames <- function(a){
-  d <- list()
-  l <- 0
-  for (i in dim(a)){
-    d[[l<-l+1]]<-rep("",i)
-  }
-  dimnames(a)<-d
-  a
-}
-
-
 #### Benford ####
 
 DF <- function(data){
