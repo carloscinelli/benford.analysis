@@ -22,6 +22,11 @@ test_that("Exctracting digits from made up data",
   expect_that(digits4,
               equals(c(2130, 6546, 8789, 1324, 6878, 3213, 4566, 4165, 1387, 2346)))
   
+  data <- as.integer(data)
+  digits3 <- extract.digits(data, 3)$data.digits
+  expect_that(digits3,
+              equals(c(213, 654, 878, 132, 687, 321, 456, 416, 138, 234)))
+  
   
   set.seed(1)
   x <- rnorm(10)

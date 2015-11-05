@@ -45,12 +45,12 @@ mantissa.arc.test <- function(data){ #data must be the mantissa of the log10
 #' @export
 extract.digits <- function (data, number.of.digits = 2, sign="positive", second.order = FALSE, discrete=TRUE, round=3) {
   
-  if(class(data)!="numeric"){stop("Data must be a numeric vector")}
+  if(!is.numeric(data)) stop("Data must be a numeric vector")
   
   ## cleaning data for analysis - only > 0 and either only positive or only negative
-  if (sign == "positive") {positives <- data[data>0 & !is.na(data)]} 
-  if (sign == "negative") {positives <- data[data<0 & !is.na(data)]*(-1)}
-  if (sign == "both")     {positives <- abs(data[data!=0 & !is.na(data)])}
+  if (sign == "positive")  positives <- data[data>0 & !is.na(data)]
+  if (sign == "negative")  positives <- data[data<0 & !is.na(data)]*(-1)
+  if (sign == "both")      positives <- abs(data[data!=0 & !is.na(data)]) 
   if (second.order){
     if (number.of.digits>4){warning("There might be some floating point precision issues on the Second Order distribution")}
     n <- length(positives)
@@ -79,7 +79,7 @@ extract.digits <- function (data, number.of.digits = 2, sign="positive", second.
 #' @export 
 p.these.digits <- function(d){
   
-  if (class(d)!="numeric" & class(d)!="integer") stop ("d must be numeric or integer")
+  if (!is.numeric(d)) stop ("d must be numeric or integer")
   d <- trunc(d)
   if (d<0) d <- d*(-1)
   prob <- log10(1+1/d)
@@ -110,8 +110,8 @@ p.this.digit.at.n <- function(d,n){
   n1 <- strsplit(as.character(d), "")[[1]]
   n1 <- length(n1)
   if (n1>1) stop("d must have only 1 digit. This function evaluates 1 digit at position n")
-  if (class(d)!="numeric" & class(d)!="integer") stop ("d must be numeric or integer")
-  if (class(n)!="numeric" & class(n)!="integer") stop ("n must be numeric or integer")
+  if (!is.numeric(d)) stop ("d must be numeric or integer")
+  if (!is.numeric(n)) stop ("n must be numeric or integer")
   if (n<1) stop ("n must be greater than 1")
   if (n==1) return(log10(1+1/d))
   sum = 0
