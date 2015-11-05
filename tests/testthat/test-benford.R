@@ -7,6 +7,8 @@ test_that("Corporate Payment 1 digit, only >=10",
             bfd1 <- benford(cp,1)
             expect_that(bfd1$info$n.second.order,equals(64578))
             expect_that(MAD(bfd1), equals(0.01464, tolerance=1e-03))
+            # check if object did not change
+            expect_that(bfd1, equals(benford(cp,1)))
           }
           )
    
@@ -23,6 +25,7 @@ test_that("Corporate Payment 2 digits, only >=10",
                                  duplicates = c(6022,2264,1185,1056,1018,976))
             d.data <- as.data.frame(head(duplicatesTable(bfd2)))
             expect_that(d.data, equals(d.test))
+            # check if object did not change
             expect_that(bfd2, equals(benford(cp, 2)))
           }
           )
@@ -34,6 +37,8 @@ test_that("Census 2009 data, 2 digits, only >=10",
            bfd.census <- benford(pop, 2)
            expect_that(dfactor(bfd.census), equals(0.74, tolerance=1e-03))
            expect_that(round(chisq(bfd.census)$statistic),is_equivalent_to(108))
+           # check if object did not change
+           expect_that(bfd.census, equals(benford(pop, 2)))
           }
            )
 
@@ -50,6 +55,9 @@ test_that("Negative numbers, simulated log-normal *(-1)",
                     class = c("data.table", "data.frame"))
           mant <- mantissa(bfd)
           expect_that(test, equals(mant))
+          
+          # check if object did not change
+          expect_that(bfd, equals( benford(data, sign="negative")))
          }
 )
           
@@ -82,6 +90,9 @@ test_that("Both signs, simulated log-normal, plots and print",
                             "", "Mean Absolute Deviation: 0.002609809", "Distortion Factor: -20.40362", 
                             "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
             expect_that(print, equals(test_print))
+            
+            # check if object did not change
+            expect_that(bfd, equals(benford(data, sign="both", discrete = FALSE)))
           }
 )
 
