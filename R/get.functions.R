@@ -69,7 +69,7 @@ duplicatesTable <- function(bfd){
   v <- NULL
   V1 <- NULL
   if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
-  numbers <- bfd[["data"]]
+  numbers <- copy(bfd[["data"]])
   numbers <- numbers[,v:= data.used]
   duplicates.count <- numbers[,length(data.used), by=v][order(V1, decreasing=TRUE)]
   setnames(duplicates.count,c("v", "V1"),c("number", "duplicates"))

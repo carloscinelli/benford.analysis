@@ -23,6 +23,7 @@ test_that("Corporate Payment 2 digits, only >=10",
                                  duplicates = c(6022,2264,1185,1056,1018,976))
             d.data <- as.data.frame(head(duplicatesTable(bfd2)))
             expect_that(d.data, equals(d.test))
+            expect_that(bfd2, equals(benford(cp, 2)))
           }
           )
       
