@@ -210,9 +210,9 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
   distortion.factor <- DF(empirical.distribution$data)  
   
   ## recovering the lines of the numbers
-  if (sign == "positive") {lines <- which(data>0 & !is.na(data))} 
-  if (sign == "negative") {lines <- which(data<0 & !is.na(data))}
-  if (sign == "both")     {lines <- which(data!=0 & !is.na(data))}
+  if (sign == "positive") lines <- which(data>0 & !is.na(data))
+  if (sign == "negative") lines <- which(data<0 & !is.na(data))
+  if (sign == "both")     lines <- which(data!=0 & !is.na(data))
   #lines <- which(data %in% empirical.distribution$data)
   
   ## output
