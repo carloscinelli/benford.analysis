@@ -61,7 +61,7 @@ test_that("Negative numbers, simulated log-normal *(-1)",
          }
 )
           
-test_that("Both signs, simulated log-normal, plots and print",
+test_that("Both signs, simulated log-normal and plots",
           {
             set.seed(1)
             data <- rlnorm(1000, 10, 10)
@@ -69,7 +69,6 @@ test_that("Both signs, simulated log-normal, plots and print",
             bfd <- benford(data, sign="both", discrete = FALSE)
             plot(bfd, "none")
             expect_error(plot(bfd, except = "xxx"))
-            ?plot.Benford
             plot(bfd, except=c("mantissa","abs diff", "second order") )
             plot(bfd, except=c("mantissa","abs diff", "second order", "summation") )
             plot(bfd, except=c("mantissa","abs diff", "second order", "summation", 
@@ -77,6 +76,19 @@ test_that("Both signs, simulated log-normal, plots and print",
             plot(bfd, except=c("mantissa","abs diff", "second order", "summation", 
                                "chi square", "ex summation"))
             
+            # check if object did not change
+            expect_that(bfd, equals(benford(data, sign="both", discrete = FALSE)))
+          }
+)
+
+
+test_that("Exact printing, this sould not be tested on CRAN!",
+          {
+            skip_on_cran()
+            set.seed(1)
+            data <- rlnorm(1000, 10, 10)
+            data <- data*c(1, -1)
+            bfd <- benford(data, sign="both", discrete = FALSE)
             print <- capture.output(print(bfd))
             test_print <- c("", "Benford object:", " ", "Data: data ", "Number of observations used = 1000 ", 
                             "Number of obs. for second order = 999 ", "First digits analysed = 2", 
@@ -90,9 +102,6 @@ test_that("Both signs, simulated log-normal, plots and print",
                             "", "Mean Absolute Deviation: 0.002609809", "Distortion Factor: -20.40362", 
                             "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
             expect_that(print, equals(test_print))
-            
-            # check if object did not change
-            expect_that(bfd, equals(benford(data, sign="both", discrete = FALSE)))
           }
 )
 

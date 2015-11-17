@@ -278,9 +278,7 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
 ##' @param multiple if TRUE, all plots are grouped in the same window.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
-##' @S3method plot Benford
-##' 
-##' @method plot Benford
+##' @export
 ##' @importFrom graphics abline axis barplot legend lines par plot
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
@@ -347,9 +345,7 @@ plot.Benford<- function(x, except=c("mantissa","abs diff"), multiple=TRUE ,...){
 ##' @param how.many a number that defines how many of the biggest absolute differences to show.
 ##' @param ... arguments to be passed to generic print functions.
 ##' @return Prints the Benford object.
-##' @S3method print Benford
-##' @method print Benford
-##' 
+##' @export
 print.Benford <- function(x,how.many=5,...){
   
   if(class(x)!="Benford") stop("Class(x) must be 'Benford'")
