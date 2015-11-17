@@ -1,7 +1,7 @@
 Package: benford.analysis
 Type: Package
 Title: Benford Analysis for Data Validation and Forensic Analytics
-Version: 0.1.2.9001
+Version: 0.1.3
 Author: Carlos Cinelli
 Maintainer: Carlos Cinelli <carloscinelli@hotmail.com>
 Description: The Benford Analysis package provides tools that make it easier to
@@ -13,6 +13,5 @@ Imports:
 License: GPL-3
 Suggests:
     testthat
-Packaged: 2014-04-30 22:26:18 UTC; depec.cinelli
 URL: http://github.com/carloscinelli/benford.analysis
 BugReports: http://github.com/carloscinelli/benford.analysis/issues
