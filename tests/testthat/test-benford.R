@@ -49,8 +49,7 @@ test_that("Negative numbers, simulated log-normal *(-1)",
           bfd <- benford(data, sign="negative")
           test<-structure(list(statistic = c("Mean Mantissa", "Var Mantissa", 
                                        "Ex. Kurtosis Mantissa", "Skewness Mantissa"), 
-                         values = structure(c(0.496354817370674,0.0819078569969828, -1.18345152468828, 0.0122274722811928), 
-                                            .Names = c("mean.mantissa", "var.mantissa", "ek.mantissa", "sk.mantissa"))), 
+                         values = c(0.496354817370674,0.0819078569969828, -1.18345152468828, 0.0122274722811928)), 
                     .Names = c("statistic","values"), row.names = c(NA, -4L), 
                     class = c("data.table", "data.frame"))
           mant <- mantissa(bfd)
