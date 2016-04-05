@@ -85,6 +85,7 @@ test_that("Both signs, simulated log-normal and plots",
 test_that("Exact printing, this sould not be tested on CRAN!",
           {
             skip_on_cran()
+            skip_on_travis()
             set.seed(1)
             data <- rlnorm(1000, 10, 10)
             data <- data*c(1, -1)
