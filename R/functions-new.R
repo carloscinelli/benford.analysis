@@ -137,56 +137,38 @@ NULL
 
 benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3){
   
-  data.name<-as.character(deparse(substitute(data)))
+  data.name <- as.character(deparse(substitute(data)))
   
   benford.digits <- generate.benford.digits(number.of.digits)
     
-  benford.dist <-generate.benford.distribution(benford.digits)
+  benford.dist <- generate.benford.distribution(benford.digits)
   
-  empirical.distribution <- generate.empirical.distribution(data, number.of.digits,sign, second.order=FALSE, benford.digits)
+  empirical.distribution <- generate.empirical.distribution(data, number.of.digits,sign, second.order = FALSE, benford.digits)
   
   n <- length(empirical.distribution$data)
   
-  second.order <- generate.empirical.distribution(data, number.of.digits,sign, second.order=TRUE, benford.digits, discrete=discrete, round=round)
+  second.order <- generate.empirical.distribution(data, number.of.digits,sign, second.order = TRUE, benford.digits, discrete = discrete, round = round)
   
   n.second.order <- length(second.order$data)
   
   benford.dist.freq <- benford.dist*n
   
-  
-  
   ## calculating useful summaries and differences
   difference <- empirical.distribution$dist.freq - benford.dist.freq
   
-  squared.diff <- ((empirical.distribution$dist.freq
-                     - benford.dist.freq)^2)/benford.dist.freq
+  squared.diff <- ((empirical.distribution$dist.freq - benford.dist.freq)^2)/benford.dist.freq
   
-  absolute.diff <- abs(empirical.distribution$dist.freq
-                       -benford.dist.freq)
+  absolute.diff <- abs(empirical.distribution$dist.freq - benford.dist.freq)
+  
   ### chi-squared test
-  chisq <- sum(squared.diff)
-  names(chisq) <- "X-squared"
-  
-  df <- length(benford.digits)-1
-  names(df) <- "df"
-  chisq.p.value <- pchisq(chisq, df, lower.tail=FALSE)
-  
-  
-  chisq.bfd <- list(statistic = chisq,
-                    parameter = df,
-                    p.value = chisq.p.value,
-                    methods = "Pearson's Chi-squared test",
-                    data.name = data.name)
-  class(chisq.bfd) <-"htest"
+  chisq.bfd <- chisq.test.bfd(squared.diff, data.name)
   
   ### MAD
-  mean.abs.dev <- sum(abs(
-    empirical.distribution$dist-
-      benford.dist)/(df+1))
+  mean.abs.dev <- sum(abs(empirical.distribution$dist - benford.dist)/(length(benford.dist)))
   
   ### Summation
   summation <- generate.summation(benford.digits,empirical.distribution$data, empirical.distribution$data.digits)
-  abs.excess.summation <- abs(summation-mean(summation))
+  abs.excess.summation <- abs(summation - mean(summation))
   
   ### Mantissa
   mantissa <- extract.mantissa(empirical.distribution$data)
@@ -196,35 +178,27 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
   sk.mantissa <- skewness(mantissa)
   
   ### Mantissa Arc Test
-  mantissa.test <- mantissa.arc.test(mantissa)
-  mantissa.df <- 2
-  names(mantissa.df) <- "df"
-  mat.bfd <- list(statistic = mantissa.test$L2,
-                  parameter = mantissa.df,
-                  p.value = mantissa.test$p.value,
-                  method = "Mantissa Arc Test",
-                  data.name = data.name)
-  class(mat.bfd) <-"htest"
+  mat.bfd <- mantissa.arc.test(mantissa, data.name)
   
   ### Distortion Factor
   distortion.factor <- DF(empirical.distribution$data)  
   
   ## recovering the lines of the numbers
-  if (sign == "positive") lines <- which(data>0 & !is.na(data))
-  if (sign == "negative") lines <- which(data<0 & !is.na(data))
-  if (sign == "both")     lines <- which(data!=0 & !is.na(data))
+  if (sign == "positive") lines <- which(data > 0 & !is.na(data))
+  if (sign == "negative") lines <- which(data < 0 & !is.na(data))
+  if (sign == "both")     lines <- which(data != 0 & !is.na(data))
   #lines <- which(data %in% empirical.distribution$data)
   
   ## output
-  output <- list(info = list(data.name= data.name,
-                                   n=n,
-                                   n.second.order =n.second.order,
-                                   number.of.digits=number.of.digits),
+  output <- list(info = list(data.name = data.name,
+                             n = n,
+                             n.second.order = n.second.order,
+                             number.of.digits = number.of.digits),
                  
                  data = data.table(lines.used = lines,
                                    data.used = empirical.distribution$data,
                                    data.mantissa = mantissa,
-                                   data.digits= empirical.distribution$data.digits),
+                                   data.digits = empirical.distribution$data.digits),
                  
                  s.o.data = data.table(second.order = second.order$data,
                                        data.second.order.digits = second.order$data.digits),
@@ -240,25 +214,25 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
                                   data.summation = summation,
                                   abs.excess.summation = abs.excess.summation,
                                   difference = difference,
-                                  squared.diff=squared.diff,
+                                  squared.diff = squared.diff,
                                   absolute.diff = absolute.diff),
                  
-                 mantissa = data.table(statistic =c("Mean Mantissa", 
-                                                    "Var Mantissa", 
-                                                    "Ex. Kurtosis Mantissa",
-                                                    "Skewness Mantissa"),
-                                    values = c(mean.mantissa = mean.mantissa,
-                                               var.mantissa = var.mantissa,
-                                               ek.mantissa = ek.mantissa,
-                                               sk.mantissa = sk.mantissa)),
+                 mantissa = data.table(statistic = c("Mean Mantissa", 
+                                                     "Var Mantissa", 
+                                                     "Ex. Kurtosis Mantissa",
+                                                     "Skewness Mantissa"),
+                                       values = c(mean.mantissa = mean.mantissa,
+                                                  var.mantissa = var.mantissa,
+                                                  ek.mantissa = ek.mantissa,
+                                                  sk.mantissa = sk.mantissa)),
                  MAD = mean.abs.dev,
                  
                  distortion.factor = distortion.factor,
                  
-                 stats = list( chisq= chisq.bfd,
-                               mantissa.arc.test =mat.bfd)
-                 )
-                                  
+                 stats = list(chisq = chisq.bfd,
+                              mantissa.arc.test = mat.bfd)
+  )
+  
   class(output) <- "Benford"
   
   return(output)

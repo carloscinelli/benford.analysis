@@ -6,17 +6,49 @@ DF <- function(data){
   DF * 100
 }
 
-mantissa.arc.test <- function(data){ #data must be the mantissa of the log10
+mantissa.arc.test <- function(data, data.name){ #data must be the mantissa of the log10
   x.coord <- cos(2*pi*data)
   y.coord <- sin(2*pi*data)
+  
   L2 <- (mean(x.coord))^2 + (mean(y.coord))^2
   names(L2) <- "L2"
+  
   p.value <- exp(-(L2)*length(data))
-  return(list(L2 = L2, p.value = p.value))
+  mantissa.df <- 2
+  names(mantissa.df) <- "df"
+  
+  mat.bfd <- list(statistic = L2,
+                  parameter = mantissa.df,
+                  p.value = p.value,
+                  method = "Mantissa Arc Test",
+                  data.name = data.name)
+  
+  class(mat.bfd) <- "htest"
+  
+  return(mat.bfd)
 }
 
 
-
+chisq.test.bfd <- function(squared.diff, data.name){
+  
+  chisq <- sum(squared.diff)
+  names(chisq) <- "X-squared"
+  
+  df <- length(squared.diff) - 1
+  names(df) <- "df"
+  chisq.p.value <- pchisq(chisq, df, lower.tail = FALSE)
+  
+  
+  chisq.bfd <- list(statistic = chisq,
+                    parameter = df,
+                    p.value = chisq.p.value,
+                    methods = "Pearson's Chi-squared test",
+                    data.name = data.name)
+  
+  class(chisq.bfd) <- "htest"
+  
+  return(chisq.bfd)
+}
 
 #' @title Extracts the leading digits from the data
 #' @description It extracts the leading digits from the data.
