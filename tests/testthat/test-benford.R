@@ -105,3 +105,13 @@ test_that("Exact printing, this sould not be tested on CRAN!",
           }
 )
 
+test_that("Regular printing -- no comparisons",
+          {
+            set.seed(1)
+            data <- rlnorm(1000, 10, 10)
+            data <- data*c(1, -1)
+            bfd <- benford(data, sign="both", discrete = FALSE)
+            print <- capture.output(print(bfd))
+          }
+)
+
