@@ -21,6 +21,7 @@ test_that("p.this.digit.at.n",{
   expect_that(p.this.digit.at.n(2123,0), throws_error("d must have only 1 digit. This function evaluates 1 digit at position n"))
   expect_that(p.this.digit.at.n(1,0),throws_error("n must be greater than 1"))
   expect_that(p.this.digit.at.n(-3,3), equals(p.this.digit.at.n(3,3)))
+  expect_that(p.this.digit.at.n(1,9), equals(0.1))
 }
 )
 
