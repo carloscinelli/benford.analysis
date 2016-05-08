@@ -1,9 +1,9 @@
 #### Benford ####
 
 DF <- function(data){
-  collapsed <- 10*(data)/10^trunc(log10(data))
-  DF<-(mean(collapsed)-39.0865)/(39.0685)
-  DF*100
+  collapsed <- 10 * (data) / 10^trunc(log10(data))
+  DF <- (mean(collapsed) - 39.0865) / (39.0685)
+  DF * 100
 }
 
 mantissa.arc.test <- function(data){ #data must be the mantissa of the log10
@@ -12,7 +12,7 @@ mantissa.arc.test <- function(data){ #data must be the mantissa of the log10
   L2 <- (mean(x.coord))^2 + (mean(y.coord))^2
   names(L2) <- "L2"
   p.value <- exp(-(L2)*length(data))
-  return(list(L2=L2, p.value=p.value))
+  return(list(L2 = L2, p.value = p.value))
 }
 
 
@@ -43,25 +43,38 @@ mantissa.arc.test <- function(data){ #data must be the mantissa of the log10
 #' @param round it defines the number of digits that the rounding will use if discrete = TRUE and second.order = TRUE.
 #' @return A data.frame with the data and the first digits.
 #' @export
-extract.digits <- function (data, number.of.digits = 2, sign="positive", second.order = FALSE, discrete=TRUE, round=3) {
+extract.digits <- function(data, number.of.digits = 2, sign="positive", second.order = FALSE, discrete = TRUE, round = 3) {
   
-  if(!is.numeric(data)) stop("Data must be a numeric vector")
+  if (!is.numeric(data)) stop("Data must be a numeric vector")
   
   ## cleaning data for analysis - only > 0 and either only positive or only negative
-  if (sign == "positive")  positives <- data[data>0 & !is.na(data)]
-  if (sign == "negative")  positives <- data[data<0 & !is.na(data)]*(-1)
-  if (sign == "both")      positives <- abs(data[data!=0 & !is.na(data)]) 
-  if (second.order){
-    if (number.of.digits>4){warning("There might be some floating point precision issues on the Second Order distribution")}
+  if (sign == "positive")  positives <- data[data > 0 & !is.na(data)]
+  if (sign == "negative")  positives <- data[data < 0 & !is.na(data)]*(-1)
+  if (sign == "both")      positives <- abs(data[data != 0 & !is.na(data)]) 
+  
+  if (second.order) {
+    
+    if (number.of.digits > 4) {
+      warning("There might be some floating point precision issues on the Second Order distribution")
+    }
+    
     n <- length(positives)
-    first <- sort(positives)[1:(n-1)]
+    first <- sort(positives)[1:(n - 1)]
     second <- sort(positives)[2:n]
-    positives <-  if(discrete){round(second - first, number.of.digits+round)}else{second - first} 
-    positives <- positives[positives>0]
+    
+    positives <-  if (discrete) {
+      round(second - first, number.of.digits + round)
+    } else {
+      second - first
+    } 
+    
+    positives <- positives[positives > 0]
   }
-  return(data.frame(
-    data = positives,
-    data.digits = trunc((10^((floor(log10(positives))*-1)+number.of.digits-1))*positives)))
+  
+  results <- data.frame(data = positives,
+                        data.digits = trunc((10^((floor(log10(positives))*-1) + 
+                                                   number.of.digits - 1))*positives))
+  return(results)
 }
 
 
@@ -78,11 +91,10 @@ extract.digits <- function (data, number.of.digits = 2, sign="positive", second.
 #' p.these.digits(999999) # 4.342947e-07
 #' @export 
 p.these.digits <- function(d){
-  
-  if (!is.numeric(d)) stop ("d must be numeric or integer")
+  if (!is.numeric(d)) stop("d must be numeric or integer")
   d <- trunc(d)
-  if (d<0) d <- d*(-1)
-  prob <- log10(1+1/d)
+  if (d < 0) d <- d*(-1)
+  prob <- log10(1 + 1/d)
   return(prob)
 }
 
@@ -105,77 +117,72 @@ p.these.digits <- function(d){
 #' matrix # a table with the probabilities of digits 0 to 9 in positions 1 to 4.
 #' @export 
 p.this.digit.at.n <- function(d,n){
-  if (d<0) d <- d*(-1)
-  if (d==0 & n==1) return(NA)
+  if (d < 0) d <- d*(-1)
+  if (d == 0 & n == 1) return(NA)
   n1 <- strsplit(as.character(d), "")[[1]]
   n1 <- length(n1)
-  if (n1>1) stop("d must have only 1 digit. This function evaluates 1 digit at position n")
-  if (!is.numeric(d)) stop ("d must be numeric or integer")
-  if (!is.numeric(n)) stop ("n must be numeric or integer")
-  if (n<1) stop ("n must be greater than 1")
-  if (n==1) return(log10(1+1/d))
-  sum = 0
-  k <- 10^(n-2)
-  j <- (10^(n-1))-1
-  soma = 0
-  for (i in k:j){
-    soma <- soma + log10(1 + 1/(10*i + d))
-  }
-  soma
+  if (n1 > 1) stop("d must have only 1 digit. This function evaluates 1 digit at position n")
+  if (!is.numeric(d)) stop("d must be numeric or integer")
+  if (!is.numeric(n)) stop("n must be numeric or integer")
+  if (n < 1) stop("n must be greater than 1")
+  if (n == 1) return(log10(1 + 1/d))
+  if (n >= 9) return(0.1)
+  k <- 10^(n - 2)
+  j <- (10^(n - 1)) - 1
+  i <- k:j
+  sum <- sum(log10(1 + 1/(10*i + d)))
+  return(sum)
 }
 
-generate.benford.digits <- function (number.of.digits) {
+generate.benford.digits <- function(number.of.digits) {
   number.of.digits <- as.integer(number.of.digits)
-  begin <- 10^(number.of.digits-1); ends <- 10^(number.of.digits)-1;
+  begin <- 10^(number.of.digits - 1)
+  ends <- 10^(number.of.digits) - 1
   benford.digits <- begin:ends
   return(benford.digits)
 }
 
-generate.benford.distribution <- function (benford.digits) {
+generate.benford.distribution <- function(benford.digits) {
   benford.dist <- sapply(benford.digits, p.these.digits)
   return(benford.dist)
 }
 
-generate.empirical.distribution <- function (data, number.of.digits,sign, second.order=FALSE, benford.digits, discrete=TRUE, round=3){
+generate.empirical.distribution <- function(data, number.of.digits,sign, second.order = FALSE, benford.digits, discrete = TRUE, round = 3){
    x <- NULL
    v <- NULL
-   data.frame <- extract.digits(data, number.of.digits, sign, second.order, discrete=discrete, round=round)
+   data.frame <- extract.digits(data, number.of.digits, sign, second.order, discrete = discrete, round = round)
    n <- length(data.frame$data.digits)
-#    dist.freq <- table(c(data.frame$data.digits, benford.digits))-1
-#   require(data.table)
-   DF<- data.table(x=c(data.frame$data.digits, benford.digits),
-                   v=c(data.frame$data.digits, benford.digits) )
-   DFcount <- DF[,length(x)-1, by=v][order(v)]
+   DF <- data.table(x = c(data.frame$data.digits, benford.digits),
+                    v = c(data.frame$data.digits, benford.digits) )
+   DFcount <- DF[ ,length(x) - 1, by = v][order(v)]
    dist.freq <- DFcount$V1
    dist <- dist.freq/n
-   return(list(
-     data= data.frame$data, 
-     data.digits= data.frame$data.digits, 
-     dist = dist, 
-     dist.freq=dist.freq))
+   results <- list(data = data.frame$data, 
+                   data.digits = data.frame$data.digits, 
+                   dist = dist, 
+                   dist.freq = dist.freq)
+   return(results)
 }
 
-extract.mantissa <- function (positives) {
+extract.mantissa <- function(positives) {
   log <- log10(positives)
-  log[log<0] <- log[log<0]+as.integer(log[log<0])*(-1)+1
+  log[log < 0] <- log[log < 0] + as.integer(log[log < 0])*(-1) + 1
   mantissa <- log - trunc(log)
+  return(mantissa)
 }
 
-generate.summation <- function (benford.digits, data, data.digits) {
-x<- NULL
-v <- NULL
-#   table <-aggregate(data,by=list(data.digits), sum) 
-#   names(table)<- c("digits", "value")
-#   require(data.table)
-  table <- data.table(x=data.digits, v=data)
-  table <- table[, sum(v), by=x][order(x)]
+generate.summation <- function(benford.digits, data, data.digits) {
+  x <- NULL
+  v <- NULL
+  table <- data.table(x = data.digits, v = data)
+  table <- table[, sum(v), by = x][order(x)]
   setnames(table,c("x", "V1"), c("digits", "value"))
   
-  if(length(which(!benford.digits %in% table$digits))!=0){
-  add <- data.frame(digits=which(!benford.digits %in% table$digits), value=0)
-  add
-  table<-rbind(table, add)
-  table<-table[order(table$digits),]
+  if (length(which(!benford.digits %in% table$digits))!=0) {
+    add <- data.frame(digits=which(!benford.digits %in% table$digits), value=0)
+    add
+    table<-rbind(table, add)
+    table<-table[order(table$digits),]
   }
   
   summation <- table$value
@@ -186,15 +193,12 @@ v <- NULL
 
 #### Basic Calculations ####
 
-excess.kurtosis <- function (x) {
+excess.kurtosis <- function(x) 
+  (mean((x - mean(x))^4)/(mean((x - mean(x))^2)^2)) - 3
   
-  
-  (mean((x - mean(x))^4)/(mean((x - mean(x))^2)^2))-3}
 
-skewness <- function (x) {
-  
-  
-  (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))}
+skewness <- function(x)
+  (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
 
 #### plot ####
 
