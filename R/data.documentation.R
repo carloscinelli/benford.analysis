@@ -33,14 +33,17 @@ NULL
 #' Perimeter of lakes arround the world
 #'
 #' A dataset of the perimeter of the lakes arround the water from
-#' the global lakes and wetlands database (GLWD).
+#' the global lakes and wetlands database (GLWD) <http://www.worldwildlife.org/pages/global-lakes-and-wetlands-database>.
 #'
 #'
 #'@docType data
 #'@keywords dataset
 #'@format A data frame with 248607 rows and 1 variable.
 #'@name lakes.perimeter
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'@references Lehner, B. and Döll, P. (2004). Development and validation of a global database of lakes, reservoirs and wetlands. Journal of Hydrology, 296(1), pp.1-22.
+#'
+#'Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'
 NULL
 
 
