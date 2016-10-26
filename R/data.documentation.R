@@ -40,6 +40,10 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 248607 rows and 1 variable.
 #'@name lakes.perimeter
+#'@encoding UTF-8
+#'@description A dataset of the perimeter of the lakes arround the water from
+#' the global lakes and wetlands database (GLWD)
+#' <http://www.worldwildlife.org/pages/global-lakes-and-wetlands-database>.
 #'@references Lehner, B. and Döll, P. (2004). Development and validation of a global database of lakes, reservoirs and wetlands. Journal of Hydrology, 296(1), pp.1-22.
 #'
 #'Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
