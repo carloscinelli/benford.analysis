@@ -7,11 +7,6 @@
 \title{Perimeter of lakes arround the world}
 \format{A data frame with 248607 rows and 1 variable.}
 \description{
-A dataset of the perimeter of the lakes around the water from
-the global lakes and wetlands database (GLWD)
-<http://www.worldwildlife.org/pages/global-lakes-and-wetlands-database>.
-}
-\details{
 A dataset of the perimeter of the lakes arround the water from
 the global lakes and wetlands database (GLWD) <http://www.worldwildlife.org/pages/global-lakes-and-wetlands-database>.
 }
