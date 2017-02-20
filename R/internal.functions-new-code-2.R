@@ -1,6 +1,7 @@
 #### Benford ####
 
 DF <- function(data){
+  data <- data[data >= 10]
   collapsed <- 10 * (data) / 10^trunc(log10(data))
   DF <- (mean(collapsed) - 39.0865) / (39.0685)
   DF * 100
@@ -210,11 +211,10 @@ generate.summation <- function(benford.digits, data, data.digits) {
   table <- table[, sum(v), by = x][order(x)]
   setnames(table,c("x", "V1"), c("digits", "value"))
   
-  if (length(which(!benford.digits %in% table$digits))!=0) {
-    add <- data.frame(digits=which(!benford.digits %in% table$digits), value=0)
-    add
-    table<-rbind(table, add)
-    table<-table[order(table$digits),]
+  if (length(which(!benford.digits %in% table$digits)) != 0) {
+    add <- data.frame(digits = which(!benford.digits %in% table$digits), value = 0)
+    table <- rbind(table, add)
+    table <- table[order(table$digits),]
   }
   
   summation <- table$value
@@ -234,85 +234,104 @@ skewness <- function(x)
 
 #### plot ####
 
-plotting.data.vs.benford <- function (x, ...) {
+plotting.data.vs.benford <- function(x, ...) {
   
-  xmarks <- barplot(x[["bfd"]]$data.dist.freq, col="lightblue", 
-                    main= "Digits Distribution",
-                    xlab = "Digits", ylab="Freq",
+  xmarks <- barplot(x[["bfd"]]$data.dist.freq, 
+                    col = "lightblue", 
+                    main = "Digits Distribution",
+                    xlab = "Digits", ylab = "Freq",
                     ylim = c(0,max(c(x[["bfd"]]$data.dist.freq, x[["bfd"]]$benford.dist.freq))*1.1))
   
-  axis(1, at=xmarks, labels=x[["bfd"]]$digits)
+  axis(1, at = xmarks, labels = x[["bfd"]]$digits)
   
-  lines(xmarks, x[["bfd"]]$benford.dist.freq, lty=2, lwd=2, col="red")
+  lines(xmarks, x[["bfd"]]$benford.dist.freq, lty = 2, lwd = 2, col = "red")
   
-#   legend("topright", lty=c(1,2), lwd=2, col=c("lightblue", "red"), 
-#          legend=c("Data", "Benford"))
+  #   legend("topright", lty=c(1,2), lwd=2, col=c("lightblue", "red"), 
+  #          legend=c("Data", "Benford"))
 }
 
-plotting.second.order <- function (x, ...) {
-  y<-x[["bfd"]]$benford.so.dist.freq
-  xmarks <- barplot(x[["bfd"]]$data.second.order.dist.freq, col="lightblue", 
-                    main= "Digits Distribution \nSecond Order Test",
-                    xlab = "Digits", ylab="Freq",
+plotting.second.order <- function(x, ...) {
+  y <- x[["bfd"]]$benford.so.dist.freq
+  xmarks <- barplot(x[["bfd"]]$data.second.order.dist.freq, 
+                    col = "lightblue", 
+                    main = "Digits Distribution \nSecond Order Test",
+                    xlab = "Digits", ylab = "Freq",
                     ylim = c(0,max(c(x[["bfd"]]$data.second.order.dist.freq, y))*1.1)) 
   
-  axis(1, at=xmarks, labels=x[["bfd"]]$digits)
+  axis(1, at = xmarks, labels = x[["bfd"]]$digits)
   
-  lines(xmarks, y, lty=2, lwd=2, col="red")
+  lines(xmarks, y, lty = 2, lwd = 2, col = "red")
   
-#   legend("topright", lty=c(1,2), lwd=2, col=c("lightblue", "red"), 
-#          legend=c("Data", "Benford"))
+  #   legend("topright", lty=c(1,2), lwd=2, col=c("lightblue", "red"), 
+  #          legend=c("Data", "Benford"))
 }
 
-plotting.summation <- function (x, ...) {
-  xmarks<-barplot(x[["bfd"]]$data.summation, col="lightblue", 
-                  main="Summation Distribution by digits",
-                  xlab="Digits", ylab="Summation",
-                  ylim = c(0,max(x[["bfd"]]$data.summation))*1.1)
+plotting.summation <- function(x, ...) {
+  xmarks <- barplot(x[["bfd"]]$data.summation, 
+                    col = "lightblue", 
+                    main = "Summation Distribution by digits",
+                    xlab = "Digits", ylab = "Summation",
+                    ylim = c(0,max(x[["bfd"]]$data.summation))*1.1)
   
-  axis(1, at=xmarks, labels=x[["bfd"]]$digits)
+  axis(1, at = xmarks, labels = x[["bfd"]]$digits)
   
-  lines(x=xmarks, y=rep(mean(x[["bfd"]]$data.summation), length(xmarks)), col="red", lty=2)
+  lines(x = xmarks, y = rep(mean(x[["bfd"]]$data.summation), length(xmarks)), col = "red", lty = 2)
 }
 
-plotting.ordered.mantissa <- function (x, ...) {
+plotting.ordered.mantissa <- function(x, ...) {
   
-  plot(sort(x[["data"]]$data.mantissa), pch=".",col="blue", main ="Ordered Mantissa",
-       xlab="Ordered Observation",
-       ylab= "Mantissa")
+  plot(sort(x[["data"]]$data.mantissa), 
+       pch = ".",
+       col = "blue", 
+       main = "Ordered Mantissa",
+       xlab = "Ordered Observation",
+       ylab = "Mantissa")
   
-  abline(a=0, b=1/length(x[["data"]]$data.mantissa), col="red", lty=2)
+  abline(a = 0, b = 1/length(x[["data"]]$data.mantissa), col = "red", lty = 2)
 }
 
-plotting.chi_squared <- function (x, ...) {
+plotting.chi_squared <- function(x, ...) {
   
-  plot(x[["bfd"]]$digits, x[["bfd"]]$squared.diff, pch="x", col="blue", 
-       xlab="Digits",
-       ylab="Chi-squared", main= "Chi-Squared Difference",xaxt="n")
+  plot(x[["bfd"]]$digits, x[["bfd"]]$squared.diff, 
+       pch = "x", col = "blue", 
+       xlab = "Digits",
+       ylab = "Chi-squared", 
+       main = "Chi-Squared Difference",
+       xaxt = "n")
   
-  axis(1, at= x[["bfd"]]$digits)
+  axis(1, at = x[["bfd"]]$digits)
 }
 
-plotting.abs.diff <- function (x, ...) {
-  plot(x[["bfd"]]$digits, x[["bfd"]]$absolute.diff, pch="x", col="blue", xlab="Digits",
-       ylab="Absolute Difference", 
-       main= "Absolute Difference",xaxt="n")
+plotting.abs.diff <- function(x, ...) {
+  plot(x[["bfd"]]$digits, x[["bfd"]]$absolute.diff, 
+       pch = "x", 
+       col = "blue", 
+       xlab = "Digits",
+       ylab = "Absolute Difference", 
+       main = "Absolute Difference",
+       xaxt = "n")
   
-  axis(1, at= x[["bfd"]]$digits)
+  axis(1, at = x[["bfd"]]$digits)
 }
 
-plotting.ex.summation <- function (x, ...) {
-  plot(x[["bfd"]]$digits, x[["bfd"]]$abs.excess.summation, pch="x", col="blue", 
-       xlab="Digits",
-       ylab="Absolute Excess Summation", 
-       main= "Summation Difference",xaxt="n")
-  axis(1, at= x[["bfd"]]$digits)
+plotting.ex.summation <- function(x, ...) {
+  plot(x[["bfd"]]$digits, x[["bfd"]]$abs.excess.summation, 
+       pch = "x", 
+       col = "blue", 
+       xlab = "Digits",
+       ylab = "Absolute Excess Summation", 
+       main = "Summation Difference",
+       xaxt = "n")
+  axis(1, at = x[["bfd"]]$digits)
 }
 
-plotting.legend <- function (x) {
-  plot(1, type = "n", axes=FALSE, xlab="", ylab="", main= paste("Legend \n Dataset:", x[["info"]]$data.name))
+plotting.legend <- function(x) {
+  plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = paste("Legend \n Dataset:", x[["info"]]$data.name))
   plot_colors <- c("lightblue","blue","red")
-  legend(x = "top",inset = 0,
+  legend(x = "top",
+         inset = 0,
          legend = c("data", "data", "benford"), 
-         col=plot_colors, lwd=2, lty=c(1,1,2))
+         col = plot_colors, 
+         lwd = 2, 
+         lty = c(1,1,2))
 }
