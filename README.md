@@ -48,7 +48,7 @@ Let's check the main plots of the analysis:
 plot(bfd.cp)
 ```
 
-![](README-unnamed-chunk-6-1.png)
+![](tools/unnamed-chunk-6-1.png)
 
 The original data is in blue and the expected frequency according to Benford's law is in red. For instance, in our example, the first plot shows that the data do have a tendency to follow Benford's law, but also that there is a clear discrepancy at 50.
 
@@ -96,7 +96,7 @@ bfd.cp
 #> L2 = 0.0039958, df = 2, p-value < 2.2e-16
 #> 
 #> Mean Absolute Deviation: 0.002336614
-#> Distortion Factor: 0.5749073
+#> Distortion Factor: -1.065467
 #> 
 #> Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!
 ```
