@@ -32,6 +32,10 @@ test_that("Corporate Payment 2 digits, only >=10",
             # check if object did not change
             expect_that(bfd2, equals(benford(cp, 2)))
             
+            # check if no warnings 
+            # maybe in the future include warning if the data seems discrete
+            expect_silent(benford(corporate.payment$Amount, discrete = F))
+            
           }
 )
 
