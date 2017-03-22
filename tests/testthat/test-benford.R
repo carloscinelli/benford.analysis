@@ -99,7 +99,7 @@ test_that("Exact printing, this sould not be tested on CRAN!",
             bfd <- benford(data, sign = "both", discrete = FALSE)
             print <- capture.output(print(bfd))
             test_print <- c("", "Benford object:", " ", "Data: data ", "Number of observations used = 1000 ", 
-                            "Number of obs. for second order = 999 ", "First digits analysed = 2", 
+                            "Number of obs. for second order = 995 ", "First digits analysed = 2", 
                             "", "Mantissa: ", "", "   Statistic  Value", "        Mean  0.476", 
                             "         Var  0.084", " Ex.Kurtosis -1.205", "    Skewness  0.076", 
                             "", "", "The 5 largest deviations: ", "", "  digits absolute.diff", 
@@ -107,7 +107,7 @@ test_that("Exact printing, this sould not be tested on CRAN!",
                             "4     11          9.21", "5     15          8.03", "", "Stats:", 
                             "", "\tPearson's Chi-squared test", "", "data:  data", "X-squared = 83.095, df = 89, p-value = 0.6564", 
                             "", "", "\tMantissa Arc Test", "", "data:  data", "L2 = 0.0013529, df = 2, p-value = 0.2585", 
-                            "", "Mean Absolute Deviation: 0.002609809", "Distortion Factor: -20.40362", 
+                            "", "Mean Absolute Deviation: 0.002609809", "Distortion Factor: -6.228274", 
                             "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
             expect_that(print, equals(test_print))
           }
