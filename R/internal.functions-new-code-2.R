@@ -98,7 +98,7 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
     positives <-  if (discrete) {
       round(second - first, number.of.digits + round)
     } else {
-      second - first
+      round(second - first, 8)
     } 
     
     positives <- positives[positives > 0]
