@@ -24,4 +24,3 @@ data(corporate.payment) #gets data
 cp <- benford(corporate.payment$Amount) #generates benford object
 suspectsTable(cp) 
 }
-

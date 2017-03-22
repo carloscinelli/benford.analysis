@@ -21,4 +21,3 @@ data(corporate.payment)
 cp <- benford(corporate.payment$Amount) #generates benford object
 getData(cp) # equivalent to cp$data
 }
-

@@ -4,6 +4,7 @@
 \name{benford.analysis}
 \alias{benford.analysis}
 \alias{benford.analysis-package}
+\alias{benford.analysis-package}
 \title{Benford Analysis for data validation and forensic analytics}
 \description{
 The Benford Analysis package provides tools that make it easier to
@@ -55,4 +56,3 @@ Alexander, J. (2009). Remarks on the use of Benford's Law. Working Paper, Case W
 \cr\cr Nigrini, M. J. (2011). Forensic Analyticis: Methods and Techniques for Forensic Accounting Investigations.Wiley and Sons: New Jersey.
 \cr\cr
 }
-

@@ -37,4 +37,3 @@ It extracts the leading digits from the data.
 This function is used by the main function of the package \code{\link{benford}} to extract the 
 leading digits of the data.
 }
-

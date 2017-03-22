@@ -24,4 +24,3 @@ Plots the Benford object.
 \description{
 The \code{plot} method for "Benford" objects.
 }
-

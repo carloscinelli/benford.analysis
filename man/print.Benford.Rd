@@ -19,4 +19,3 @@ Prints the Benford object.
 \description{
 The \code{print} method for "Benford" objects.
 }
-

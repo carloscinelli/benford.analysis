@@ -28,4 +28,3 @@ data(lakes.perimeter) #gets data
 lk <- benford(lakes.perimeter[,1]) #generates benford object
 suspects <- getSuspects(lk, lakes.perimeter)
 }
-

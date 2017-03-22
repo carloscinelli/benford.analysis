@@ -21,4 +21,3 @@ data(corporate.payment) #gets data
 cp <- benford(corporate.payment$Amount) #generates benford object
 dfactor(cp) # equivalent to cp$distortion.factor
 }
-

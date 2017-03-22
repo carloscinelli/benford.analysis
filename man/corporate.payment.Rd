@@ -13,4 +13,3 @@ utility company.
 Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
 }
 \keyword{dataset}
-

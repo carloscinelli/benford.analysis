@@ -21,4 +21,3 @@ data(corporate.payment) #gets data
 cp <- benford(corporate.payment$Amount) #generates benford object
 marc(cp) # equivalent to cp$stats$mantissa.arc.test
 }
-

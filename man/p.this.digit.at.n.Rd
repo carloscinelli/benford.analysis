@@ -26,4 +26,3 @@ names(matrix) <- paste0("n=",1:4)
 rownames(matrix) <- paste0("d=",0:9)
 matrix # a table with the probabilities of digits 0 to 9 in positions 1 to 4.
 }
-

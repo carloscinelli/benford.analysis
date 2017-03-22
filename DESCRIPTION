@@ -14,4 +14,4 @@ Suggests:
     testthat
 URL: http://github.com/carloscinelli/benford.analysis
 BugReports: http://github.com/carloscinelli/benford.analysis/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
