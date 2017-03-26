@@ -6,6 +6,7 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/carloscinelli/benford.analysis.svg?branch=master)](https://travis-ci.org/carloscinelli/benford.analysis)
+[![Build status](https://ci.appveyor.com/api/projects/status/igyn1737s67jqqnb/branch/master?svg=true)](https://ci.appveyor.com/project/carloscinelli/benford-analysis/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/carloscinelli/benford.analysis/master.svg)](https://codecov.io/github/carloscinelli/benford.analysis?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/benford.analysis)](https://cran.r-project.org/package=benford.analysis) 
 ![](http://cranlogs.r-pkg.org/badges/benford.analysis)
