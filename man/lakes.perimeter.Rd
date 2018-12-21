@@ -4,7 +4,7 @@
 \encoding{UTF-8}
 \name{lakes.perimeter}
 \alias{lakes.perimeter}
-\title{Perimeter of lakes arround the world}
+\title{Perimeter of lakes around the world}
 \format{A data frame with 248607 rows and 1 variable.}
 \description{
 A dataset of the perimeter of the lakes arround the water from

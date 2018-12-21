@@ -52,6 +52,6 @@ Alexander, J. (2009). Remarks on the use of Benford's Law. Working Paper, Case W
 \cr\cr Berger, A. and Hill, T. (2011). A basic theory of Benford's Law. Probability Surveys, 8, 1-126.
 \cr\cr Hill, T. (1995). A statistical derivation of the significant-digit law. Statistical Science, 10(4), 354-363.
 \cr\cr Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
-\cr\cr Nigrini, M. J. (2011). Forensic Analyticis: Methods and Techniques for Forensic Accounting Investigations.Wiley and Sons: New Jersey.
+\cr\cr Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations.Wiley and Sons: New Jersey.
 \cr\cr
 }

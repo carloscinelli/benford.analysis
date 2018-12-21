@@ -10,7 +10,7 @@ extract.digits(data, number.of.digits = 2,
 \arguments{
 \item{data}{a numeric vector.}
 
-\item{number.of.digits}{how many first digits to analyse .}
+\item{number.of.digits}{how many first digits to analyze .}
 
 \item{sign}{The default value for sign is "positive" and it analyzes only data greater than zero. 
 There are also the options "negative" and "both" that will analyze only negative values or both positive and negative values of the data,

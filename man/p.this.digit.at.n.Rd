@@ -7,7 +7,7 @@
 p.this.digit.at.n(d,n)
 }
 \arguments{
-\item{d}{a digit from 0 to 9 (except at position n=1, where d cannot be 0, it wil give you NA).}
+\item{d}{a digit from 0 to 9 (except at position n=1, where d cannot be 0, it will give you NA).}
 
 \item{n}{the nth position.}
 }

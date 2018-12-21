@@ -16,7 +16,7 @@ MAD.conformity(MAD = NULL, digits.used = c("First Digit",
 A list with the MAD, digits.used and the conformity level.
 }
 \description{
-This function checks the MAD agains the confomity criteria proposed by Nigrini (2012).
+This function checks the MAD against the conformity criteria proposed by Nigrini (2012).
 }
 \references{
 Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.

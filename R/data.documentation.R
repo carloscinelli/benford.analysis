@@ -30,7 +30,7 @@ NULL
 
 #### Lake Data ####
 
-#' Perimeter of lakes arround the world
+#' Perimeter of lakes around the world
 #'
 #' A dataset of the perimeter of the lakes arround the water from
 #' the global lakes and wetlands database (GLWD) <http://www.worldwildlife.org/pages/global-lakes-and-wetlands-database>.
@@ -65,9 +65,9 @@ NULL
 
 #### Sino Forest ####
 
-#' Financial Statemens of Sino Forest Corporation's 2010 Report
+#' Financial Statements of Sino Forest Corporation's 2010 Report
 #'
-#' Financial Statemens numbers of Sino Forest Corporation's 2010 Report.
+#' Financial Statements numbers of Sino Forest Corporation's 2010 Report.
 #'
 #'
 #'@docType data

@@ -6,7 +6,7 @@
 #' suspectsTable(bfd, by="absolute.diff")
 #' @param bfd an object of class "Benford". See \code{\link{benford}}.
 #' @param by a character string selecting how to order the digits.It can be
-#' 'abs.excess.summation','difference','squared.diff' or'absolute.diff'.
+#' 'abs.excess.summation','difference','squared.diff' or 'absolute.diff'.
 #' @return A data frame with 2 variables: digits and the group chosen in \code{by}.
 #' @examples
 #' data(corporate.payment) #gets data 
@@ -33,7 +33,7 @@ suspectsTable<- function(bfd, by="absolute.diff"){
 #' @param data the original data used for the benford analysis.
 #' @param how.many how many groups of digits to get.
 #' @param by a character string selecting how to order the digits.It can be
-#' 'abs.excess.summation','difference','squared.diff' or'absolute.diff'.
+#' 'abs.excess.summation','difference','squared.diff' or 'absolute.diff'.
 #' @return The 'suspicious' observations from the original data.
 #' @examples 
 #' data(lakes.perimeter) #gets data
@@ -170,7 +170,7 @@ chisq <- function(bfd){
 #' 
 #' marc(bfd)
 #' @param bfd an object of class "Benford". See \code{\link{benford}}.
-#' @return A list with class "htest" containing the results of the Matissa Arc test.
+#' @return A list with class "htest" containing the results of the Mantissa Arc test.
 #' @examples
 #' data(corporate.payment) #gets data 
 #' cp <- benford(corporate.payment$Amount) #generates benford object

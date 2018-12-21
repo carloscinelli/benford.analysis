@@ -10,7 +10,7 @@ marc(bfd)
 \item{bfd}{an object of class "Benford". See \code{\link{benford}}.}
 }
 \value{
-A list with class "htest" containing the results of the Matissa Arc test.
+A list with class "htest" containing the results of the Mantissa Arc test.
 }
 \description{
 It gets the Mantissa Arc Test of a Benford object.

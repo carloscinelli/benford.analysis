@@ -54,7 +54,7 @@ chisq.test.bfd <- function(squared.diff, data.name){
 
 ##' MAD conformity to Benford's Law using the MAD
 ##' 
-##' This function checks the MAD agains the confomity criteria proposed by Nigrini (2012).
+##' This function checks the MAD against the conformity criteria proposed by Nigrini (2012).
 ##' 
 ##' @param MAD The mean absolute deviation, as computed in the function \code{\link{benford}}
 ##' @param digits.used How many digits used in the analysis.
@@ -95,7 +95,7 @@ MAD.conformity <- 	function(MAD = NULL,
 #' extract.digits(data, number.of.digits = 2, 
 #'                sign="positive", second.order = FALSE, discrete=TRUE, round=3)
 #' @param data a numeric vector. 
-#' @param number.of.digits how many first digits to analyse .
+#' @param number.of.digits how many first digits to analyze .
 #' @param sign  The default value for sign is "positive" and it analyzes only data greater than zero. 
 #' There are also the options "negative" and "both" that will analyze only negative values or both positive and negative values of the data,
 #' respectively. For large datasets with both positive and negative numbers, 
@@ -171,7 +171,7 @@ p.these.digits <- function(d){
 #' @usage
 #' 
 #' p.this.digit.at.n(d,n)
-#' @param d a digit from 0 to 9 (except at position n=1, where d cannot be 0, it wil give you NA).
+#' @param d a digit from 0 to 9 (except at position n=1, where d cannot be 0, it will give you NA).
 #' @param n the nth position.
 #' @return The probability of d at position n.
 #' @examples

@@ -45,7 +45,7 @@
 ##' \cr\cr Berger, A. and Hill, T. (2011). A basic theory of Benford's Law. Probability Surveys, 8, 1-126.
 ##' \cr\cr Hill, T. (1995). A statistical derivation of the significant-digit law. Statistical Science, 10(4), 354-363.
 ##' \cr\cr Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
-##' \cr\cr Nigrini, M. J. (2011). Forensic Analyticis: Methods and Techniques for Forensic Accounting Investigations.Wiley and Sons: New Jersey.
+##' \cr\cr Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations.Wiley and Sons: New Jersey.
 ##' \cr\cr 
 ##' 
 ##' @docType package
@@ -63,14 +63,14 @@ NULL
 ##' @usage
 ##' benford(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3)
 ##' @param data a numeric vector.
-##' @param number.of.digits how many first digits to analyse .
+##' @param number.of.digits how many first digits to analyze.
 ##' @param sign  The default value for sign is "positive" and it analyzes only data greater than zero. 
 ##' There are also the options "negative" and "both" that will analyze only negative values or both positive and negative values of the data,
 ##' respectively. For large datasets with both positive and negative numbers, 
 ##' it is usually recommended to perform a separate analysis for each group,
 ##' for the incentives to manipulate the numbers are usually different.
 ##' @param discrete most real data - like population numbers or accounting data - are discrete, so 
-##' the default is TRUE. This paramater sets rounding to the differences of the ordered data to avoid floating point number
+##' the default is TRUE. This parameter sets rounding to the differences of the ordered data to avoid floating point number
 ##' errors in the second order distribution, that usually occurs when data is discrete
 ##' and the ordered numbers are very close to each other. If your data is continuous
 ##' (like a simulated lognormal) you should run with discrete = FALSE. 
@@ -82,7 +82,7 @@ NULL
 ##' \item data.name: the name of the data used.
 ##' \item n: the number of observations used.
 ##' \item n.second.order: the number of observations used for second order analysis.
-##' \item number.of.digits: the number of first digits analysed.
+##' \item number.of.digits: the number of first digits analyzed.
 ##' }}
 ##' 
 ##' \item{data}{a data frame with: \itemize{
@@ -98,7 +98,7 @@ NULL
 ##' }}
 ##' 
 ##' \item{bfd}{a data frame with: \itemize{
-##' \item digits: the groups of digits analysed.
+##' \item digits: the groups of digits analyzed.
 ##' \item data.dist: the distribution of the first digits of the data.
 ##' \item data.second.order.dist: the distribution of the first digits of the second order analysis.
 ##' \item benford.dist: the theoretical benford distribution.

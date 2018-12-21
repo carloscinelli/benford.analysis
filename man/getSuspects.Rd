@@ -12,7 +12,7 @@ getSuspects(bfd, data, by="absolute.diff", how.many=2)
 \item{data}{the original data used for the benford analysis.}
 
 \item{by}{a character string selecting how to order the digits.It can be
-'abs.excess.summation','difference','squared.diff' or'absolute.diff'.}
+'abs.excess.summation','difference','squared.diff' or 'absolute.diff'.}
 
 \item{how.many}{how many groups of digits to get.}
 }

@@ -10,7 +10,7 @@ suspectsTable(bfd, by="absolute.diff")
 \item{bfd}{an object of class "Benford". See \code{\link{benford}}.}
 
 \item{by}{a character string selecting how to order the digits.It can be
-'abs.excess.summation','difference','squared.diff' or'absolute.diff'.}
+'abs.excess.summation','difference','squared.diff' or 'absolute.diff'.}
 }
 \value{
 A data frame with 2 variables: digits and the group chosen in \code{by}.
