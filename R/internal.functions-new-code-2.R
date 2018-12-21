@@ -51,6 +51,72 @@ chisq.test.bfd <- function(squared.diff, data.name){
   return(chisq.bfd)
 }
 
+# function to determine conformity to Benford using the MAD
+# Criteria based on Nigrini (2012) - Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection
+MAD.conformity <- 	function(MAD.Value = NULL,
+							 digits.used = c(  "First Digit"
+                                             , "Second Digit"
+                                             , "First-Two Digits"
+                                             , "First-Three Digits")){
+  Conformity.Levels <- c("Close conformity"
+                         , "Acceptable conformity"
+                         , "Marginally acceptable conformity"
+                         , "Nonconformity")
+  
+  if(digits.used == "First Digit"){
+    mad.intervals <- c(0.000, 0.006, 0.012, 0.015)
+    mad.category <- findInterval(MAD.Value, mad.intervals)
+    if(mad.category == 1){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 2){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 3){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 4){
+      my.Conformity <- Conformity.Levels[mad.category]
+    }
+  } else if(digits.used == "Second Digit"){
+    mad.intervals <- c(0.000, 0.008, 0.010, 0.011)
+    mad.category <- findInterval(MAD.Value, mad.intervals)
+    if(mad.category == 1){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 2){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 3){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 4){
+      my.Conformity <- Conformity.Levels[mad.category]
+    }
+  } else if(digits.used == "First-Two Digits"){
+    mad.intervals <- c(0.000, 0.0012, 0.018, 0.0022)
+    mad.category <- findInterval(MAD.Value, mad.intervals)
+    if(mad.category == 1){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 2){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 3){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 4){
+      my.Conformity <- Conformity.Levels[mad.category]
+    }
+  } else if(digits.used == "First-Three Digits"){
+    mad.intervals <- c(0.000, 0.00036, 0.00044, 0.00050)
+    mad.category <- findInterval(MAD.Value, mad.intervals)
+    if(mad.category == 1){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 2){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 3){
+      my.Conformity <- Conformity.Levels[mad.category]
+    } else if(mad.category == 4){
+      my.Conformity <- Conformity.Levels[mad.category]
+    }
+  }
+  return(list(MAD.Value
+              , digits.used
+              , my.Conformity))
+}
+
 #' @title Extracts the leading digits from the data
 #' @description It extracts the leading digits from the data.
 #' 
