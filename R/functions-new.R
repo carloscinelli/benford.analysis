@@ -166,6 +166,17 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
   ### MAD
   mean.abs.dev <- sum(abs(empirical.distribution$dist - benford.dist)/(length(benford.dist)))
   
+  if (number.of.digits > 3) {
+    MAD.conformity <- NA
+  } else {
+    digits.used <- c("First Digit", "First-Two Digits", "First-Three Digits")[number.of.digits]  
+    MAD.conformity <- MAD.conformity(MAD = mean.abs.dev, digits.used)$conformity
+  }
+  
+  
+    
+  
+  
   ### Summation
   summation <- generate.summation(benford.digits,empirical.distribution$data, empirical.distribution$data.digits)
   abs.excess.summation <- abs(summation - mean(summation))
@@ -226,6 +237,8 @@ benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE
                                                   ek.mantissa = ek.mantissa,
                                                   sk.mantissa = sk.mantissa)),
                  MAD = mean.abs.dev,
+                 
+                 MAD.conformity = MAD.conformity,
                  
                  distortion.factor = distortion.factor,
                  
@@ -362,7 +375,9 @@ print.Benford <- function(x,how.many=5,...){
   cat("Stats:\n")
   print(x[["stats"]]$chisq)
   print(x[["stats"]]$mantissa.arc.test)
-  cat("Mean Absolute Deviation:",x[["MAD"]])
+  cat("Mean Absolute Deviation (MAD):",x[["MAD"]])
+  if (!is.na(x[["MAD.conformity"]])) 
+    cat("\nMAD Conformity - Nigrini (2012):", x[["MAD.conformity"]])
   cat("\nDistortion Factor:", x[["distortion.factor"]])
   cat("\n\nRemember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
   values <- NULL
