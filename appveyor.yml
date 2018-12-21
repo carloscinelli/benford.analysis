@@ -29,8 +29,6 @@ environment:
 
   - R_VERSION: stable
 
-  - R_VERSION: patched
-
   - R_VERSION: oldrel
   
 build_script:
