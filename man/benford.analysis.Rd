@@ -4,7 +4,6 @@
 \name{benford.analysis}
 \alias{benford.analysis}
 \alias{benford.analysis-package}
-\alias{benford.analysis-package}
 \title{Benford Analysis for data validation and forensic analytics}
 \description{
 The Benford Analysis package provides tools that make it easier to
