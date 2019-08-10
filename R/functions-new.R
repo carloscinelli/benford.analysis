@@ -75,6 +75,7 @@ NULL
 ##' and the ordered numbers are very close to each other. If your data is continuous
 ##' (like a simulated lognormal) you should run with discrete = FALSE. 
 ##' @param round it defines the number of digits that the rounding will use if discrete = TRUE.
+##' @param data.name the name of your data to show. If \code{NULL} (the default), the name of the passed object will be used.
 ##' @return An object of class Benford containing the results of the analysis. It is a list of 
 ##' eight objects, namely:
 ##' 
@@ -135,9 +136,11 @@ NULL
 ##' 
 ##' @export
 
-benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3){
+benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3, data.name = NULL){
   
-  data.name <- as.character(deparse(substitute(data)))
+  if (is.null(data.name)) {
+    data.name <- as.character(deparse(substitute(data)))
+  }
   
   benford.digits <- generate.benford.digits(number.of.digits)
     

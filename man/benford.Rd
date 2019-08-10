@@ -24,6 +24,8 @@ and the ordered numbers are very close to each other. If your data is continuous
 (like a simulated lognormal) you should run with discrete = FALSE.}
 
 \item{round}{it defines the number of digits that the rounding will use if discrete = TRUE.}
+
+\item{data.name}{the name of your data to show. If \code{NULL} (the default), the name of the passed object will be used.}
 }
 \value{
 An object of class Benford containing the results of the analysis. It is a list of 
