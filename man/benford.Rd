@@ -4,7 +4,8 @@
 \alias{benford}
 \title{Benford Analysis of a dataset}
 \usage{
-benford(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3)
+benford(data, number.of.digits = 2, sign = "positive",
+  discrete = TRUE, round = 3, data.name = NULL)
 }
 \arguments{
 \item{data}{a numeric vector.}

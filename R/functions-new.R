@@ -60,8 +60,6 @@ NULL
 ##' to identify suspicious data that need further verification. 
 ##' 
 ##' For a more complete example, see the package help at \link{benford.analysis}.
-##' @usage
-##' benford(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3)
 ##' @param data a numeric vector.
 ##' @param number.of.digits how many first digits to analyze.
 ##' @param sign  The default value for sign is "positive" and it analyzes only data greater than zero. 
@@ -135,8 +133,10 @@ NULL
 ##' plot(bfd.cp) #plots
 ##' 
 ##' @export
-
-benford <- function(data, number.of.digits = 2, sign = "positive", discrete=TRUE, round=3, data.name = NULL){
+benford <- function(data, number.of.digits = 2, 
+                    sign = "positive", 
+                    discrete=TRUE, round=3, 
+                    data.name = NULL){
   
   if (is.null(data.name)) {
     data.name <- as.character(deparse(substitute(data)))
