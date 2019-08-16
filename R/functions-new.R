@@ -281,14 +281,14 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   
   except <- tolower(except)
   
-  if (!any(except %in% c("digits", "second order", "summation",
+  if (!any(except %in% c("digits", "rootogram digits", "second order", "rootogram second order", "summation",
                      "mantissa", "chi squared", "abs diff","none", "legend"))) {
     stop("Invalid except name. Type ?plot.Benford for help.")
     }
   
   if (multiple) {
     
-    nGraphics <- 8 - length(except)
+    nGraphics <- 10 - length(except)
     
     if (nGraphics < 4) {
       rows = 1; 
@@ -311,8 +311,16 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   plotting.data.vs.benford(x, ...)
   }
   
+  if (all(except != "rootogram digits")) {
+    plotting.rootogram.data.vs.benford(x, ...)
+  }
+  
   if (all(except != "second order")) {
   plotting.second.order(x, ...)
+  }
+  
+  if (all(except != "rootogram second order")) {
+    plotting.rootogram.second.order(x, ...)
   }
   
   if (all(except != "summation")) {

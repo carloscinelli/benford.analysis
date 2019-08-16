@@ -284,6 +284,30 @@ plotting.data.vs.benford <- function(x, ...) {
   #          legend=c("Data", "Benford"))
 }
 
+plotting.rootogram.data.vs.benford <- function(x, ...) {
+  y <- x[["bfd"]]$data.dist.freq
+  bdf <- x[["bfd"]]$benford.dist.freq
+  digits <- x[["bfd"]]$digits
+  xmarks <- seq(0.7, length(bdf)*1.2, 1.2)
+  plot(xmarks, y,
+       main = "Rootogram of Digits Distribution",
+       xlab = "Digits", ylab = "Frequency",
+       xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
+       ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
+       yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
+       panel.first = {
+         graphics::grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
+         axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+         axis(1, at = xmarks,  labels = digits)
+       }
+  )
+  graphics::rect(xleft = xmarks - 0.5,
+       xright = xmarks + 0.5,
+       ybottom = bdf, ytop = bdf - y, col = 'lightblue')
+  abline(h = 0)
+  lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+}
+
 plotting.second.order <- function(x, ...) {
   y <- x[["bfd"]]$benford.so.dist.freq
   xmarks <- barplot(x[["bfd"]]$data.second.order.dist.freq, 
@@ -298,6 +322,30 @@ plotting.second.order <- function(x, ...) {
   
   #   legend("topright", lty=c(1,2), lwd=2, col=c("lightblue", "red"), 
   #          legend=c("Data", "Benford"))
+}
+
+plotting.rootogram.second.order <- function(x, ...) {
+  y <- x[["bfd"]]$data.second.order.dist.freq
+  bdf <- x[["bfd"]]$benford.so.dist.freq
+  digits <- x[["bfd"]]$digits
+  xmarks <- seq(0.7, length(y)*1.2, 1.2)
+  plot(xmarks, y,
+       main = "Rootogram of Digits Distribution\nSecond Order Test",
+       xlab = "Digits", ylab = "Frequency",
+       xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
+       ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
+       yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
+       panel.first = {
+         graphics::grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
+         axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+         axis(1, at = xmarks,  labels = digits)
+       }
+  )
+  graphics::rect(xleft = xmarks - 0.5,
+       xright = xmarks + 0.5,
+       ybottom = bdf, ytop = bdf - y, col = 'lightblue')
+  abline(h = 0)
+  lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
 }
 
 plotting.summation <- function(x, ...) {
