@@ -101,7 +101,7 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 154935 rows and 1 variable.
 #'@name journal.entry
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 104-107.
 NULL
 
 #### GM Payments ####
@@ -115,21 +115,7 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 15300 rows and 1 variable.
 #'@name gm.payments
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
-NULL
-
-#### Invoices Paid ####
-
-#' Invoices paid by a utility company.
-#'
-#' A dataset containing the invoices paid by a utility company.
-#' 
-#' 
-#'@docType data
-#'@keywords dataset
-#'@format A data frame with 189470 rows and 5 variables.
-#'@name invoices.paid
-#'@references Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 253-255.
 NULL
 
 #### Madoff Returns ####
@@ -143,7 +129,7 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 215 rows and 1 variable.
 #'@name madoff.returns
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 259-262.
 NULL
 
 #### Streamflow ####
@@ -156,7 +142,7 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 457440 rows and 1 variable.
 #'@name streamflow
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 268-274.
 NULL
 
 #### Purchasing Cards ####
@@ -170,7 +156,7 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 95076 rows and 8 variables.
 #'@name purchasing.cards.2010
-#'@references Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey, pp. 435-438.
 NULL
 
 #### First 500 Fibonacci Numbers ####
@@ -184,5 +170,5 @@ NULL
 #'@keywords dataset
 #'@format A data frame with 500 rows and 1 variable.
 #'@name fibonacci.500
-#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 51-53.
 NULL
