@@ -89,3 +89,100 @@ NULL
 #'@name census.2000_2010
 #'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
 NULL
+
+#### Journal Entry Data ####
+
+#' Journal entries in a company's accounting system.
+#'
+#' A dataset related to the 2005 journal entries in a company's accounting system.
+#' 
+#'
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 154935 rows and 1 variable.
+#'@name journal.entry
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+NULL
+
+#### GM Payments ####
+
+#' General Motors payments.
+#'
+#' A dataset containing the amounts paid to vendors for the 90 days preceding liquidation - 2009.
+#' 
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 15300 rows and 1 variable.
+#'@name gm.payments
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+NULL
+
+#### Invoices Paid ####
+
+#' Invoices paid by a utility company.
+#'
+#' A dataset containing the invoices paid by a utility company.
+#' 
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 189470 rows and 5 variables.
+#'@name invoices.paid
+#'@references Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey.
+NULL
+
+#### Madoff Returns ####
+
+#' The potential amount of the exposure of a partial list released by Wall Street Journal (WSJ) of the Madoff victims - 2009.
+#'
+#' A dataset containing the potential amount of the exposure of a partial list of the Madoff victims.
+#' 
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 215 rows and 1 variable.
+#'@name madoff.returns
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+NULL
+
+#### Streamflow ####
+
+#' Annual average flows.
+#'
+#' A dataset containing all the annual average flows for any site (a gage) that had an annual average recorded in any of the years from 1950 to 2005.
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 457440 rows and 1 variable.
+#'@name streamflow
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+NULL
+
+#### Purchasing Cards ####
+
+#' Purchasing cards transactions - 2010.
+#'
+#' A dataset containing the card transactions for a government entity - 2010.
+#' 
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 95076 rows and 8 variables.
+#'@name purchasing.cards.2010
+#'@references Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey.
+NULL
+
+#### First 500 Fibonacci Numbers ####
+
+#' The first 500 Fibonacci numbers.
+#'
+#' A dataset containing the first 500 Fibonacci numbers.
+#' 
+#' 
+#'@docType data
+#'@keywords dataset
+#'@format A data frame with 500 rows and 1 variable.
+#'@name fibonacci.500
+#'@references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+NULL
