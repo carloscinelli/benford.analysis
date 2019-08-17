@@ -275,7 +275,7 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats setNames
 plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, ...){
   
-  old.par <- par(no.readonly = TRUE)
+  
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
@@ -287,6 +287,8 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
     }
   
   if (multiple) {
+    old.par <- par(no.readonly = TRUE)
+    on.exit(par(old.par))
     
     nGraphics <- 10 - length(except)
     
@@ -347,7 +349,7 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   plotting.legend(x)
   }
   
-  par(old.par)
+  
   
 }
 

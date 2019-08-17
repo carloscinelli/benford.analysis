@@ -9,6 +9,6 @@
 A dataset containing the potential amount of the exposure of a partial list of the Madoff victims.
 }
 \references{
-Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 259-262.
 }
 \keyword{dataset}

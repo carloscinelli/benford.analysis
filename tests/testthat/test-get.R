@@ -63,3 +63,13 @@ test_that("Get functions are working",
             expect_that(suspectsTable(bfd, "diff"), 
                         throws_error("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'"))
           })
+
+
+
+test_that("Expected Errors",
+          
+          {
+            expect_error(suspectsTable("abcdef"), "bfd must be a 'Benford' object.")
+            
+          }
+)

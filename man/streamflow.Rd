@@ -9,6 +9,6 @@
 A dataset containing all the annual average flows for any site (a gage) that had an annual average recorded in any of the years from 1950 to 2005.
 }
 \references{
-Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 268-274.
 }
 \keyword{dataset}

@@ -9,6 +9,6 @@
 A dataset containing the amounts paid to vendors for the 90 days preceding liquidation - 2009.
 }
 \references{
-Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 253-255.
 }
 \keyword{dataset}
