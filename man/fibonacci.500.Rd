@@ -9,6 +9,6 @@
 A dataset containing the first 500 Fibonacci numbers.
 }
 \references{
-Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 51-53.
 }
 \keyword{dataset}

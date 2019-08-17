@@ -9,6 +9,6 @@
 A dataset containing the card transactions for a government entity - 2010.
 }
 \references{
-Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2011). Forensic Analytics: Methods and Techniques for Forensic Accounting Investigations. Wiley and Sons: New Jersey, pp. 435-438.
 }
 \keyword{dataset}

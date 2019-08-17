@@ -9,6 +9,6 @@
 A dataset related to the 2005 journal entries in a company's accounting system.
 }
 \references{
-Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
+Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey, pp. 104-107.
 }
 \keyword{dataset}
