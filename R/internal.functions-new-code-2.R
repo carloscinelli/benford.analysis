@@ -284,6 +284,7 @@ plotting.data.vs.benford <- function(x, ...) {
   #          legend=c("Data", "Benford"))
 }
 
+#' @importFrom graphics rect
 plotting.rootogram.data.vs.benford <- function(x, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
@@ -301,7 +302,7 @@ plotting.rootogram.data.vs.benford <- function(x, ...) {
          axis(1, at = xmarks,  labels = digits)
        }
   )
-  graphics::rect(xleft = xmarks - 0.5,
+  rect(xleft = xmarks - 0.5,
        xright = xmarks + 0.5,
        ybottom = bdf, ytop = bdf - y, col = 'lightblue')
   abline(h = 0)
@@ -341,7 +342,7 @@ plotting.rootogram.second.order <- function(x, ...) {
          axis(1, at = xmarks,  labels = digits)
        }
   )
-  graphics::rect(xleft = xmarks - 0.5,
+  rect(xleft = xmarks - 0.5,
        xright = xmarks + 0.5,
        ybottom = bdf, ytop = bdf - y, col = 'lightblue')
   abline(h = 0)
