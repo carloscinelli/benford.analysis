@@ -257,9 +257,7 @@ benford <- function(data, number.of.digits = 2,
 
 ##' @title Plot method for Benford Analysis
 ##' @description The \code{plot} method for "Benford" objects.
-##' @usage 
 ##' 
-##' \method{plot}{Benford}(x,except=c("mantissa","abs diff"),multiple=TRUE,col.bar="lightblue",grid=TRUE, ...) 
 ##' @param  x a "Benford" object
 ##' @param except it specifies which plots are not going to be plotted.
 ##' Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
@@ -275,7 +273,7 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames
-plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE,  col.bar = "lightblue", grid = TRUE, ...){
+plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), multiple = TRUE,  col.bar = "lightblue", grid = TRUE, ...){
   
   
   
