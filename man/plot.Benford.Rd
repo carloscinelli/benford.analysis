@@ -4,17 +4,21 @@
 \alias{plot.Benford}
 \title{Plot method for Benford Analysis}
 \usage{
-\method{plot}{Benford}(x,except=c("mantissa","abs diff"), multiple=TRUE, ...)
+\method{plot}{Benford}(x,except=c("mantissa","abs diff"),multiple=TRUE,col.bar="lightblue",grid=TRUE, ...)
 }
 \arguments{
 \item{x}{a "Benford" object}
 
 \item{except}{it specifies which plots are not going to be plotted.
-Currently, you can choose from 7 plots: "digits", "second order", "summation",
+Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
 "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 put except = "none". The default is not to plot the "mantissa" and "abs diff".}
 
 \item{multiple}{if TRUE, all plots are grouped in the same window.}
+
+\item{col.bar}{a color to be used to fill the bars. The default is lightblue.}
+
+\item{grid}{if TRUE, adds an rectangular grid to plot.}
 
 \item{...}{arguments to be passed to generic plot functions,}
 }
