@@ -273,7 +273,7 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames
-plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, ...){
+plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits", "rootogram second order"), multiple = TRUE, ...){
   
   old.par <- par(no.readonly = TRUE)
   
