@@ -328,7 +328,7 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   }
   
   if (all(except != "summation")) {
-  plotting.summation(x, ...)
+  plotting.summation(x, col.bar, grid, ...)
   }
   
   if (all(except != "mantissa")) {
