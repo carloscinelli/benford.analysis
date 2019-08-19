@@ -8,6 +8,9 @@ test_that("Corporate Payment 1 digit, only >=10",
             bfd1 <- benford(cp,1)
             expect_that(bfd1$info$n.second.order,equals(64578))
             expect_that(MAD(bfd1), equals(0.01464, tolerance = 1e-03))
+            expect_that(MAD(1), throws_error("Object must be of class Benford"))
+            bfd2 <- benford(cp,4)
+            expect_true(is.na(bfd2$MAD.conformity))
             # check if object did not change
             expect_that(bfd1, equals(benford(cp,1)))
             
@@ -28,6 +31,7 @@ test_that("Corporate Payment 2 digits, only >=10",
                                  duplicates = c(6022,2264,1185,1056,1018,976))
             d.data <- as.data.frame(head(duplicatesTable(bfd2)))
             expect_that(d.data, equals(d.test))
+            expect_that(duplicatesTable(1), throws_error("bfd must be a 'Benford' object."))
             
             # check if object did not change
             expect_that(bfd2, equals(benford(cp, 2)))
@@ -46,8 +50,9 @@ test_that("Census 2009 data, 2 digits, only >=10",
             expect_that(length(pop), equals(19482))
             bfd.census <- benford(pop, 2)
             expect_that(dfactor(bfd.census), equals(0.74, tolerance = 1e-03))
+            expect_that(dfactor(1), throws_error("Object must be of class Benford"))
             expect_that(round(chisq(bfd.census)$statistic),is_equivalent_to(108))
-            
+            expect_that(chisq(1), throws_error("Object must be of class Benford"))
             # check if object did not change
             expect_that(bfd.census, equals(benford(pop, 2)))
           }
@@ -66,6 +71,7 @@ test_that("Negative numbers, simulated log-normal *(-1)",
                              class = c("data.table", "data.frame"))
            mant <- mantissa(bfd)
            expect_that(test, equals(mant))
+           expect_that(mantissa(1), throws_error("Object must be of class Benford"))
            
            # check if object did not change
            expect_that(bfd, equals( benford(data, sign = "negative")))
@@ -79,6 +85,7 @@ test_that("Both signs, simulated log-normal and plots",
             data <- data*c(1, -1)
             bfd <- benford(data, sign = "both", discrete = FALSE)
             plot(bfd, "none")
+            expect_error(plot.Benford(1))
             expect_error(plot(bfd, except = "xxx"))
             plot(bfd, except = c("mantissa","abs diff", "second order") )
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation") )
@@ -125,6 +132,7 @@ test_that("Regular printing -- no comparisons",
             data <- data*c(1, -1)
             bfd <- benford(data, sign = "both", discrete = FALSE)
             print <- capture.output(print(bfd))
+            expect_error(print.Benford(1))
           }
 )
 
