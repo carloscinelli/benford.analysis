@@ -65,3 +65,13 @@ test_that("Get functions are working",
             expect_that(suspectsTable(1), 
                         throws_error("bfd must be a 'Benford' object."))
           })
+
+
+
+test_that("Expected Errors",
+          
+          {
+            expect_error(suspectsTable("abcdef"), "bfd must be a 'Benford' object.")
+            
+          }
+)

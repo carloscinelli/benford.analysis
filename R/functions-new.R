@@ -275,20 +275,22 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats setNames
 plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, ...){
   
-  old.par <- par(no.readonly = TRUE)
+  
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
   except <- tolower(except)
   
-  if (!any(except %in% c("digits", "second order", "summation",
+  if (!any(except %in% c("digits", "rootogram digits", "second order", "rootogram second order", "summation",
                      "mantissa", "chi squared", "abs diff","none", "legend"))) {
     stop("Invalid except name. Type ?plot.Benford for help.")
     }
   
   if (multiple) {
+    old.par <- par(no.readonly = TRUE)
+    on.exit(par(old.par))
     
-    nGraphics <- 8 - length(except)
+    nGraphics <- 10 - length(except)
     
     if (nGraphics < 4) {
       rows = 1; 
@@ -311,8 +313,16 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   plotting.data.vs.benford(x, ...)
   }
   
+  if (all(except != "rootogram digits")) {
+    plotting.rootogram.data.vs.benford(x, ...)
+  }
+  
   if (all(except != "second order")) {
   plotting.second.order(x, ...)
+  }
+  
+  if (all(except != "rootogram second order")) {
+    plotting.rootogram.second.order(x, ...)
   }
   
   if (all(except != "summation")) {
@@ -339,7 +349,7 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   plotting.legend(x)
   }
   
-  par(old.par)
+  
   
 }
 
