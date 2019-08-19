@@ -275,7 +275,7 @@ plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...)
   digits <- x[["bfd"]]$digits
   xmarks <- seq(0.7, length(bdf)*1.2, 1.2)
   plot(xmarks, y,
-       main = "Barchart of Digits",
+       main = "Digits distribution\nBarchart",
        xlab = "Digits", ylab = "Frequency",
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
        ylim = c(0, max(c(y, bdf))*1.1),
@@ -300,7 +300,7 @@ plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = 
   digits <- x[["bfd"]]$digits
   xmarks <- seq(0.7, length(bdf)*1.2, 1.2)
   plot(xmarks, y,
-       main = "Rootogram of Digits",
+       main = "Digits distribution\nRootogram",
        xlab = "Digits", ylab = "Frequency",
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
        ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
@@ -326,7 +326,7 @@ plotting.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
   digits <- x[["bfd"]]$digits
   xmarks <- seq(0.7, length(y)*1.2, 1.2)
   plot(xmarks, y,
-       main = "Barchart of Digits \nSecond Order Test",
+       main = "Digits distribution\nSecond Order Test - Barchart",
        xlab = "Digits", ylab = "Frequency",
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
        ylim = c(0, max(c(bfd, y))*1.1),
@@ -351,7 +351,7 @@ plotting.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRU
   digits <- x[["bfd"]]$digits
   xmarks <- seq(0.7, length(y)*1.2, 1.2)
   plot(xmarks, y,
-       main = "Rootogram of Digits\nSecond Order Test",
+       main = "Digits distribution\nSecond Order Test - Rootogram",
        xlab = "Digits", ylab = "Frequency",
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
        ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
@@ -410,8 +410,8 @@ plotting.ordered.mantissa <- function(x, grid = TRUE, ...) {
 }
 
 plotting.chi_squared <- function(x, grid = TRUE, ...) {
-  y <- x[["bfd"]]$squared.diff
-  digits <- x[["bfd"]]$digits
+  y <- c(NA, x[["bfd"]]$squared.diff, NA)
+  digits <- c(NA, x[["bfd"]]$digits, NA)
   xmarks <- seq(0.7, length(y)*1.2, 1.2)
   plot(xmarks, y, 
        col = "blue",
@@ -419,12 +419,13 @@ plotting.chi_squared <- function(x, grid = TRUE, ...) {
        ylab = "Chi-squared", 
        main = "Chi-Squared Difference",
        xaxt = "n",
+       xaxs='i',
        type = 'h',
        cex.axis = 0.8,
        panel.first = {
          if(grid){
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
          }
          axis(1, at = xmarks, labels = digits)
        })
@@ -432,8 +433,8 @@ plotting.chi_squared <- function(x, grid = TRUE, ...) {
 }
 
 plotting.abs.diff <- function(x, grid = TRUE, ...) {
-  y <- x[["bfd"]]$absolute.diff
-  digits <- x[["bfd"]]$digits
+  y <- c(NA, x[["bfd"]]$absolute.diff, NA)
+  digits <- c(NA, x[["bfd"]]$digits, NA)
   xmarks <- seq(0.7, length(y)*1.2, 1.2)
   plot(xmarks, y,
        col = "blue",
@@ -441,11 +442,12 @@ plotting.abs.diff <- function(x, grid = TRUE, ...) {
        ylab = "Absolute Difference", 
        main = "Absolute Difference",
        xaxt = "n",
+       xaxs='i',
        type = 'h',
        panel.first = {
          if(grid){
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
          }
          axis(1, at = xmarks, labels = digits)
        })
@@ -453,8 +455,8 @@ plotting.abs.diff <- function(x, grid = TRUE, ...) {
 }
 
 plotting.ex.summation <- function(x, grid = TRUE, ...) {
-  y <- x[["bfd"]]$abs.excess.summation
-  digits <- x[["bfd"]]$digits
+  y <- c(NA, x[["bfd"]]$abs.excess.summation, NA)
+  digits <- c(NA, x[["bfd"]]$digits, NA)
   xmarks <- seq(0.7, length(y)*1.2, 1.2)
   plot(xmarks, y,
        col = "blue",
@@ -462,11 +464,12 @@ plotting.ex.summation <- function(x, grid = TRUE, ...) {
        ylab = "Absolute Excess Summation", 
        main = "Summation Difference",
        xaxt = "n",
+       xaxs='i',
        type = 'h',
        panel.first = {
          if(grid){
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
          }
          axis(1, at = xmarks, labels = digits)
        })
