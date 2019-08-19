@@ -259,13 +259,15 @@ benford <- function(data, number.of.digits = 2,
 ##' @description The \code{plot} method for "Benford" objects.
 ##' @usage 
 ##' 
-##' \method{plot}{Benford}(x,except=c("mantissa","abs diff"), multiple=TRUE, ...) 
+##' \method{plot}{Benford}(x,except=c("mantissa","abs diff"),multiple=TRUE,col.bar="lightblue",grid=TRUE, ...) 
 ##' @param  x a "Benford" object
 ##' @param except it specifies which plots are not going to be plotted.
-##' Currently, you can choose from 7 plots: "digits", "second order", "summation",
+##' Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
 ##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff".
 ##' @param multiple if TRUE, all plots are grouped in the same window.
+##' @param col.bar a color to be used to fill the bars. The default is lightblue.
+##' @param grid if TRUE, adds an rectangular grid to plot.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
 ##' @export
@@ -273,7 +275,7 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames
-plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, ...){
+plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE,  col.bar = "lightblue", grid = TRUE, ...){
   
   
   
@@ -310,19 +312,19 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   }
   
   if (all(except != "digits")) {
-  plotting.data.vs.benford(x, ...)
+  plotting.data.vs.benford(x, col.bar, grid, ...)
   }
   
   if (all(except != "rootogram digits")) {
-    plotting.rootogram.data.vs.benford(x, ...)
+    plotting.rootogram.data.vs.benford(x, col.bar, grid, ...)
   }
   
   if (all(except != "second order")) {
-  plotting.second.order(x, ...)
+  plotting.second.order(x, col.bar, grid, ...)
   }
   
   if (all(except != "rootogram second order")) {
-    plotting.rootogram.second.order(x, ...)
+    plotting.rootogram.second.order(x, col.bar, grid, ...)
   }
   
   if (all(except != "summation")) {
@@ -330,19 +332,19 @@ plot.Benford <- function(x, except = c("mantissa","abs diff"), multiple = TRUE, 
   }
   
   if (all(except != "mantissa")) {
-  plotting.ordered.mantissa(x, ...)
+  plotting.ordered.mantissa(x, grid, ...)
   }
   
   if (all(except != "chi squared")) {
-  plotting.chi_squared(x, ...)
+  plotting.chi_squared(x, grid, ...)
   }
   
   if (all(except != "abs diff")) {
-  plotting.abs.diff(x, ...)
+  plotting.abs.diff(x, grid, ...)
   }
   
   if (all(except != "ex summation")) {
-  plotting.ex.summation(x, ...)
+  plotting.ex.summation(x, grid, ...)
   }
   
   if (all(except != "legend")) {
