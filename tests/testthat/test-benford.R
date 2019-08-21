@@ -93,6 +93,9 @@ test_that("Both signs, simulated log-normal and plots",
                                  "chi square"))
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
                                  "chi square", "ex summation"))
+            plot(bfd, except = c("digits","rootogram digits", "rootogram second order", "summation", "mantissa","abs diff", "chi squared", "ex summation"))
+            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
+                                 "chi square", "ex summation"), err.bound = TRUE)
             
             # check if object did not change
             expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))
