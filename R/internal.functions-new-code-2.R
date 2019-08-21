@@ -269,7 +269,7 @@ skewness <- function(x)
 #### plot ####
 #' @importFrom graphics rect points
 
-plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bound = FALSE, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -292,9 +292,16 @@ plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...)
           col = col.bar, 
           yaxt = "n", add = T)
   lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  if(err.bound){
+    n <- x$info$n
+    ep <- x[["bfd"]]$benford.dist
+    ub <- n*ep + 1.96*sqrt(n*ep*(1 - ep)) + 1/2
+    lb <- n*ep - 1.96*sqrt(n*ep*(1 - ep)) - 1/2
+    arrows(xmarks, lb, xmarks, ub, length = 0.05/x$info$number.of.digits, angle = 90, code = 3, col = 'red')
+  }
 }
 
-plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bound = FALSE, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -318,6 +325,15 @@ plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = 
        ybottom = bdf, ytop = bdf - y, col = col.bar)
   abline(h = 0)
   lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  if(err.bound){
+    n <- x$info$n
+    ep <- x[["bfd"]]$benford.dist
+    ub <- 1.96*sqrt(n*ep*(1 - ep)) + 1/2
+    lb <- - 1.96*sqrt(n*ep*(1 - ep)) - 1/2
+    lines(ub ~ xmarks, lty = 2, col = 'red', lwd = 2)
+    lines(lb ~ xmarks, lty = 2, col = 'red', lwd = 2)
+    abline(h = 0, lwd= 2, col = 'red')
+  }
 }
 
 plotting.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
