@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{Benford}(x, except = c("mantissa", "abs diff",
   "rootogram digits", "rootogram second order"), multiple = TRUE,
-  col.bar = "lightblue", grid = TRUE, ...)
+  col.bar = "lightblue", err.bound = FALSE, grid = TRUE, ...)
 }
 \arguments{
 \item{x}{a "Benford" object}
@@ -19,6 +19,8 @@ put except = "none". The default is not to plot the "mantissa" and "abs diff".}
 \item{multiple}{if TRUE, all plots are grouped in the same window.}
 
 \item{col.bar}{a color to be used to fill the bars. The default is lightblue.}
+
+\item{err.bound}{if TRUE, the upper and lower error bounds are draw.}
 
 \item{grid}{if TRUE, adds an rectangular grid to plot.}
 

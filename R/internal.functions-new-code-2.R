@@ -267,7 +267,7 @@ skewness <- function(x)
   (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
 
 #### plot ####
-#' @importFrom graphics rect points
+#' @importFrom graphics rect points arrows
 
 plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bound = FALSE, ...) {
   y <- x[["bfd"]]$data.dist.freq
