@@ -40,6 +40,16 @@ test_that("Exctracting digits from made up data",
   rd3 <- extract.digits(x, second.order=TRUE, discrete=FALSE)
   expect_that(nrow(rd3), equals(length(x[x>0])-1))
   
+  y <- c(9.19,8.28,7.37,6.46,5.55,4.64,3.73,2.82)
+  expect_that(last.two.digits("asbdas"), throws_error("Data must be a numeric vector"))
+  expect_equal(last.two.digits(y)$data.digits, c(19,28,37,46,55,64,73,82))
+  
+  z <- -c(9.19,8.28,7.37,6.46,5.55,4.64,3.73,2.82)
+  expect_equal(last.two.digits(z,sign="negative")$data.digits, c(19,28,37,46,55,64,73,82))
+  
+  w <- c(9.19,8.28,7.37,6.46,-5.55,-4.64,-3.73,-2.82)
+  expect_equal(last.two.digits(w,sign="both")$data.digits, c(19,28,37,46,55,64,73,82))
+  
   discrete <- c(0, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
   
   d1 <- extract.digits(discrete,1, second.order=TRUE, discrete=TRUE)
@@ -57,5 +67,6 @@ test_that("Exctracting digits from made up data",
   expect_that(extract.digits("asbdas"), throws_error("Data must be a numeric vector"))
   expect_warning(extract.digits(data, number.of.digits = 5, second.order = TRUE), 
               "There might be some floating point precision issues on the Second Order distribution")
+  
   
 })
