@@ -65,6 +65,7 @@ eight objects, namely:
 \item difference: the difference between the data and benford frequencies.
 \item squared.diff: the chi-squared difference between data and benford frequencies.
 \item absolute.diff: the absolute difference between data and benford frequencies.
+\item z.statistic: the z-statistic difference between data and benford relative frequencies.
 }}
 
 \item{mantissa}{a data frame with: \itemize{
@@ -80,6 +81,7 @@ eight objects, namely:
 \item{stats}{list of "htest" class statistics: \itemize{
 \item chisq: Pearson's Chi-squared test.
 \item mantissa.arc.test: Mantissa Arc Test.
+\item ks.test: Kolmogorov-Smirnov Test.
 }}
 }
 \description{
