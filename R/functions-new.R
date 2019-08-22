@@ -163,6 +163,9 @@ benford <- function(data, number.of.digits = 2,
   
   absolute.diff <- abs(empirical.distribution$dist.freq - benford.dist.freq)
   
+  ### z-statistic
+  z.stat <- z.stat.bfd(benford.dist, empirical.distribution$dist, n)
+  
   ### chi-squared test
   chisq.bfd <- chisq.test.bfd(squared.diff, data.name)
   
@@ -197,6 +200,9 @@ benford <- function(data, number.of.digits = 2,
   ### Distortion Factor
   distortion.factor <- DF(empirical.distribution$data)  
   
+  ### Kolmogorov-Smirnov test
+  ks.test <- ks.test.bfd(benford.dist, empirical.distribution$dist, n, data.name)
+  
   ## recovering the lines of the numbers
   if (sign == "positive") lines <- which(data > 0 & !is.na(data))
   if (sign == "negative") lines <- which(data < 0 & !is.na(data))
@@ -229,7 +235,8 @@ benford <- function(data, number.of.digits = 2,
                                   abs.excess.summation = abs.excess.summation,
                                   difference = difference,
                                   squared.diff = squared.diff,
-                                  absolute.diff = absolute.diff),
+                                  absolute.diff = absolute.diff,
+                                  z.statistic = z.stat),
                  
                  mantissa = data.table(statistic = c("Mean Mantissa", 
                                                      "Var Mantissa", 
@@ -246,7 +253,8 @@ benford <- function(data, number.of.digits = 2,
                  distortion.factor = distortion.factor,
                  
                  stats = list(chisq = chisq.bfd,
-                              mantissa.arc.test = mat.bfd)
+                              mantissa.arc.test = mat.bfd,
+                              ks.test = ks.test)
   )
   
   class(output) <- "Benford"
@@ -265,6 +273,7 @@ benford <- function(data, number.of.digits = 2,
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff".
 ##' @param multiple if TRUE, all plots are grouped in the same window.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
+##' @param err.bound if TRUE, the upper and lower error bounds are draw.
 ##' @param grid if TRUE, adds an rectangular grid to plot.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
@@ -273,7 +282,7 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames
-plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), multiple = TRUE,  col.bar = "lightblue", grid = TRUE, ...){
+plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), multiple = TRUE,  col.bar = "lightblue", err.bound = FALSE, grid = TRUE, ...){
   
   
   
@@ -310,11 +319,11 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
   }
   
   if (all(except != "digits")) {
-  plotting.data.vs.benford(x, col.bar, grid, ...)
+  plotting.data.vs.benford(x, col.bar, grid, err.bound, ...)
   }
   
   if (all(except != "rootogram digits")) {
-    plotting.rootogram.data.vs.benford(x, col.bar, grid, ...)
+    plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bound, ...)
   }
   
   if (all(except != "second order")) {
@@ -388,6 +397,7 @@ print.Benford <- function(x,how.many=5,...){
   cat("Stats:\n")
   print(x[["stats"]]$chisq)
   print(x[["stats"]]$mantissa.arc.test)
+  print(x[["stats"]]$ks.test)
   cat("Mean Absolute Deviation (MAD):",x[["MAD"]])
   if (!is.na(x[["MAD.conformity"]])) 
     cat("\nMAD Conformity - Nigrini (2012):", x[["MAD.conformity"]])

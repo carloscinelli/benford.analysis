@@ -51,6 +51,28 @@ chisq.test.bfd <- function(squared.diff, data.name){
   return(chisq.bfd)
 }
 
+ks.test.bfd <- function(expected.prop, actual.prop, n.records, data.name){
+  cs.ep <- cumsum(expected.prop)
+  cs.ap <- cumsum(actual.prop)
+  D <- max(abs(cs.ep - cs.ap))
+  names(D) <- "D"
+  cv <- 1.36/sqrt(n.records)
+ names(cv) <- "critical value"
+  
+  ks.bfd <- list(statistic = D,
+                 method = "Kolmogorov-Smirnov test",
+                 parameter = cv,
+                 data.name = data.name)
+  
+  class(ks.bfd) <- "htest"
+
+  return(ks.bfd)
+}
+
+z.stat.bfd <- function(expected.prop, actual.prop, n.records){
+  (abs(actual.prop - expected.prop) - 1/(2*n.records))/sqrt(expected.prop*(1-expected.prop)/n.records)
+}
+
 
 ##' MAD conformity to Benford's Law using the MAD
 ##' 
@@ -267,9 +289,9 @@ skewness <- function(x)
   (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
 
 #### plot ####
-#' @importFrom graphics rect points
+#' @importFrom graphics rect points arrows
 
-plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bound = FALSE, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -292,9 +314,16 @@ plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...)
           col = col.bar, 
           yaxt = "n", add = T)
   lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  if(err.bound){
+    n <- x$info$n
+    ep <- x[["bfd"]]$benford.dist
+    ub <- n*ep + 1.96*sqrt(n*ep*(1 - ep)) + 1/2
+    lb <- n*ep - 1.96*sqrt(n*ep*(1 - ep)) - 1/2
+    arrows(xmarks, lb, xmarks, ub, length = 0.05/x$info$number.of.digits, angle = 90, code = 3, col = 'red')
+  }
 }
 
-plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bound = FALSE, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -318,6 +347,15 @@ plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = 
        ybottom = bdf, ytop = bdf - y, col = col.bar)
   abline(h = 0)
   lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  if(err.bound){
+    n <- x$info$n
+    ep <- x[["bfd"]]$benford.dist
+    ub <- 1.96*sqrt(n*ep*(1 - ep)) + 1/2
+    lb <- - 1.96*sqrt(n*ep*(1 - ep)) - 1/2
+    lines(ub ~ xmarks, lty = 2, col = 'red', lwd = 2)
+    lines(lb ~ xmarks, lty = 2, col = 'red', lwd = 2)
+    abline(h = 0, lwd= 2, col = 'red')
+  }
 }
 
 plotting.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
