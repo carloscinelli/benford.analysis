@@ -51,6 +51,28 @@ chisq.test.bfd <- function(squared.diff, data.name){
   return(chisq.bfd)
 }
 
+ks.test.bfd <- function(expected.prop, actual.prop, n.records, data.name){
+  cs.ep <- cumsum(expected.prop)
+  cs.ap <- cumsum(actual.prop)
+  D <- max(abs(cs.ep - cs.ap))
+  names(D) <- "D"
+  cv <- 1.36/sqrt(n.records)
+ names(cv) <- "critical value"
+  
+  ks.bfd <- list(statistic = D,
+                 method = "Kolmogorov-Smirnov test",
+                 parameter = cv,
+                 data.name = data.name)
+  
+  class(ks.bfd) <- "htest"
+
+  return(ks.bfd)
+}
+
+z.stat.bfd <- function(expected.prop, actual.prop, n.records){
+  (abs(actual.prop - expected.prop) - 1/(2*n.records))/sqrt(expected.prop*(1-expected.prop)/n.records)
+}
+
 
 ##' MAD conformity to Benford's Law using the MAD
 ##' 

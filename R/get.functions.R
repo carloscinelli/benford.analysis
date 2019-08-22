@@ -163,6 +163,24 @@ chisq <- function(bfd){
   bfd$stats$chisq
 }
 
+#' @title Gets the Kolmogorov-Smirnov test of a Benford object
+#' @description It gets the Kolmogorov-Smirnov test for a Benford object.
+#' See the section value of \code{\link{benford}}.
+#' @usage
+#' 
+#' ks(bfd)
+#' @param bfd an object of class "Benford". See \code{\link{benford}}.
+#' @return A list with class "htest" containing the results of the Kolmogorov-Smirnov test.
+#' @examples
+#' data(census.2009) #gets data
+#' c2009 <- benford(census.2009$pop.2009) #generates benford object
+#' ks(c2009) # equivalent to c2009$stats$ks.test
+#' @export 
+ks <- function(bfd){
+  if (class(bfd)!="Benford") stop("Object must be of class Benford")
+  bfd$stats$ks.test
+}
+
 #' @title Gets the Mantissa Arc test of a Benford object
 #' @description It gets the Mantissa Arc Test of a Benford object.
 #' See the section value of \code{\link{benford}}.

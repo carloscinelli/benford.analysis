@@ -53,6 +53,8 @@ test_that("Census 2009 data, 2 digits, only >=10",
             expect_that(dfactor(1), throws_error("Object must be of class Benford"))
             expect_that(round(chisq(bfd.census)$statistic),is_equivalent_to(108))
             expect_that(chisq(1), throws_error("Object must be of class Benford"))
+            expect_that(ks(1), throws_error("Object must be of class Benford"))
+            expect_true(is.numeric(ks(bfd.census)$statistic))
             # check if object did not change
             expect_that(bfd.census, equals(benford(pop, 2)))
           }
@@ -72,7 +74,6 @@ test_that("Negative numbers, simulated log-normal *(-1)",
            mant <- mantissa(bfd)
            expect_that(test, equals(mant))
            expect_that(mantissa(1), throws_error("Object must be of class Benford"))
-           
            # check if object did not change
            expect_that(bfd, equals( benford(data, sign = "negative")))
          }
@@ -121,10 +122,19 @@ test_that("Exact printing, this sould not be tested on CRAN!",
                             "4     11          9.21", "5     15          8.03", "", "Stats:", 
                             "", "\tPearson's Chi-squared test", "", "data:  data", "X-squared = 83.095, df = 89, p-value = 0.6564", 
                             "", "", "\tMantissa Arc Test", "", "data:  data", "L2 = 0.0013529, df = 2, p-value = 0.2585", 
+                            "", "","\tKolmogorov-Smirnov test","","data:  data","D = 0.039781, critical value = 0.043007",
                             "", "Mean Absolute Deviation (MAD): 0.002609809", "MAD Conformity - Nigrini (2012): Nonconformity", 
                             "Distortion Factor: -6.228274", "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!"
             )
             expect_that(print, equals(test_print))
+          }
+)
+
+test_that("Internal function",
+          {
+            x <- seq(0.1, 0.9, length.out = 9)
+            y <- seq(0.9, 0.1, length.out = 9)
+            expect_equal(round(sum(z.stat.bfd(x, y, 100))), 108)
           }
 )
 

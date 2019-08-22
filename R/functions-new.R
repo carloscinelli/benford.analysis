@@ -163,7 +163,8 @@ benford <- function(data, number.of.digits = 2,
   
   absolute.diff <- abs(empirical.distribution$dist.freq - benford.dist.freq)
   
-  z.stat <- (abs(empirical.distribution$dist - benford.dist) - 1/(2*n))/sqrt(benford.dist*(1-benford.dist)/n)
+  ### z-statistic
+  z.stat <- z.stat.bfd(benford.dist, empirical.distribution$dist, n)
   
   ### chi-squared test
   chisq.bfd <- chisq.test.bfd(squared.diff, data.name)
@@ -198,6 +199,9 @@ benford <- function(data, number.of.digits = 2,
   
   ### Distortion Factor
   distortion.factor <- DF(empirical.distribution$data)  
+  
+  ### Kolmogorov-Smirnov test
+  ks.test <- ks.test.bfd(benford.dist, empirical.distribution$dist, n, data.name)
   
   ## recovering the lines of the numbers
   if (sign == "positive") lines <- which(data > 0 & !is.na(data))
@@ -249,7 +253,8 @@ benford <- function(data, number.of.digits = 2,
                  distortion.factor = distortion.factor,
                  
                  stats = list(chisq = chisq.bfd,
-                              mantissa.arc.test = mat.bfd)
+                              mantissa.arc.test = mat.bfd,
+                              ks.test = ks.test)
   )
   
   class(output) <- "Benford"
@@ -392,6 +397,7 @@ print.Benford <- function(x,how.many=5,...){
   cat("Stats:\n")
   print(x[["stats"]]$chisq)
   print(x[["stats"]]$mantissa.arc.test)
+  print(x[["stats"]]$ks.test)
   cat("Mean Absolute Deviation (MAD):",x[["MAD"]])
   if (!is.na(x[["MAD.conformity"]])) 
     cat("\nMAD Conformity - Nigrini (2012):", x[["MAD.conformity"]])
