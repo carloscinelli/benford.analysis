@@ -1,7 +1,5 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -61,7 +59,7 @@ The command above created an object of class "Benford" with the results for the 
 
 Let's check the main plots of the analysis:
 
-```{r, fig.height=10, fig.width=10}
+```{r, fig.height=10, fig.width=12}
 plot(bfd.cp)
 ```
 

@@ -1,4 +1,6 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 [![Travis-CI Build
 Status](https://travis-ci.org/carloscinelli/benford.analysis.svg?branch=master)](https://travis-ci.org/carloscinelli/benford.analysis)
 [![Build
@@ -13,8 +15,7 @@ make it easier to validate data using Benford’s Law. The main purpose of
 the package is to identify suspicious data that need further
 verification.
 
-CRAN
-----
+## CRAN
 
 You can install the package from CRAN by running:
 
@@ -22,20 +23,19 @@ You can install the package from CRAN by running:
 install.packages("benford.analysis")
 ```
 
-How to install the development version from GitHub
---------------------------------------------------
+## How to install the development version from GitHub
 
 To install the GitHub version you need to have the package `devtools`
 installed. Make sure to set the option `build_vignettes = TRUE` to
-compile the package vignette.
+compile the package
+vignette.
 
 ``` r
 # install.packages("devtools") # run this to install the devtools package
 devtools::install_github("carloscinelli/benford.analysis", build_vignettes = TRUE)
 ```
 
-Example usage
--------------
+## Example usage
 
 The `benford.analysis` package comes with 6 real datasets from Mark
 Nigrini’s book [Benford’s Law: Applications for Forensic Accounting,
@@ -68,7 +68,7 @@ Let’s check the main plots of the analysis:
 plot(bfd.cp)
 ```
 
-![](tools/unnamed-chunk-6-1.png)
+![](tools/unnamed-chunk-6-1.png)<!-- -->
 
 The original data is in blue and the expected frequency according to
 Benford’s law is in red. For instance, in our example, the first plot
@@ -139,10 +139,10 @@ After that you have the main statistics of the log mantissa of the data.
 If the data follows Benford’s Law, the numbers should be close to:
 
 | Statistic    | Value           |
-|--------------|-----------------|
+| ------------ | --------------- |
 | Mean         | 0.5             |
 | Variance     | 1/12 (0.08333…) |
-| Ex. Kurtosis | -1.2            |
+| Ex. Kurtosis | \-1.2           |
 | Skewness     | 0               |
 
 Printing also shows the 5 largest discrepancies. Notice that, as we had
