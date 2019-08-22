@@ -1,4 +1,6 @@
 
+## benford.analysis <img src="tools/benford.analysis.png" height = "140" width = "120" align="right" />
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Travis-CI Build

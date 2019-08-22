@@ -2,6 +2,8 @@
 output: github_document
 ---
 
+## benford.analysis <img src="tools/benford.analysis.png" height = "140" width = "120" align="right" />
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/carloscinelli/benford.analysis.svg?branch=master)](https://travis-ci.org/carloscinelli/benford.analysis)
 [![Build status](https://ci.appveyor.com/api/projects/status/igyn1737s67jqqnb/branch/master?svg=true)](https://ci.appveyor.com/project/carloscinelli/benford-analysis/branch/master)
