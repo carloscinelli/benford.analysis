@@ -182,7 +182,7 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
 p.these.digits <- function(d){
   if (!is.numeric(d)) stop("d must be numeric or integer")
   d <- trunc(d)
-  if (d < 0) d <- d*(-1)
+  d[d < 0] <- d[d < 0]*(-1)
   prob <- log10(1 + 1/d)
   return(prob)
 }
