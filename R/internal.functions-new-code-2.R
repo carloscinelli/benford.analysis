@@ -166,6 +166,38 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
   return(results)
 }
 
+#' @title Extracts the last two digits from the data
+#' @description It extracts the last two digits from the data.
+#' 
+#'This function is used by the main function of the package \code{\link{benford}} to extract the 
+#'ast two digits of the data.
+#'
+#' @param data a numeric vector. 
+#' @param sign  The default value for sign is "positive" and it analyzes only data greater than zero. 
+#' There are also the options "negative" and "both" that will analyze only negative values or both positive and negative values of the data,
+#' respectively. For large datasets with both positive and negative numbers, 
+#' it is usually recommended to perform a separate analysis for each group,
+#' for the incentives to manipulate the numbers are usually different.
+#' @return A data.frame with the data and the last digits.
+#' @export
+last.two.digits <- function(data, sign="positive") {
+  
+  if (!is.numeric(data)) stop("Data must be a numeric vector")
+  
+  ## cleaning data for analysis - only > 0 and either only positive or only negative
+  if (sign == "positive")  positives <- data[data > 0 & !is.na(data)]
+  if (sign == "negative")  positives <- data[data < 0 & !is.na(data)]*(-1)
+  if (sign == "both")      positives <- abs(data[data != 0 & !is.na(data)]) 
+  
+  digits.as.str <- as.character(positives)
+  digits.as.str <- gsub("\\.", "", digits.as.str)
+  ltd <- as.integer(substr(digits.as.str, nchar(digits.as.str) - 1, nchar(digits.as.str)))
+  ltd[ltd < 10] <- ltd[ltd < 10]*10
+  
+  results <- data.frame(data = positives,
+                        data.digits = ltd)
+  return(results)
+}
 
 #' @title Probability of a digit sequence
 #' @description It calculates the probability of a digit sequence "d".
