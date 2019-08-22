@@ -61,7 +61,7 @@ The command above created an object of class "Benford" with the results for the 
 
 Let's check the main plots of the analysis:
 
-```{r}
+```{r, fig.height=10, fig.width=10}
 plot(bfd.cp)
 ```
 
