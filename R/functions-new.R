@@ -287,30 +287,43 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
-plot.Benford <- function(x, select = c("digits", "second order", "summation", "chi squared", "ex summation"), except = NULL, multiple = TRUE,  col.bar = "lightblue", err.bounds = FALSE, alpha = 0.05, grid = TRUE, ...){
+plot.Benford <- function(x, 
+                         select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
+                         except = NULL, 
+                         multiple = TRUE,  
+                         col.bar = "lightblue", 
+                         err.bounds = FALSE, 
+                         alpha = 0.05, 
+                         grid = TRUE, ...){
   
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
   available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
   
-  if(!is.null(select)){
+  if (!is.null(select)) {
+    
     select <- tolower(select)
-    if (!any(select %in% available.plots)) {
-      stop("Invalid select name. Type ?plot.Benford for help.")
+    
+    if (!all(select %in% available.plots)) {
+      idx <- which(!select %in% available.plots)
+      stop("Invalid plot name:", select[idx], "\nType ?plot.Benford for help.")
     }
-    if(all(select == "all")){
+    
+    if (all(select == "all")) {
       plots <- available.plots[1:9]
     }else{
       plots <- select
     }
-  }else{
-    if(!is.null(except)){
-      if (!any(except %in% available.plots)) {
-        stop("Invalid except name. Type ?plot.Benford for help.")
+    
+  } else {
+    if (!is.null(except)) {
+      if (!all(except %in% available.plots)) {
+        idx <- which(!except %in% available.plots)
+        stop("Invalid plot name: ", except[idx], "\nType ?plot.Benford for help.")
       }
       except <- tolower(except)
-      if(all(except == "none")){
+      if (all(except == "none")) {
         plots <- available.plots[1:9]
       }else{
         ap <- available.plots[1:9]
@@ -341,7 +354,7 @@ plot.Benford <- function(x, select = c("digits", "second order", "summation", "c
     }
     
     nslots <- rows*cols
-    if(all(select == c("digits", "second order", "summation", "chi squared", "ex summation"))){
+    if ( all(c("digits", "second order", "summation", "chi squared", "ex summation") %in% select)) {
       plot_this <- c("digits", "second order",  "summation","chi squared", "ex summation", "legend")
       m <- matrix(c(1,2,3,4,2,5,6,6,6), nrow = 3, ncol = 3, byrow = TRUE)
       layout(mat = m, heights = c(0.45,0.45,0.1)) 
@@ -354,8 +367,8 @@ plot.Benford <- function(x, select = c("digits", "second order", "summation", "c
   }
   
   
-  for(i in 1:length(plot_this)){
-    switch (plot_this[i],
+  for (i in 1:length(plot_this)) {
+    switch(plot_this[i],
             "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
             "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
             "second order" = plotting.second.order(x, col.bar, grid, ...),
