@@ -360,6 +360,7 @@ plot.Benford <- function(x,
     layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
   }
   
+  lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
   
   for (i in 1:length(plot_this)) {
     switch(plot_this[i],
@@ -372,7 +373,7 @@ plot.Benford <- function(x,
             "chi squared" = plotting.chi_squared(x, grid, ...),
             "abs diff" = plotting.abs.diff(x, grid, ...),
             "ex summation" = plotting.ex.summation(x, grid, ...),
-            "legend" = plotting.legend(x, err.bounds, rows*3/5),
+            "legend" = plotting.legend(x, err.bounds, lg_size),
             "blank" = plot.new()
     ) 
   }
