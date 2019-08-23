@@ -365,7 +365,7 @@ plot.Benford <- function(x, select = c("digits", "second order", "summation", "c
             "chi squared" = plotting.chi_squared(x, grid, ...),
             "abs diff" = plotting.abs.diff(x, grid, ...),
             "ex summation" = plotting.ex.summation(x, grid, ...),
-            "legend" = plotting.legend(x, err.bounds, rows/4),
+            "legend" = plotting.legend(x, err.bounds, rows*3/5),
             "blank" = plot.new()
     ) 
   }
