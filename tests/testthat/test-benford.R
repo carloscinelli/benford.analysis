@@ -85,9 +85,10 @@ test_that("Both signs, simulated log-normal and plots",
             data <- rlnorm(1000, 10, 10)
             data <- data*c(1, -1)
             bfd <- benford(data, sign = "both", discrete = FALSE)
-            plot(bfd, "none")
             expect_error(plot.Benford(1))
             expect_error(plot(bfd, except = "xxx"))
+            expect_error(plot(bfd, select = "xxx"))
+            plot(bfd, except = c("none"))
             plot(bfd, except = c("mantissa","abs diff", "second order") )
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation") )
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
@@ -96,7 +97,17 @@ test_that("Both signs, simulated log-normal and plots",
                                  "chi square", "ex summation"))
             plot(bfd, except = c("digits","rootogram digits", "rootogram second order", "summation", "mantissa","abs diff", "chi squared", "ex summation"))
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square", "ex summation"), err.bound = TRUE)
+                                 "chi square", "ex summation"), err.bars = TRUE)
+            plot(bfd, select = NULL)
+            plot(bfd, except = "none", select = NULL)
+            plot(bfd, select = "all")
+            plot(bfd, select = "rootogram digits")
+            plot(bfd, select = "rootogram digits", err.bars = TRUE)
+            plot(bfd, select = "second order")
+            plot(bfd, select = "mantissa")
+            plot(bfd, select = "abs diff")
+            plot(bfd, select = "rootogram second order")
+            plot(bfd, select = c("digits","rootogram digits", "rootogram second order", "summation", "mantissa","abs diff", "legend"))
             
             # check if object did not change
             expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))
