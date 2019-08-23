@@ -4,30 +4,29 @@
 \alias{plot.Benford}
 \title{Plot method for Benford Analysis}
 \usage{
-\method{plot}{Benford}(x, except = c("mantissa", "abs diff",
-  "rootogram digits", "rootogram second order"), select = c("digits",
-  "second order", "summation", "chi squared", "legend", "ex summation"),
-  multiple = TRUE, col.bar = "lightblue", err.bars = FALSE,
+\method{plot}{Benford}(x, select = c("digits", "second order",
+  "summation", "chi squared", "ex summation"), except = NULL,
+  multiple = TRUE, col.bar = "lightblue", err.bounds = FALSE,
   alpha = 0.05, grid = TRUE, ...)
 }
 \arguments{
 \item{x}{a "Benford" object}
 
-\item{except}{it specifies which plots are not going to be plotted.
+\item{select}{it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.}
+
+\item{except}{it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
 Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
 "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 put except = "all"}
 
-\item{select}{it specifies the order and which plots are going to be plotted (including the legend). If NULL, the parameter except is used.}
-
 \item{multiple}{if TRUE, all plots are grouped in the same window.}
 
 \item{col.bar}{a color to be used to fill the bars. The default is lightblue.}
 
-\item{err.bars}{if TRUE, the upper and lower error bars are draw. The error bars indicate the binomial root mean square error.}
+\item{err.bounds}{if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.}
 
-\item{alpha}{it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bars will represent 1.96 standard error from the expected count.}
+\item{alpha}{it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.}
 
 \item{grid}{if TRUE, adds an rectangular grid to plot.}
 
