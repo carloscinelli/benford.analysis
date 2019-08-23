@@ -551,25 +551,28 @@ plotting.legend <- function(x, err.bounds, size) {
   par(mar = c(0,0,0,0))
   #plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = paste("Legend \n Dataset:", x[["info"]]$data.name))
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
-  if(err.bounds){
-  plot_colors <- c("lightblue","blue","red","red")
+  if (err.bounds) {
+  plot_colors <- c("lightblue","red","red")
   legend(x = "top",
          inset = 0,
-         legend = c("data", "data", "benford", "lower and upper bounds"), 
+         legend = c("Observed Frequency", 
+                    "Expected: Benford's Law", 
+                    "Expected: Lower and Upper Bounds"), 
          col = plot_colors, 
          cex = size,
-         lwd = c(rep(5, 3), 1),
-         lty = c(rep(1, 3), 2),
+         lwd = c(rep(2, 2), 2),
+         lty = c(rep(1, 2), 2),
          horiz = TRUE)
   }else{
-    plot_colors <- c("lightblue","blue","red")
+    plot_colors <- c("lightblue","red")
     legend(x = "top",
            inset = 0,
-           legend = c("data", "data", "benford"), 
+           legend = c("Observed Frequency", 
+                      "Expected: Benford's Law"), 
            col = plot_colors, 
            cex = size,
-           lwd = 5,
-           lty = rep(1, 3),
+           lwd = 2,
+           lty = rep(1, 2),
            horiz = TRUE)
   }
 }
