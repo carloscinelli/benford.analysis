@@ -269,16 +269,16 @@ benford <- function(data, number.of.digits = 2,
 ##' @description The \code{plot} method for "Benford" objects.
 ##' 
 ##' @param  x a "Benford" object
-##' @param except it specifies which plots are not going to be plotted.
+##' @param select it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.
+##' @param except it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
 ##' Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
 ##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 ##' put except = "all"
-##' @param select it specifies the order and which plots are going to be plotted (including the legend). If NULL, the parameter except is used.
 ##' @param multiple if TRUE, all plots are grouped in the same window.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
-##' @param err.bars if TRUE, the upper and lower error bars are draw. The error bars indicate the binomial root mean square error.
-##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bars will represent 1.96 standard error from the expected count.
+##' @param err.bounds if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.
+##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.
 ##' @param grid if TRUE, adds an rectangular grid to plot.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
@@ -287,19 +287,12 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
-plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), select = c("digits", "second order", "summation", "chi squared", "legend", "ex summation"), multiple = TRUE,  col.bar = "lightblue", err.bars = FALSE, alpha = 0.05, grid = TRUE, ...){
-  
+plot.Benford <- function(x, select = c("digits", "second order", "summation", "chi squared", "ex summation"), except = NULL, multiple = TRUE,  col.bar = "lightblue", err.bounds = FALSE, alpha = 0.05, grid = TRUE, ...){
   
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "legend",  "ex summation", "abs diff", "none", "all")
-  
-  if (!any(except %in% available.plots)) {
-    stop("Invalid except name. Type ?plot.Benford for help.")
-  }
-  
-  except <- tolower(except)
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
   
   if(!is.null(select)){
     select <- tolower(select)
@@ -307,15 +300,22 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
       stop("Invalid select name. Type ?plot.Benford for help.")
     }
     if(all(select == "all")){
-      plot.it <- available.plots[1:10]
-    }
-    plot.it <- select
-  }else{
-    if(all(except == "none")){
-      plot.it <- available.plots[1:10]
+      plots <- available.plots[1:9]
     }else{
-      ap <- available.plots[1:10]
-      plot.it <- ap[ap != except]
+      plots <- select
+    }
+  }else{
+    if(!is.null(except)){
+      if (!any(except %in% available.plots)) {
+        stop("Invalid except name. Type ?plot.Benford for help.")
+      }
+      except <- tolower(except)
+      if(all(except == "none")){
+        plots <- available.plots[1:9]
+      }else{
+        ap <- available.plots[1:9]
+        plots <- ap[!(ap %in% except)]
+      }
     }
   }
   
@@ -324,7 +324,7 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     
-    nGraphics <- length(plot.it)
+    nGraphics <- length(plots)
     
     if (nGraphics < 4) {
       rows = 1; 
@@ -336,17 +336,28 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
       cols = 3
     }
     if (nGraphics > 6) {
-      rows = 2; 
-      cols = 4
+      rows = 3; 
+      cols = 3
     }
     
-    par(mfrow = c(rows,cols))
+    nslots <- rows*cols
+    if(all(select == c("digits", "second order", "summation", "chi squared", "ex summation"))){
+      plot_this <- c("digits", "second order",  "summation","chi squared", "ex summation", "legend")
+      m <- matrix(c(1,2,3,4,2,5,6,6,6), nrow = 3, ncol = 3, byrow = TRUE)
+      layout(mat = m, heights = c(0.45,0.45,0.1)) 
+    }else{
+      plot_this <- c(rep("blank", nslots), "legend")
+      plot_this[1:nGraphics] <- plots
+      m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
+      layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
+    }
   }
   
-  for(i in 1:length(plot.it)){
-    switch (plot.it[i],
-            "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bars, ...),
-            "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bars, ...),
+  
+  for(i in 1:length(plot_this)){
+    switch (plot_this[i],
+            "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
+            "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
             "second order" = plotting.second.order(x, col.bar, grid, ...),
             "rootogram second order" = plotting.rootogram.second.order(x, col.bar, grid, ...),
             "summation" = plotting.summation(x, col.bar, grid, ...),
@@ -354,7 +365,8 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
             "chi squared" = plotting.chi_squared(x, grid, ...),
             "abs diff" = plotting.abs.diff(x, grid, ...),
             "ex summation" = plotting.ex.summation(x, grid, ...),
-            "legend" = plotting.legend(x, err.bars)
+            "legend" = plotting.legend(x, err.bounds, rows/4),
+            "blank" = plot.new()
     ) 
   }
   

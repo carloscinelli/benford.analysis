@@ -321,9 +321,9 @@ skewness <- function(x)
   (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
 
 #### plot ####
-#' @importFrom graphics rect points arrows
+#' @importFrom graphics rect points arrows layout plot.new
 
-plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bars = FALSE, alpha = 0.05, ...) {
+plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -345,17 +345,18 @@ plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.
   barplot(y, 
           col = col.bar, 
           yaxt = "n", add = T)
-  lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
-  if(err.bars){
+  lines(xmarks, bdf, col = "red", lwd = 2)
+  if(err.bounds){
     n <- x$info$n
     ep <- x[["bfd"]]$benford.dist
     ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
     lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
-    arrows(xmarks, lb, xmarks, ub, length = 0.05/x$info$number.of.digits, angle = 90, code = 3, col = 'darkgreen')
+    lines(ub ~ xmarks, lty = 2, col = 'red')
+    lines(lb ~ xmarks, lty = 2, col = 'red')
   }
 }
 
-plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bars = FALSE, alpha = 0.05, ...) {
+plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
   y <- x[["bfd"]]$data.dist.freq
   bdf <- x[["bfd"]]$benford.dist.freq
   digits <- x[["bfd"]]$digits
@@ -378,14 +379,15 @@ plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = 
        xright = xmarks + 0.5,
        ybottom = bdf, ytop = bdf - y, col = col.bar)
   abline(h = 0)
-  lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
-  if(err.bars){
+  lines(xmarks, bdf, col = "red", lwd = 2)
+  if(err.bounds){
     n <- x$info$n
     ep <- x[["bfd"]]$benford.dist
     ub <- qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
     lb <- -qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
-    arrows(xmarks, lb, xmarks, ub, length = 0.05/x$info$number.of.digits, angle = 90, code = 3, col = 'darkgreen')
-    abline(h = 0, lwd=2, col = 'darkgreen')
+    lines(ub ~ xmarks, lty = 2, col = 'red')
+    lines(lb ~ xmarks, lty = 2, col = 'red')
+    abline(h = 0, col = 'red')
   }
 }
 
@@ -411,7 +413,7 @@ plotting.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
   barplot(bfd,
           col = col.bar, 
           yaxt = "n", add = T)
-  lines(xmarks, y, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  lines(xmarks, y, col = "red", lwd = 2)
 }
 
 plotting.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
@@ -437,7 +439,7 @@ plotting.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRU
        xright = xmarks + 0.5,
        ybottom = bdf, ytop = bdf - y, col = col.bar)
   abline(h = 0)
-  lines(xmarks, bdf, type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  lines(xmarks, bdf, col = "red", lwd = 2)
 }
 
 plotting.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
@@ -461,7 +463,7 @@ plotting.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
   barplot(y,
           col = col.bar, 
           yaxt = "n", add = T)
-  lines(xmarks, rep(mean(y), length(xmarks)), type = "b", pch = 19, col = "red", lty = 1, cex = 1.5/x$info$number.of.digits)
+  lines(xmarks, rep(mean(y), length(xmarks)), col = "red", lwd = 2)
 }
 
 plotting.ordered.mantissa <- function(x, grid = TRUE, ...) {
@@ -545,25 +547,29 @@ plotting.ex.summation <- function(x, grid = TRUE, ...) {
   points(xmarks, y, pch = 19, col = "blue", cex = 1/x$info$number.of.digits)
 }
 
-plotting.legend <- function(x, err.bars) {
-  plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = paste("Legend \n Dataset:", x[["info"]]$data.name))
-  if(err.bars){
-  plot_colors <- c("lightblue","blue","red","darkgreen")
+plotting.legend <- function(x, err.bounds, size) {
+  par(mar = c(0,0,0,0))
+  #plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = paste("Legend \n Dataset:", x[["info"]]$data.name))
+  plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
+  if(err.bounds){
+  plot_colors <- c("lightblue","blue","red","red")
   legend(x = "top",
          inset = 0,
-         legend = c("data", "data", "benford", "error bars"), 
+         legend = c("data", "data", "benford", "lower and upper bounds"), 
          col = plot_colors, 
-         lwd = 2,
-         lty = rep(1, 4),
-         pch = c(NA,NA,19,NA))
+         cex = size,
+         lwd = c(rep(5, 3), 1),
+         lty = c(rep(1, 3), 2),
+         horiz = TRUE)
   }else{
     plot_colors <- c("lightblue","blue","red")
     legend(x = "top",
            inset = 0,
            legend = c("data", "data", "benford"), 
            col = plot_colors, 
-           lwd = 2,
+           cex = size,
+           lwd = 5,
            lty = rep(1, 3),
-           pch = c(NA,NA,19))
+           horiz = TRUE)
   }
 }
