@@ -272,10 +272,13 @@ benford <- function(data, number.of.digits = 2,
 ##' @param except it specifies which plots are not going to be plotted.
 ##' Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
 ##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
-##' put except = "none". The default is not to plot the "mantissa" and "abs diff".
+##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
+##' put except = "all"
+##' @param select it specifies the order and which plots are going to be plotted (including the legend). If NULL, the parameter except is used.
 ##' @param multiple if TRUE, all plots are grouped in the same window.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
-##' @param err.bound if TRUE, the upper and lower error bounds are draw.
+##' @param err.bars if TRUE, the upper and lower error bars are draw. The error bars indicate the binomial root mean square error.
+##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bars will represent 1.96 standard error from the expected count.
 ##' @param grid if TRUE, adds an rectangular grid to plot.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
@@ -283,25 +286,45 @@ benford <- function(data, number.of.digits = 2,
 ##' @importFrom graphics abline axis barplot legend lines par plot
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
-##' @importFrom stats setNames
-plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), multiple = TRUE,  col.bar = "lightblue", err.bound = FALSE, grid = TRUE, ...){
+##' @importFrom stats setNames qnorm
+plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits","rootogram second order"), select = c("digits", "second order", "summation", "chi squared", "legend", "ex summation"), multiple = TRUE,  col.bar = "lightblue", err.bars = FALSE, alpha = 0.05, grid = TRUE, ...){
   
   
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "legend",  "ex summation", "abs diff", "none", "all")
+  
+  if (!any(except %in% available.plots)) {
+    stop("Invalid except name. Type ?plot.Benford for help.")
+  }
+  
   except <- tolower(except)
   
-  if (!any(except %in% c("digits", "rootogram digits", "second order", "rootogram second order", "summation",
-                     "mantissa", "chi squared", "abs diff","none", "legend"))) {
-    stop("Invalid except name. Type ?plot.Benford for help.")
+  if(!is.null(select)){
+    select <- tolower(select)
+    if (!any(select %in% available.plots)) {
+      stop("Invalid select name. Type ?plot.Benford for help.")
     }
+    if(all(select == "all")){
+      plot.it <- available.plots[1:10]
+    }
+    plot.it <- select
+  }else{
+    if(all(except == "none")){
+      plot.it <- available.plots[1:10]
+    }else{
+      ap <- available.plots[1:10]
+      plot.it <- ap[ap != except]
+    }
+  }
+  
   
   if (multiple) {
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
     
-    nGraphics <- 10 - length(except)
+    nGraphics <- length(plot.it)
     
     if (nGraphics < 4) {
       rows = 1; 
@@ -320,47 +343,20 @@ plot.Benford <- function(x, except = c("mantissa","abs diff", "rootogram digits"
     par(mfrow = c(rows,cols))
   }
   
-  if (all(except != "digits")) {
-  plotting.data.vs.benford(x, col.bar, grid, err.bound, ...)
+  for(i in 1:length(plot.it)){
+    switch (plot.it[i],
+            "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bars, ...),
+            "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bars, ...),
+            "second order" = plotting.second.order(x, col.bar, grid, ...),
+            "rootogram second order" = plotting.rootogram.second.order(x, col.bar, grid, ...),
+            "summation" = plotting.summation(x, col.bar, grid, ...),
+            "mantissa" = plotting.ordered.mantissa(x, grid, ...),
+            "chi squared" = plotting.chi_squared(x, grid, ...),
+            "abs diff" = plotting.abs.diff(x, grid, ...),
+            "ex summation" = plotting.ex.summation(x, grid, ...),
+            "legend" = plotting.legend(x, err.bars)
+    ) 
   }
-  
-  if (all(except != "rootogram digits")) {
-    plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bound, ...)
-  }
-  
-  if (all(except != "second order")) {
-  plotting.second.order(x, col.bar, grid, ...)
-  }
-  
-  if (all(except != "rootogram second order")) {
-    plotting.rootogram.second.order(x, col.bar, grid, ...)
-  }
-  
-  if (all(except != "summation")) {
-  plotting.summation(x, col.bar, grid, ...)
-  }
-  
-  if (all(except != "mantissa")) {
-  plotting.ordered.mantissa(x, grid, ...)
-  }
-  
-  if (all(except != "chi squared")) {
-  plotting.chi_squared(x, grid, ...)
-  }
-  
-  if (all(except != "abs diff")) {
-  plotting.abs.diff(x, grid, ...)
-  }
-  
-  if (all(except != "ex summation")) {
-  plotting.ex.summation(x, grid, ...)
-  }
-  
-  if (all(except != "legend")) {
-  plotting.legend(x)
-  }
-  
-  
   
 }
 
