@@ -549,7 +549,6 @@ plotting.ex.summation <- function(x, grid = TRUE, ...) {
 
 plotting.legend <- function(x, err.bounds, size) {
   par(mar = c(0,0,0,0))
-  #plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = paste("Legend \n Dataset:", x[["info"]]$data.name))
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
   if (err.bounds) {
   plot_colors <- c("lightblue","red","red")
@@ -575,4 +574,5 @@ plotting.legend <- function(x, err.bounds, size) {
            lty = rep(1, 2),
            horiz = TRUE)
   }
+  par(mar = c(5, 4, 4, 2) + 0.1)
 }

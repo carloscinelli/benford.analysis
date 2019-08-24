@@ -332,12 +332,11 @@ plot.Benford <- function(x,
     }
   }
   
+  nGraphics <- length(plots)
   
-  if (multiple) {
+  if (multiple | (nGraphics == 1)) {
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
-    
-    nGraphics <- length(plots)
     
     if (nGraphics < 4) {
       rows = 1; 
@@ -358,9 +357,17 @@ plot.Benford <- function(x,
     plot_this[1:nGraphics] <- plots
     m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
     layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
+    lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
+  }else{
+    old.par <- par(no.readonly = TRUE)
+    on.exit(par(old.par))
+    plot_this <- vector("character", nGraphics*2)
+    plot_this[seq(1, nGraphics*2, 2)] <- plots
+    plot_this[seq(2, nGraphics*2, 2)] <- "legend"
+    m <- matrix(c(1,2), nrow = 2, ncol = 1,byrow = TRUE)
+    layout(mat = m, heights = c(0.9, 0.1)) 
+    lg_size <- ifelse(err.bounds, 0.6, 0.7)
   }
-  
-  lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
   
   for (i in 1:length(plot_this)) {
     switch(plot_this[i],
