@@ -172,9 +172,13 @@ frequencyplot(datadist, benfordist)
 frequencyplot(second.datadist, benfordist)
 frequencyplot(lastwo, uniformdist)
 
-
-
-histogram
+# frequencyplot.benford <- function(x, ){
+#   y <- x[["bfd"]]$data.dist.freq
+#   bdf <- x[["bfd"]]$benford.dist.freq
+#   digits <- x[["bfd"]]$digits
+#   frequencyplot(y, bfd, )
+#   
+# }
 
 
 plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
