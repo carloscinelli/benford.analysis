@@ -354,18 +354,13 @@ plot.Benford <- function(x,
     }
     
     nslots <- rows*cols
-    if ( all(c("digits", "second order", "summation", "chi squared", "ex summation") %in% select)) {
-      plot_this <- c("digits", "second order",  "summation","chi squared", "ex summation", "legend")
-      m <- matrix(c(1,2,3,4,2,5,6,6,6), nrow = 3, ncol = 3, byrow = TRUE)
-      layout(mat = m, heights = c(0.45,0.45,0.1)) 
-    }else{
-      plot_this <- c(rep("blank", nslots), "legend")
-      plot_this[1:nGraphics] <- plots
-      m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
-      layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
-    }
+    plot_this <- c(rep("blank", nslots), "legend")
+    plot_this[1:nGraphics] <- plots
+    m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
+    layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
   }
   
+  lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
   
   for (i in 1:length(plot_this)) {
     switch(plot_this[i],
@@ -378,7 +373,7 @@ plot.Benford <- function(x,
             "chi squared" = plotting.chi_squared(x, grid, ...),
             "abs diff" = plotting.abs.diff(x, grid, ...),
             "ex summation" = plotting.ex.summation(x, grid, ...),
-            "legend" = plotting.legend(x, err.bounds, rows*3/5),
+            "legend" = plotting.legend(x, err.bounds, lg_size),
             "blank" = plot.new()
     ) 
   }
