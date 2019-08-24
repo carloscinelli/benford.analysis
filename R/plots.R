@@ -128,6 +128,12 @@ plot.Benford <- function(x,
 
 # separate plots ----------------------------------------------------------
 
+
+# duas tarefas diferentes
+## 1) criar funções genéricas e flexiveis para cada lógica de plot, indpendnetemente dos dados
+## 2) pode criar função genérica de arrumar plots
+
+
 # modular
 
 compute.error.bounds <- function(ep, n, alpha){
@@ -140,7 +146,7 @@ compute.error.bounds <- function(ep, n, alpha){
 #### plot ####
 #' @importFrom graphics rect points arrows layout plot.new
 
-
+# exportar para o usuário as funções genéricas
 frequencyplot <- function(obs.freq, exp.freq, alpha, err.bounds, tuning graphical parameters){
   
   out <- list()
@@ -154,6 +160,8 @@ rootogramplot <- function(obs.freq, exp.feq, tuning graphical parameters){
   
 }
 
+
+# essa aqui talvez não ?
 plot.error.bounds <- function(bounds, type = c("lines", "arrows")){
   if (lines){
     lines()
