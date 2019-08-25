@@ -1,7 +1,5 @@
 
-# main plot ---------------------------------------------------------------
-
-
+# Main plot ---------------------------------------------------------------------------------------------
 
 ##' @title Plot method for Benford Analysis
 ##' @description The \code{plot} method for "Benford" objects.
@@ -21,10 +19,11 @@
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
 ##' @export
-##' @importFrom graphics abline axis barplot legend lines par plot
+##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
+
 plot.Benford <- function(x, 
                          select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
                          except = NULL, 
@@ -109,88 +108,66 @@ plot.Benford <- function(x,
   
   for (i in 1:length(plot_this)) {
     switch(plot_this[i],
-           "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-           "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-           "second order" = plotting.second.order(x, col.bar, grid, ...),
-           "rootogram second order" = plotting.rootogram.second.order(x, col.bar, grid, ...),
-           "summation" = plotting.summation(x, col.bar, grid, ...),
-           "mantissa" = plotting.ordered.mantissa(x, grid, ...),
-           "chi squared" = plotting.chi_squared(x, grid, ...),
-           "abs diff" = plotting.abs.diff(x, grid, ...),
-           "ex summation" = plotting.ex.summation(x, grid, ...),
-           "legend" = plotting.legend(x, err.bounds, lg_size),
+           "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
+           "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
+           "second order" = plot.second.order(x, col.bar, grid, ...),
+           "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid, ...),
+           "summation" = plot.summation(x, col.bar, grid, ...),
+           "mantissa" = plot.ordered.mantissa(x, grid, ...),
+           "chi squared" = plot.chi_squared(x, grid, ...),
+           "abs diff" = plot.abs.diff(x, grid, ...),
+           "ex summation" = plot.ex.summation(x, grid, ...),
+           "legend" = plot.legend(x, err.bounds, lg_size),
            "blank" = plot.new()
     ) 
   }
   
 }
 
-
-# separate plots ----------------------------------------------------------
-
+## Generic functions -------------------------------------------------------------------------------------------
 
 # duas tarefas diferentes
 ## 1) criar funções genéricas e flexiveis para cada lógica de plot, indpendnetemente dos dados
 ## 2) pode criar função genérica de arrumar plots
 
-
-# modular
-
-compute.error.bounds <- function(ep, n, alpha){
-  ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
-  lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
-  data.frame(ub, lb)
-}
-
-
-#### plot ####
-#' @importFrom graphics rect points arrows layout plot.new
-
 # exportar para o usuário as funções genéricas
-frequencyplot <- function(obs.freq, exp.freq, alpha, err.bounds, tuning graphical parameters){
-  
-  out <- list()
-  out$data <- data.frame(obs.freq, exp.freq, err.bounds)
-  out$params <- list(alpha = alpha)
-  invisible(out)
-}
 
-
-rootogramplot <- function(obs.freq, exp.feq, tuning graphical parameters){
-  
-}
-
-
-# essa aqui talvez não ?
-plot.error.bounds <- function(bounds, type = c("lines", "arrows")){
-  if (lines){
-    lines()
-  }
-}
-
-frequencyplot(datadist, benfordist)
-frequencyplot(second.datadist, benfordist)
-frequencyplot(lastwo, uniformdist)
-
-# frequencyplot.benford <- function(x, ){
-#   y <- x[["bfd"]]$data.dist.freq
-#   bdf <- x[["bfd"]]$benford.dist.freq
-#   digits <- x[["bfd"]]$digits
-#   frequencyplot(y, bfd, )
+# rootogramplot <- function(obs.freq, exp.feq, tuning graphical parameters){
 #   
+# }
+# 
+# 
+# # essa aqui talvez não ?
+# plot.error.bounds <- function(bounds, type = c("lines", "arrows")){
+#   if (lines){
+#     lines()
+#   }
+# }
+
+# compute.error.bounds <- function(ep, n, alpha){
+#   ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
+#   lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
+#   data.frame(ub, lb)
 # }
 
 
-plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
-  y <- x[["bfd"]]$data.dist.freq
-  bdf <- x[["bfd"]]$benford.dist.freq
-  digits <- x[["bfd"]]$digits
-  xmarks <- seq(0.7, length(bdf)*1.2, 1.2)
-  plot(xmarks, y,
-       main = "Digits distribution\nBarchart",
-       xlab = "Digits", ylab = "Frequency",
+plot.frequency <- function(digits,
+                           obs.freq,
+                           exp.freq,
+                           main = NULL,
+                           xlab = "Digits",
+                           ylab = "Frequency",
+                           grid = TRUE,
+                           col.bar = "lightblue",
+                           err.bounds = FALSE,
+                           alpha = 0.05){
+  
+  xmarks <- seq(0.7, length(exp.freq)*1.2, 1.2)
+  plot(xmarks, obs.freq,
+       main = main,
+       xlab = xlab, ylab = ylab,
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(0, max(c(y, bdf))*1.1),
+       ylim = c(0, max(c(obs.freq, exp.freq))*1.1),
        yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
        panel.first = {
          if(grid) {
@@ -200,60 +177,39 @@ plotting.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.
          axis(1, at = xmarks,  labels = digits)
        }
   )
-  barplot(y, 
+  barplot(obs.freq, 
           col = col.bar, 
           yaxt = "n", add = T)
-  lines(xmarks, bdf, col = "red", lwd = 2)
+  lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
-    n <- x$info$n
-    ep <- x[["bfd"]]$benford.dist
+    n <- sum(obs.freq)
+    ep <- exp.freq
     ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
     lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
   }
+  
 }
 
 
-
-plotting.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
-  y <- x[["bfd"]]$benford.so.dist.freq
-  bfd <- x[["bfd"]]$data.second.order.dist.freq
-  digits <- x[["bfd"]]$digits
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y,
-       main = "Digits distribution\nSecond Order Test - Barchart",
-       xlab = "Digits", ylab = "Frequency",
+plot.rootogram <- function(digits,
+                           obs.freq,
+                           exp.freq,
+                           main = NULL,
+                           xlab = "Digits",
+                           ylab = "Frequency",
+                           grid = TRUE,
+                           col.bar = "lightblue",
+                           err.bounds = FALSE,
+                           alpha = 0.05){
+  
+  xmarks <- seq(0.7, length(digits)*1.2, 1.2)
+  plot(xmarks, obs.freq,
+       main = main,
+       xlab = xlab, ylab = ylab,
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(0, max(c(bfd, y))*1.1),
-       yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
-       panel.first = {
-         if(grid){
-           grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
-         }
-         axis(1, at = xmarks,  labels = digits)
-       }
-  )
-  barplot(bfd,
-          col = col.bar, 
-          yaxt = "n", add = T)
-  lines(xmarks, y, col = "red", lwd = 2)
-}
-
-
-
-
-plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
-  y <- x[["bfd"]]$data.dist.freq
-  bdf <- x[["bfd"]]$benford.dist.freq
-  digits <- x[["bfd"]]$digits
-  xmarks <- seq(0.7, length(bdf)*1.2, 1.2)
-  plot(xmarks, y,
-       main = "Digits distribution\nRootogram",
-       xlab = "Digits", ylab = "Frequency",
-       xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
+       ylim = c(min(exp.freq - obs.freq)*1.1, max(abs(exp.freq - obs.freq)*0.5, exp.freq)*1.1),
        yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
        panel.first = {
          if(grid){
@@ -265,71 +221,121 @@ plotting.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = 
   )
   rect(xleft = xmarks - 0.5,
        xright = xmarks + 0.5,
-       ybottom = bdf, ytop = bdf - y, col = col.bar)
+       ybottom = exp.freq, ytop = exp.freq - obs.freq, col = col.bar)
   abline(h = 0)
-  lines(xmarks, bdf, col = "red", lwd = 2)
+  lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
-    n <- x$info$n
-    ep <- x[["bfd"]]$benford.dist
+    n <- sum(obs.freq)
+    ep <- exp.freq
     ub <- qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
     lb <- -qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
     abline(h = 0, col = 'red')
   }
+  
 }
 
-plotting.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
-  y <- x[["bfd"]]$data.second.order.dist.freq
-  bdf <- x[["bfd"]]$benford.so.dist.freq
-  digits <- x[["bfd"]]$digits
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y,
-       main = "Digits distribution\nSecond Order Test - Rootogram",
-       xlab = "Digits", ylab = "Frequency",
-       xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(min(bdf - y)*1.1, max(abs(bdf - y)*0.5, bdf)*1.1),
-       yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
+
+plot.needle <- function(digits,
+                                 discrepancy,
+                                 main = NULL,
+                                 xlab = NULL,
+                                 ylab = NULL,
+                                 grid = TRUE){
+  xmarks <- seq(0.7, length(digits)*1.2, 1.2)
+  plot(xmarks, discrepancy, 
+       col = "blue",
+       xlab = xlab,
+       ylab = ylab, 
+       main = main,
+       xaxt = "n",
+       xaxs = 'i',
+       type = 'h',
+       cex.axis = 0.8,
        panel.first = {
          if(grid){
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
-         }
-         axis(1, at = xmarks,  labels = digits)
-       }
-  )
-  rect(xleft = xmarks - 0.5,
-       xright = xmarks + 0.5,
-       ybottom = bdf, ytop = bdf - y, col = col.bar)
-  abline(h = 0)
-  lines(xmarks, bdf, col = "red", lwd = 2)
-}
-
-plotting.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
-  y <- x[["bfd"]]$data.summation
-  digits <- x[["bfd"]]$digits
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y,
-       main = "Summation Distribution by digits",
-       xlab = "Digits", ylab = "Summation",
-       xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(0, max(c(y, y))*1.1),
-       yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
-       panel.first = {
-         if(grid){
-           grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
+           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
          }
          axis(1, at = xmarks, labels = digits)
-       }
-  )
-  barplot(y,
-          col = col.bar, 
-          yaxt = "n", add = T)
-  lines(xmarks, rep(mean(y), length(xmarks)), col = "red", lwd = 2)
+       })
+  points(xmarks, discrepancy, pch = 19, col = "blue", cex = 0.5)
 }
 
-plotting.ordered.mantissa <- function(x, grid = TRUE, ...) {
+# Separate plots --------------------------------------------------------------------------------------
+
+utils::globalVariables(c("x"))
+
+plot.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
+
+  digits <- x[["bfd"]]$digits
+  obs.freq <-x[["bfd"]]$data.dist.freq
+  exp.freq <- x[["bfd"]]$benford.dist.freq
+  out <- list()
+  out$data <- data.frame(digits, obs.freq, exp.freq)
+  out$params <- list(alpha, err.bounds)
+  
+  plot.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  
+  invisible(out)
+}
+
+
+plot.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+
+  digits <- x[["bfd"]]$digits
+  obs.freq <-x[["bfd"]]$data.second.order.dist.freq
+  exp.freq <- x[["bfd"]]$benford.so.dist.freq
+  out <- list()
+  out$data <- data.frame(digits, obs.freq, exp.freq)
+  
+  plot.frequency(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar)
+  
+  invisible(out)
+}
+
+
+plot.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
+  digits <- x[["bfd"]]$digits
+  obs.freq <- x[["bfd"]]$data.dist.freq
+  exp.freq <- x[["bfd"]]$benford.dist.freq
+  out <- list()
+  out$data <- data.frame(digits, obs.freq, exp.freq)
+  
+  plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  
+  invisible(out)
+}
+
+
+plot.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+  digits <- x[["bfd"]]$digits
+  obs.freq <- x[["bfd"]]$data.second.order.dist.freq
+  exp.freq <- x[["bfd"]]$benford.so.dist.freq
+  out <- list()
+  out$data <- data.frame(digits, obs.freq, exp.freq)
+  
+  plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test - Rootogram", "Digits", "Frequency", grid, col.bar)
+  
+  invisible(out)
+}
+
+
+plot.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+  digits <- x[["bfd"]]$digits
+  obs.freq <- x[["bfd"]]$data.summation
+  exp.freq <- rep(mean(obs.freq), length(digits))
+  out <- list()
+  out$data <- data.frame(digits, obs.freq, exp.freq)
+  
+  plot.frequency(digits, obs.freq, exp.freq, "Summation Distribution by digits", "Digits", "Frequency", grid, col.bar)
+  
+  invisible(out)
+}
+
+
+plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
   plot(sort(x[["data"]]$data.mantissa), 
        pch = ".",
        col = "blue", 
@@ -343,74 +349,44 @@ plotting.ordered.mantissa <- function(x, grid = TRUE, ...) {
   abline(a = 0, b = 1/length(x[["data"]]$data.mantissa), col = "red", lty = 2)
 }
 
-plotting.chi_squared <- function(x, grid = TRUE, ...) {
-  y <- c(NA, x[["bfd"]]$squared.diff, NA)
+
+plot.chi_squared <- function(x, grid = TRUE, ...) {
+  squared.diff <- c(NA, x[["bfd"]]$squared.diff, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y, 
-       col = "blue",
-       xlab = "Digits",
-       ylab = "Chi-squared", 
-       main = "Chi-Squared Difference",
-       xaxt = "n",
-       xaxs='i',
-       type = 'h',
-       cex.axis = 0.8,
-       panel.first = {
-         if(grid){
-           grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
-         }
-         axis(1, at = xmarks, labels = digits)
-       })
-  points(xmarks, y, pch = 19, col = "blue", cex = 1/x$info$number.of.digits)
+  out <- list()
+  out$data <- data.frame(digits, squared.diff)
+  
+  plot.needle(digits, squared.diff, "Chi-Squared Difference", "Digits", "Chi-squared")
+  
+  invisible(out)
 }
 
-plotting.abs.diff <- function(x, grid = TRUE, ...) {
-  y <- c(NA, x[["bfd"]]$absolute.diff, NA)
+
+plot.abs.diff <- function(x, grid = TRUE, ...) {
+  absolute.diff <- c(NA, x[["bfd"]]$absolute.diff, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y,
-       col = "blue",
-       xlab = "Digits",
-       ylab = "Absolute Difference", 
-       main = "Absolute Difference",
-       xaxt = "n",
-       xaxs='i',
-       type = 'h',
-       panel.first = {
-         if(grid){
-           grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
-         }
-         axis(1, at = xmarks, labels = digits)
-       })
-  points(xmarks, y, pch = 19, col = "blue", cex = 1/x$info$number.of.digits)
+  out <- list()
+  out$data <- data.frame(digits, absolute.diff)
+  
+  plot.needle(digits, absolute.diff, "Absolute Difference", "Digits", "Absolute Difference")
+  
+  invisible(out)
 }
 
-plotting.ex.summation <- function(x, grid = TRUE, ...) {
-  y <- c(NA, x[["bfd"]]$abs.excess.summation, NA)
+
+plot.ex.summation <- function(x, grid = TRUE, ...) {
+  abs.excess.summation <- c(NA, x[["bfd"]]$abs.excess.summation, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
-  xmarks <- seq(0.7, length(y)*1.2, 1.2)
-  plot(xmarks, y,
-       col = "blue",
-       xlab = "Digits",
-       ylab = "Absolute Excess Summation", 
-       main = "Summation Difference",
-       xaxt = "n",
-       xaxs='i',
-       type = 'h',
-       panel.first = {
-         if(grid){
-           grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 92, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
-         }
-         axis(1, at = xmarks, labels = digits)
-       })
-  points(xmarks, y, pch = 19, col = "blue", cex = 1/x$info$number.of.digits)
+  out <- list()
+  out$data <- data.frame(digits, abs.excess.summation)
+  
+  plot.needle(digits, abs.excess.summation, "Summation Difference", "Digits", "Absolute Excess Summation")
+  
+  invisible(out)
 }
 
-plotting.legend <- function(x, err.bounds, size) {
+
+plot.legend <- function(x, err.bounds, size) {
   par(mar = c(0,0,0,0))
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
   if (err.bounds) {

@@ -89,20 +89,14 @@ test_that("Both signs, simulated log-normal and plots",
             expect_error(plot(bfd, except = "xxx", select = NULL))
             expect_error(plot(bfd, select = "xxx"))
             plot(bfd, except = c("none"))
-            plot(bfd, except = c("mantissa","abs diff", "second order") )
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation") )
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square", "ex summation"))
-            plot(bfd, except = c("digits","rootogram digits", "rootogram second order",
-                                 "summation", "mantissa","abs diff", "chi squared", "ex summation"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square", "ex summation"), err.bounds = TRUE)
+            plot(bfd, except = c("mantissa","abs diff", "second order"))
+            plot(bfd, except = c("mantissa","abs diff", "second order", "summation"))
+            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", "chi square"))
             plot(bfd, except = "none", select = NULL)
             plot(bfd, except = "mantissa", select = NULL)
             plot(bfd, select = "digits", err.bounds = TRUE)
             plot(bfd, select = "rootogram digits", err.bounds = TRUE)
+            plot(bfd, select = "all")
             plot(bfd, select = "all", multiple = FALSE)
             plot(bfd, select = "second order")
             plot(bfd, select = "mantissa")
