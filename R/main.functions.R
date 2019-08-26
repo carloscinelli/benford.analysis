@@ -140,6 +140,10 @@ benford <- function(data, number.of.digits = 2,
                     discrete=TRUE, round=3, 
                     data.name = NULL){
   
+  if (!is.numeric(data)) stop("Data must be a numeric vector")
+  
+  if (length(data) == 1) stop("Data comprised of only one observation, no meaningful analysis is possible")
+  
   if (is.null(data.name)) {
     data.name <- as.character(deparse(substitute(data)))
   }

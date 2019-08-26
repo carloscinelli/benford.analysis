@@ -88,6 +88,8 @@ test_that("Both signs, simulated log-normal and plots",
             expect_error(plot.Benford(1))
             expect_error(plot(bfd, except = "xxx", select = NULL))
             expect_error(plot(bfd, select = "xxx"))
+            expect_error(plot(bfd, alpha = 0))
+            expect_error(plot(bfd, alpha = 1))
             plot(bfd, except = c("none"))
             plot(bfd, except = c("mantissa","abs diff", "second order"))
             plot(bfd, except = c("mantissa","abs diff", "second order", "summation"))
@@ -141,6 +143,20 @@ test_that("Internal function",
             x <- seq(0.1, 0.9, length.out = 9)
             y <- seq(0.9, 0.1, length.out = 9)
             expect_equal(round(sum(z.stat.bfd(x, y, 100))), 108)
+          }
+)
+
+test_that("Only one observation",
+          {
+            expect_error(benford(1000))
+          }
+)
+
+test_that("invalid input",
+          {
+            data(corporate.payment, envir = environment())
+            cp <- corporate.payment$Amount[corporate.payment$Amount >= 10]
+            expect_error(benford(as.data.frame(cp)))
           }
 )
 
