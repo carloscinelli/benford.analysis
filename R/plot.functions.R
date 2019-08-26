@@ -36,6 +36,8 @@ plot.Benford <- function(x,
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
+  if(!(alpha > 0 & alpha < 1)) stop(paste0(alpha, " is not a valid value for 'alpha' parameter"))
+  
   available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
   
   if (!is.null(select)) {
@@ -144,11 +146,15 @@ plot.Benford <- function(x,
 #   }
 # }
 
-# compute.error.bounds <- function(ep, n, alpha){
-#   ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
-#   lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
-#   data.frame(ub, lb)
-# }
+compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
+  ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
+  lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
+  if(rootogram){
+    data.frame(ub = ub - exp.freq, lb = lb - exp.freq)
+  }else{
+    data.frame(ub, lb)
+  }
+}
 
 
 plot.frequency <- function(digits,
@@ -162,12 +168,21 @@ plot.frequency <- function(digits,
                            err.bounds = FALSE,
                            alpha = 0.05){
   
+  if(err.bounds){
+    bounds <- compute.error.bounds(exp.freq, sum(obs.freq), alpha, rootogram = FALSE)
+    ub <- bounds$ub
+    lb <- bounds$lb
+    ylim <- c(0, max(c(obs.freq, exp.freq, ub))*1.1)
+  }else{
+    ylim <- c(0, max(c(obs.freq, exp.freq))*1.1)
+  }
+  
   xmarks <- seq(0.7, length(exp.freq)*1.2, 1.2)
   plot(xmarks, obs.freq,
        main = main,
        xlab = xlab, ylab = ylab,
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(0, max(c(obs.freq, exp.freq))*1.1),
+       ylim = ylim,
        yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
        panel.first = {
          if(grid) {
@@ -182,14 +197,10 @@ plot.frequency <- function(digits,
           yaxt = "n", add = T)
   lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
-    n <- sum(obs.freq)
-    ep <- exp.freq
-    ub <- n*ep + qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
-    lb <- n*ep - qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
+    invisible(bounds)
   }
-  
 }
 
 
@@ -204,12 +215,21 @@ plot.rootogram <- function(digits,
                            err.bounds = FALSE,
                            alpha = 0.05){
   
+  if(err.bounds){
+    bounds <- compute.error.bounds(exp.freq, sum(obs.freq), alpha, rootogram = TRUE)
+    ub <- bounds$ub
+    lb <- bounds$lb
+    ylim <- c(min(exp.freq - obs.freq, lb)*1.1, max(abs(exp.freq - obs.freq)*0.5, exp.freq, ub)*1.1)
+  }else{
+    ylim <- c(min(exp.freq - obs.freq)*1.1, max(abs(exp.freq - obs.freq)*0.5, exp.freq)*1.1)
+  }
+  
   xmarks <- seq(0.7, length(digits)*1.2, 1.2)
   plot(xmarks, obs.freq,
        main = main,
        xlab = xlab, ylab = ylab,
        xlim = c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])),
-       ylim = c(min(exp.freq - obs.freq)*1.1, max(abs(exp.freq - obs.freq)*0.5, exp.freq)*1.1),
+       ylim = ylim,
        yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
        panel.first = {
          if(grid){
@@ -225,13 +245,10 @@ plot.rootogram <- function(digits,
   abline(h = 0)
   lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
-    n <- sum(obs.freq)
-    ep <- exp.freq
-    ub <- qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) + 1/2
-    lb <- -qnorm(1 - alpha/2)*sqrt(n*ep*(1 - ep)) - 1/2
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
     abline(h = 0, col = 'red')
+    invisible(bounds)
   }
   
 }
@@ -273,10 +290,15 @@ plot.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.boun
   obs.freq <-x[["bfd"]]$data.dist.freq
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
-  out$data <- data.frame(digits, obs.freq, exp.freq)
-  out$params <- list(alpha, err.bounds)
   
-  plot.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  plot.data <- plot.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  
+  if(err.bounds){
+    out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
+  }else{
+    out$data <- data.frame(digits, obs.freq, exp.freq)
+    out$params <- data.frame(alpha = alpha)
+  }
   
   invisible(out)
 }
@@ -301,9 +323,15 @@ plot.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE
   obs.freq <- x[["bfd"]]$data.dist.freq
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
-  out$data <- data.frame(digits, obs.freq, exp.freq)
+
+  plot.data <- plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
   
-  plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  if(err.bounds){
+    out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
+  }else{
+    out$data <- data.frame(digits, obs.freq, exp.freq)
+    out$params <- data.frame(alpha = alpha)
+  }
   
   invisible(out)
 }
