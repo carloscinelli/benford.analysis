@@ -70,66 +70,80 @@ plot.Benford <- function(x,
   
   nGraphics <- length(plots)
   
-  if (multiple | (nGraphics == 1)) {
+  if((nGraphics == 1) & multiple){
     old.par <- par(no.readonly = TRUE)
     on.exit(par(old.par))
-    
-    if (nGraphics < 4) {
-      rows = 1; 
-      cols = nGraphics
-    }
-    
-    if (nGraphics >= 4 & nGraphics <= 6) {
-      rows = 2; 
-      cols = 3
-    }
-    if (nGraphics > 6) {
-      rows = 3; 
-      cols = 3
-    }
-    
-    nslots <- rows*cols
-    plot_this <- c(rep("blank", nslots), "legend")
-    plot_this[1:nGraphics] <- plots
-    m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
-    layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
-    lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
-  }else{
-    old.par <- par(no.readonly = TRUE)
-    on.exit(par(old.par))
-    plot_this <- vector("character", nGraphics*2)
-    plot_this[seq(1, nGraphics*2, 2)] <- plots
-    plot_this[seq(2, nGraphics*2, 2)] <- "legend"
-    m <- matrix(c(1,2), nrow = 2, ncol = 1,byrow = TRUE)
-    layout(mat = m, heights = c(0.9, 0.1)) 
+    #old.par("mfg")
+    pos_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
     lg_size <- ifelse(err.bounds, 0.6, 0.7)
-  }
+    plot_this <- plots
+  }else{
   
-  for (i in 1:length(plot_this)) {
-    switch(plot_this[i],
-           "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-           "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-           "second order" = plot.second.order(x, col.bar, grid, ...),
-           "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid, ...),
-           "summation" = plot.summation(x, col.bar, grid, ...),
-           "mantissa" = plot.ordered.mantissa(x, grid, ...),
-           "chi squared" = plot.chi_squared(x, grid, ...),
-           "abs diff" = plot.abs.diff(x, grid, ...),
-           "ex summation" = plot.ex.summation(x, grid, ...),
-           "legend" = plot.legend(x, err.bounds, lg_size),
-           "blank" = plot.new()
-    ) 
-  }
+    if (multiple) {
+      old.par <- par(no.readonly = TRUE)
+      on.exit(par(old.par))
+      
+      if (nGraphics < 4) {
+        rows = 1; 
+        cols = nGraphics
+      }
+      if (nGraphics >= 4 & nGraphics <= 6) {
+        rows = 2; 
+        cols = 3
+      }
+      if (nGraphics > 6) {
+        rows = 3; 
+        cols = 3
+      }
+      
+      pos_plots <- position.plots(rows, cols)
+      par(mfrow = c(rows, cols))
+      nslots <- rows*cols
+      plot_this <- c(rep("blank", nslots))
+      plot_this[1:nGraphics] <- plots
+      lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))*0.5
+    }else{
+      old.par <- par(no.readonly = TRUE)
+      on.exit(par(old.par))
+      plot_this <- vector("character", nGraphics*2)
+      plot_this[seq(1, nGraphics*2, 2)] <- plots
+      plot_this[seq(2, nGraphics*2, 2)] <- "legend"
+      pos_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
+      lg_size <- ifelse(err.bounds, 0.6, 0.7)
+    }
+}
+  
+  
+  nw <- FALSE
+    for (i in 1:length(plot_this)) {
+      pp <- pos_plots[i, ]
+      par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
+      switch(plot_this[i],
+             "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+             "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+             "second order" = plot.second.order(x, col.bar, grid),
+             "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
+             "summation" = plot.summation(x, col.bar, grid),
+             "mantissa" = plot.ordered.mantissa(x, grid),
+             "chi squared" = plot.chi_squared(x, grid),
+             "abs diff" = plot.abs.diff(x, grid),
+             "ex summation" = plot.ex.summation(x, grid),
+             # "legend" = {
+             #   par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+             #   plot.legend(x, err.bounds, lg_size)},
+             "blank" = plot.new()
+      ) 
+      par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
+        plot.legend(x, err.bounds, lg_size)
+      }else{
+        plot(0, axes = F, type = 'n', xlab = "", ylab = "")
+      }
+      nw <- TRUE
+    }
   
 }
 
-
-check.plot.names <- function(x, y, ...){
-  if (!all(x %in% y)) {
-    idx <- which(!x %in% y)
-    stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
-  }
-}
 
 ## Generic functions -------------------------------------------------------------------------------------------
 
@@ -151,6 +165,25 @@ check.plot.names <- function(x, y, ...){
 #   }
 # }
 
+check.plot.names <- function(x, y, ...){
+  if (!all(x %in% y)) {
+    idx <- which(!x %in% y)
+    stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
+  }
+}
+
+position.plots <- function(nrows, ncols){
+  rr <- seq(0, 1, 1/nrows)
+  cc <- seq(0, 1, 1/ncols)
+  pos <- c()
+  for(i in nrows:1){
+    for (j in 1:ncols) {
+      pos <- rbind(pos, c(cc[j], cc[j + 1], rr[i], rr[i + 1]))
+    }
+  }
+  return(pos)
+}
+
 compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
   ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
   lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
@@ -160,7 +193,6 @@ compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
     data.frame(ub, lb)
   }
 }
-
 
 plot.frequency <- function(digits,
                            obs.freq,
@@ -420,7 +452,7 @@ plot.ex.summation <- function(x, grid = TRUE, ...) {
 
 
 plot.legend <- function(x, err.bounds, size) {
-  par(mar = c(0,0,0,0))
+  #par(mar = c(0,0,0,0))
   plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
   if (err.bounds) {
     plot_colors <- c("lightblue","red","red")
@@ -446,7 +478,7 @@ plot.legend <- function(x, err.bounds, size) {
            lty = rep(1, 2),
            horiz = TRUE)
   }
-  par(mar = c(5, 4, 4, 2) + 0.1)
+  #par(mar = c(5, 4, 4, 2) + 0.1)
 }
 
 
