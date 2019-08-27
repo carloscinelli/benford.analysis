@@ -41,26 +41,25 @@ plot.Benford <- function(x,
   available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
   
   if (!is.null(select)) {
-    
+    check.plot.names(select, available.plots)
     select <- tolower(select)
+    if (all(select == "all")) plots <- available.plots[1:9]
+    else plots <- select
     
-    if (!all(select %in% available.plots)) {
-      idx <- which(!select %in% available.plots)
-      stop("Invalid plot name:", select[idx], "\nType ?plot.Benford for help.")
-    }
-    
-    if (all(select == "all")) {
-      plots <- available.plots[1:9]
-    }else{
-      plots <- select
-    }
-    
-  } else {
     if (!is.null(except)) {
-      if (!all(except %in% available.plots)) {
-        idx <- which(!except %in% available.plots)
-        stop("Invalid plot name: ", except[idx], "\nType ?plot.Benford for help.")
+      check.plot.names(except, available.plots)
+      except <- tolower(except)
+      if (all(except == "none")) {
+        plots <- available.plots[1:9]
+      }else{
+        plots <- plots[!(plots %in% except)]
       }
+    }
+    
+  }else{
+    
+    if (!is.null(except)) {
+      check.plot.names(except, available.plots)
       except <- tolower(except)
       if (all(except == "none")) {
         plots <- available.plots[1:9]
@@ -68,8 +67,10 @@ plot.Benford <- function(x,
         ap <- available.plots[1:9]
         plots <- ap[!(ap %in% except)]
       }
+    }else{
+      stop("the 'select' and 'except' arguments must not be equal to NULL at the same time")
     }
-  }
+  }  
   
   nGraphics <- length(plots)
   
@@ -124,6 +125,14 @@ plot.Benford <- function(x,
     ) 
   }
   
+}
+
+
+check.plot.names <- function(x, y, ...){
+  if (!all(x %in% y)) {
+    idx <- which(!x %in% y)
+    stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
+  }
 }
 
 ## Generic functions -------------------------------------------------------------------------------------------

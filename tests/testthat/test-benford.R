@@ -85,27 +85,36 @@ test_that("Both signs, simulated log-normal and plots",
             data <- rlnorm(1000, 10, 10)
             data <- data*c(1, -1)
             bfd <- benford(data, sign = "both", discrete = FALSE)
+            
             expect_error(plot.Benford(1))
             expect_error(plot(bfd, except = "xxx", select = NULL))
-            expect_error(plot(bfd, select = "xxx"))
+            expect_error(plot(bfd, except = NULL, select = "xxx"))
+            expect_error(plot(bfd, select = NULL, except = NULL))
+            
+            plot(bfd, select = "all", except = NULL)
+            plot(bfd, select = NULL, except = "none")
+            plot(bfd, select = "all", except = "none")
+            
             expect_error(plot(bfd, alpha = 0))
             expect_error(plot(bfd, alpha = 1))
-            plot(bfd, except = c("none"))
-            plot(bfd, except = c("mantissa","abs diff", "second order"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", "chi square"))
-            plot(bfd, except = "none", select = NULL)
-            plot(bfd, except = "mantissa", select = NULL)
-            plot(bfd, select = "digits", err.bounds = TRUE)
-            plot(bfd, select = "rootogram digits", err.bounds = TRUE)
+            
             plot(bfd, select = "all")
             plot(bfd, select = "all", multiple = FALSE)
+            plot(bfd, select = "all", err.bounds = TRUE)
+            plot(bfd, select = "all", except = "mantissa")
+            plot(bfd, select = NULL, except = "mantissa")
+            plot(bfd, except = "none")
+            plot(bfd, except = "none", select = NULL)
+            plot(bfd, select = c("digits", "rootogram digits", "second order", "rootogram second order"))
+            plot(bfd, select = "digits")
+            plot(bfd, select = "rootogram digits")
             plot(bfd, select = "second order")
+            plot(bfd, select = "rootogram second order")
+            plot(bfd, select = "summation")
             plot(bfd, select = "mantissa")
             plot(bfd, select = "abs diff")
-            plot(bfd, select = "rootogram second order")
-            plot(bfd, select = c("digits","rootogram digits", "rootogram second order", "summation", "mantissa","abs diff"))
-            
+            plot(bfd, select = "chi squared")
+
             # check if object did not change
             expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))
           }
