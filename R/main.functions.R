@@ -186,9 +186,6 @@ benford <- function(data, number.of.digits = 2,
   }
   
   
-    
-  
-  
   ### Summation
   summation <- generate.summation(benford.digits,empirical.distribution$data, empirical.distribution$data.digits)
   abs.excess.summation <- abs(summation - mean(summation))

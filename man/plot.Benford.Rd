@@ -38,3 +38,6 @@ Plots the Benford object.
 \description{
 The \code{plot} method for "Benford" objects.
 }
+\details{
+If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
+}

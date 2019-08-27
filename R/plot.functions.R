@@ -18,11 +18,13 @@
 ##' @param grid if TRUE, adds an rectangular grid to plot.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
+##' @details If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
 ##' @export
 ##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
+
 
 plot.Benford <- function(x, 
                          select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
@@ -38,33 +40,27 @@ plot.Benford <- function(x,
   
   if(!(alpha > 0 & alpha < 1)) stop(paste0(alpha, " is not a valid value for 'alpha' parameter"))
   
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
-  
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff")
+ 
   if (!is.null(select)) {
-    check.plot.names(select, available.plots)
+    check.plot.names(select, c(available.plots, "all"))
     select <- tolower(select)
-    if (all(select == "all")) plots <- available.plots[1:9]
+    if (all(select == "all")) plots <- available.plots
     else plots <- select
-    
+  
     if (!is.null(except)) {
-      check.plot.names(except, available.plots)
-      except <- tolower(except)
-      if (all(except == "none")) {
-        plots <- available.plots[1:9]
-      }else{
-        plots <- plots[!(plots %in% except)]
-      }
+      warning("the argument 'except' was ignored. See ?plot.Benford for more datails.")
     }
     
   }else{
     
     if (!is.null(except)) {
-      check.plot.names(except, available.plots)
+      check.plot.names(except, c(available.plots, "none"))
       except <- tolower(except)
       if (all(except == "none")) {
-        plots <- available.plots[1:9]
+        plots <- available.plots
       }else{
-        ap <- available.plots[1:9]
+        ap <- available.plots
         plots <- ap[!(ap %in% except)]
       }
     }else{
