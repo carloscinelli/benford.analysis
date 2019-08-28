@@ -114,6 +114,8 @@ test_that("Both signs, simulated log-normal and plots",
             plot(bfd, select = "mantissa")
             plot(bfd, select = "abs diff")
             plot(bfd, select = "chi squared")
+            
+            plot(bfd, select=c("digits", "rootogram digits"), multiple=T, mfrow = c(2,1))
 
             # check if object did not change
             expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))

@@ -12,6 +12,7 @@
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 ##' put except = "all"
 ##' @param multiple if TRUE, all plots are grouped in the same window.
+##' @param mfrow A vector of the form c(`nr`, `nc`). Subsequent figures will be drawn in an `nr`-by-`nc` array on the device by columns (`mfcol`), or rows (`mfrow`), respectively. For more details see `?par()`.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
 ##' @param err.bounds if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.
 ##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.
@@ -33,7 +34,8 @@ plot.Benford <- function(x,
                          col.bar = "lightblue", 
                          err.bounds = FALSE, 
                          alpha = 0.05, 
-                         grid = TRUE, ...){
+                         grid = TRUE,
+                         mfrow = NULL, ...){
   
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
@@ -70,30 +72,44 @@ plot.Benford <- function(x,
   
   nGraphics <- length(plots)
   
-  if((nGraphics == 1) & multiple){
-    old.par <- par(no.readonly = TRUE)
-    on.exit(par(old.par))
-    #old.par("mfg")
-    pos_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
-    lg_size <- ifelse(err.bounds, 0.6, 0.7)
-    plot_this <- plots
-  }else{
+  # nw <- FALSE
+  # if((nGraphics == 1) & !multiple){
+  #   old.par <- par(no.readonly = TRUE)
+  #   #on.exit(par(old.par))
+  #   mfg <- par("mfg")
+  #   info_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
+  #   idx_plots <- info_plots$idx
+  #   print(idx_plots)
+  #   which_idx <- apply(idx_plots, 1, function(x)  all(mfg[1:2] == x))
+  #   idx_plots <- idx_plots[-which(which_idx),]
+  #   pos_plots <- info_plots$pos
+  #   if(all(mfg[1:2] == mfg[3:4])) pos_plots <- pos_plots[1,]
+  #   else pos_plots <- pos_plots[-c(1:which(which_idx)),]
+  #   lg_size <- ifelse(err.bounds, 0.6, 0.7)
+  #   plot_this <- plots
+  #   nw <- TRUE
+  # }else{
   
     if (multiple) {
       old.par <- par(no.readonly = TRUE)
       on.exit(par(old.par))
       
-      if (nGraphics < 4) {
-        rows = 1; 
-        cols = nGraphics
-      }
-      if (nGraphics >= 4 & nGraphics <= 6) {
-        rows = 2; 
-        cols = 3
-      }
-      if (nGraphics > 6) {
-        rows = 3; 
-        cols = 3
+      if(!is.null(mfrow)){
+        rows <- mfrow[1] 
+        cols <- mfrow[2]
+      }else{
+        if (nGraphics < 4) {
+          rows <- 1; 
+          cols <- nGraphics
+        }
+        if (nGraphics >= 4 & nGraphics <= 6) {
+          rows <- 2; 
+          cols <- 3
+        }
+        if (nGraphics > 6) {
+          rows <- 3; 
+          cols <- 3
+        }
       }
       
       pos_plots <- position.plots(rows, cols)
@@ -101,46 +117,70 @@ plot.Benford <- function(x,
       nslots <- rows*cols
       plot_this <- c(rep("blank", nslots))
       plot_this[1:nGraphics] <- plots
-      lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))*0.5
+      lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))/rows
+      
+      nw <- FALSE
+      for (i in 1:length(plot_this)) {
+        pp <- pos_plots[i, ]
+        par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
+        plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
+        par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
+          plot.legend(x, err.bounds, lg_size)
+        }else{
+          plot(0, axes = F, type = 'n', xlab = "", ylab = "")
+        }
+        nw <- TRUE
+      }
+      
     }else{
       old.par <- par(no.readonly = TRUE)
       on.exit(par(old.par))
-      plot_this <- vector("character", nGraphics*2)
-      plot_this[seq(1, nGraphics*2, 2)] <- plots
-      plot_this[seq(2, nGraphics*2, 2)] <- "legend"
+      plot_this <- plots
       pos_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
       lg_size <- ifelse(err.bounds, 0.6, 0.7)
-    }
-}
-  
-  
-  nw <- FALSE
-    for (i in 1:length(plot_this)) {
-      pp <- pos_plots[i, ]
-      par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
-      switch(plot_this[i],
-             "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-             "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-             "second order" = plot.second.order(x, col.bar, grid),
-             "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
-             "summation" = plot.summation(x, col.bar, grid),
-             "mantissa" = plot.ordered.mantissa(x, grid),
-             "chi squared" = plot.chi_squared(x, grid),
-             "abs diff" = plot.abs.diff(x, grid),
-             "ex summation" = plot.ex.summation(x, grid),
-             # "legend" = {
-             #   par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
-             #   plot.legend(x, err.bounds, lg_size)},
-             "blank" = plot.new()
-      ) 
-      par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
-      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
-        plot.legend(x, err.bounds, lg_size)
-      }else{
-        plot(0, axes = F, type = 'n', xlab = "", ylab = "")
+      
+      pp <- pos_plots[1, ]
+      for (i in 1:length(plot_this)) {
+        par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2))
+        plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
+        par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+        if(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank")){
+          plot(0, axes = F, type = 'n', xlab = "", ylab = "")
+        }else{
+          plot.legend(x, err.bounds, lg_size)
+        }
       }
-      nw <- TRUE
     }
+#}
+  
+  # nw <- FALSE
+  #   for (i in 1:length(plot_this)) {
+  #     pp <- pos_plots[i, ]
+  #     par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
+  #     switch(plot_this[i],
+  #            "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+  #            "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+  #            "second order" = plot.second.order(x, col.bar, grid),
+  #            "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
+  #            "summation" = plot.summation(x, col.bar, grid),
+  #            "mantissa" = plot.ordered.mantissa(x, grid),
+  #            "chi squared" = plot.chi_squared(x, grid),
+  #            "abs diff" = plot.abs.diff(x, grid),
+  #            "ex summation" = plot.ex.summation(x, grid),
+  #            # "legend" = {
+  #            #   par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+  #            #   plot.legend(x, err.bounds, lg_size)},
+  #            "blank" = plot.new()
+  #     )
+  #     par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
+  #     if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
+  #       plot.legend(x, err.bounds, lg_size)
+  #     }else{
+  #       plot(0, axes = F, type = 'n', xlab = "", ylab = "")
+  #     }
+  #     nw <- TRUE
+  #   }
   
 }
 
@@ -316,6 +356,23 @@ plot.needle <- function(digits,
        })
   points(xmarks, discrepancy, pch = 19, col = "blue", cex = 0.5)
 }
+
+plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
+  switch(plot_this,
+         "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+         "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+         "second order" = plot.second.order(x, col.bar, grid),
+         "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
+         "summation" = plot.summation(x, col.bar, grid),
+         "mantissa" = plot.ordered.mantissa(x, grid),
+         "chi squared" = plot.chi_squared(x, grid),
+         "abs diff" = plot.abs.diff(x, grid),
+         "ex summation" = plot.ex.summation(x, grid),
+         "blank" = plot.new()
+  )  
+}
+ 
+
 
 # Separate plots --------------------------------------------------------------------------------------
 
