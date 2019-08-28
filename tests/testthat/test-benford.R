@@ -93,7 +93,7 @@ test_that("Both signs, simulated log-normal and plots",
             
             plot(bfd, select = "all", except = NULL)
             plot(bfd, select = NULL, except = "none")
-            plot(bfd, select = "all", except = "none")
+            expect_warning(plot(bfd, select = "all", except = "none"))
             
             expect_error(plot(bfd, alpha = 0))
             expect_error(plot(bfd, alpha = 1))

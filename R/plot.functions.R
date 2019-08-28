@@ -96,13 +96,12 @@ plot.Benford <- function(x,
       
       par(mfrow = c(rows, cols))
       nslots <- rows*cols
-      plot_this <- c(rep("blank", nslots))
-      plot_this[1:nGraphics] <- plots
-      lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))/rows
+      plot_this <- plots
+      lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.4, 0.7))/rows
       
       for (i in 1:length(plot_this)) {
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
+        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation"))){
           plot.legend(x, err.bounds, lg_size)
         }
       }
@@ -111,13 +110,11 @@ plot.Benford <- function(x,
       old.par <- par(no.readonly = TRUE)
       on.exit(par(old.par))
       plot_this <- plots
-      lg_size <- ifelse(err.bounds, 0.6, 0.7)
+      lg_size <- ifelse(err.bounds, 0.4, 0.7)
       
       for (i in 1:length(plot_this)) {
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        if(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank")){
-          plot(0, axes = F, type = 'n', xlab = "", ylab = "")
-        }else{
+        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation"))){
           plot.legend(x, err.bounds, lg_size)
         }
       }
@@ -145,48 +142,17 @@ plot.Benford <- function(x,
 #   }
 # }
 
-check.plot.names <- function(x, y, ...){
-  if (!all(x %in% y)) {
-    idx <- which(!x %in% y)
-    stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
-  }
-}
-
-plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
-  switch(plot_this,
-         "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-         "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-         "second order" = plot.second.order(x, col.bar, grid),
-         "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
-         "summation" = plot.summation(x, col.bar, grid),
-         "mantissa" = plot.ordered.mantissa(x, grid),
-         "chi squared" = plot.chi_squared(x, grid),
-         "abs diff" = plot.abs.diff(x, grid),
-         "ex summation" = plot.ex.summation(x, grid),
-         "blank" = plot.new()
-  )  
-}
-
-compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
-  ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
-  lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
-  if(rootogram){
-    data.frame(ub = ub - exp.freq, lb = lb - exp.freq)
-  }else{
-    data.frame(ub, lb)
-  }
-}
-
-benford.frequency <- function(digits,
-                           obs.freq,
-                           exp.freq,
-                           main = NULL,
-                           xlab = "Digits",
-                           ylab = "Frequency",
-                           grid = TRUE,
-                           col.bar = "lightblue",
-                           err.bounds = FALSE,
-                           alpha = 0.05){
+histogram.Benford <- function(digits,
+                              obs.freq,
+                              exp.freq,
+                              main = NULL,
+                              xlab = "Digits",
+                              ylab = "Frequency",
+                              grid = TRUE,
+                              col.bar = "lightblue",
+                              err.bounds = FALSE,
+                              alpha = 0.05,
+                              exp.benford = TRUE){
   
   if(err.bounds){
     bounds <- compute.error.bounds(exp.freq, sum(obs.freq), alpha, rootogram = FALSE)
@@ -215,7 +181,8 @@ benford.frequency <- function(digits,
   barplot(obs.freq, 
           col = col.bar, 
           yaxt = "n", add = T)
-  lines(xmarks, exp.freq, col = "red", lwd = 2)
+  if(exp.benford)
+    lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
@@ -224,16 +191,17 @@ benford.frequency <- function(digits,
 }
 
 
-benford.rootogram <- function(digits,
-                           obs.freq,
-                           exp.freq,
-                           main = NULL,
-                           xlab = "Digits",
-                           ylab = "Frequency",
-                           grid = TRUE,
-                           col.bar = "lightblue",
-                           err.bounds = FALSE,
-                           alpha = 0.05){
+rootogram.Benford <- function(digits,
+                              obs.freq,
+                              exp.freq,
+                              main = NULL,
+                              xlab = "Digits",
+                              ylab = "Frequency",
+                              grid = TRUE,
+                              col.bar = "lightblue",
+                              err.bounds = FALSE,
+                              alpha = 0.05,
+                              exp.benford = TRUE){
   
   if(err.bounds){
     bounds <- compute.error.bounds(exp.freq, sum(obs.freq), alpha, rootogram = TRUE)
@@ -263,7 +231,8 @@ benford.rootogram <- function(digits,
        xright = xmarks + 0.5,
        ybottom = exp.freq, ytop = exp.freq - obs.freq, col = col.bar)
   abline(h = 0)
-  lines(xmarks, exp.freq, col = "red", lwd = 2)
+  if(exp.benford)
+    lines(xmarks, exp.freq, col = "red", lwd = 2)
   if(err.bounds){
     lines(ub ~ xmarks, lty = 2, col = 'red')
     lines(lb ~ xmarks, lty = 2, col = 'red')
@@ -274,15 +243,16 @@ benford.rootogram <- function(digits,
 }
 
 
-benford.needle <- function(digits,
-                                 discrepancy,
-                                 main = NULL,
-                                 xlab = NULL,
-                                 ylab = NULL,
-                                 grid = TRUE){
+needle.Benford <- function(digits,
+                           discrepancy,
+                           main = NULL,
+                           xlab = NULL,
+                           ylab = NULL,
+                           grid = TRUE,
+                           col = "blue"){
   xmarks <- seq(0.7, length(digits)*1.2, 1.2)
   plot(xmarks, discrepancy, 
-       col = "blue",
+       col = col,
        xlab = xlab,
        ylab = ylab, 
        main = main,
@@ -297,22 +267,53 @@ benford.needle <- function(digits,
          }
          axis(1, at = xmarks, labels = digits)
        })
-  points(xmarks, discrepancy, pch = 19, col = "blue", cex = 0.5)
+  points(xmarks, discrepancy, pch = 19, col = col, cex = 0.5)
+}
+
+check.plot.names <- function(x, y, ...){
+  if (!all(x %in% y)) {
+    idx <- which(!x %in% y)
+    stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
+  }
+}
+
+plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
+  switch(plot_this,
+         "digits" = plot.digits(x, col.bar, grid, err.bounds, alpha),
+         "rootogram digits" = plot.rootogram.digits(x, col.bar, grid, err.bounds, alpha),
+         "second order" = plot.second.order(x, col.bar, grid),
+         "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
+         "summation" = plot.summation(x, col.bar, grid),
+         "mantissa" = plot.ordered.mantissa(x, grid),
+         "chi squared" = plot.chi_squared(x, grid),
+         "abs diff" = plot.abs.diff(x, grid),
+         "ex summation" = plot.ex.summation(x, grid)
+  )  
+}
+
+compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
+  ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
+  lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
+  if(rootogram){
+    data.frame(ub = ub - exp.freq, lb = lb - exp.freq)
+  }else{
+    data.frame(ub, lb)
+  }
 }
 
 
 # Separate plots --------------------------------------------------------------------------------------
 
-utils::globalVariables(c("x"))
+utils::globalVariables(c("x", "err.bounds", "alpha", "exp.benford"))
 
-plot.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
+plot.digits <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, exp.benford = TRUE, ...) {
 
   digits <- x[["bfd"]]$digits
   obs.freq <-x[["bfd"]]$data.dist.freq
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
   
-  plot.data <- benford.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  plot.data <- histogram.Benford(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha, exp.benford)
   
   if(err.bounds){
     out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
@@ -325,27 +326,32 @@ plot.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.boun
 }
 
 
-plot.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plot.second.order <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, exp.benford = TRUE, ...) {
 
   digits <- x[["bfd"]]$digits
   obs.freq <-x[["bfd"]]$data.second.order.dist.freq
   exp.freq <- x[["bfd"]]$benford.so.dist.freq
   out <- list()
-  out$data <- data.frame(digits, obs.freq, exp.freq)
+
+  plot.data <- histogram.Benford(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha, exp.benford)
   
-  benford.frequency(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar)
+  if(err.bounds){
+    out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
+  }else{
+    out$data <- data.frame(digits, obs.freq, exp.freq)
+  }
   
   invisible(out)
 }
 
 
-plot.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, ...) {
+plot.rootogram.digits <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, exp.benford = TRUE, ...) {
   digits <- x[["bfd"]]$digits
   obs.freq <- x[["bfd"]]$data.dist.freq
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
 
-  plot.data <- benford.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  plot.data <- rootogram.Benford(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha, exp.benford)
   
   if(err.bounds){
     out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
@@ -358,27 +364,39 @@ plot.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE
 }
 
 
-plot.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plot.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = TRUE, alpha = 0.05, exp.benford = TRUE, ...) {
   digits <- x[["bfd"]]$digits
   obs.freq <- x[["bfd"]]$data.second.order.dist.freq
   exp.freq <- x[["bfd"]]$benford.so.dist.freq
   out <- list()
-  out$data <- data.frame(digits, obs.freq, exp.freq)
+
+  plot.data <- rootogram.Benford(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test - Rootogram", "Digits", "Frequency", grid, col.bar, err.bounds, alpha, exp.benford)
   
-  benford.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test - Rootogram", "Digits", "Frequency", grid, col.bar)
+  if(err.bounds){
+    out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
+  }else{
+    out$data <- data.frame(digits, obs.freq, exp.freq)
+    out$params <- data.frame(alpha = alpha)
+  }
   
   invisible(out)
 }
 
 
-plot.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
+plot.summation <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = FALSE, alpha = 0.05, exp.benford = TRUE, ...) {
   digits <- x[["bfd"]]$digits
   obs.freq <- x[["bfd"]]$data.summation
   exp.freq <- rep(mean(obs.freq), length(digits))
   out <- list()
-  out$data <- data.frame(digits, obs.freq, exp.freq)
+
+  plot.data <- histogram.Benford(digits, obs.freq, exp.freq, "Summation Distribution by digits", "Digits", "Frequency", grid, col.bar, err.bounds, alpha, exp.benford)
   
-  benford.frequency(digits, obs.freq, exp.freq, "Summation Distribution by digits", "Digits", "Frequency", grid, col.bar)
+  if(err.bounds){
+    out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
+  }else{
+    out$data <- data.frame(digits, obs.freq, exp.freq)
+    out$params <- data.frame(alpha = alpha)
+  }
   
   invisible(out)
 }
@@ -399,37 +417,37 @@ plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
 }
 
 
-plot.chi_squared <- function(x, grid = TRUE, ...) {
+plot.chi_squared <- function(x, grid = TRUE, col = "blue", ...) {
   squared.diff <- c(NA, x[["bfd"]]$squared.diff, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
   out <- list()
   out$data <- data.frame(digits, squared.diff)
   
-  benford.needle(digits, squared.diff, "Chi-Squared Difference", "Digits", "Chi-squared")
+  needle.Benford(digits, squared.diff, "Chi-Squared Difference", "Digits", "Chi-squared", grid, col)
   
   invisible(out)
 }
 
 
-plot.abs.diff <- function(x, grid = TRUE, ...) {
+plot.abs.diff <- function(x, grid = TRUE, col = "blue", ...) {
   absolute.diff <- c(NA, x[["bfd"]]$absolute.diff, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
   out <- list()
   out$data <- data.frame(digits, absolute.diff)
   
-  benford.needle(digits, absolute.diff, "Absolute Difference", "Digits", "Absolute Difference")
+  needle.Benford(digits, absolute.diff, "Absolute Difference", "Digits", "Absolute Difference", grid, col)
   
   invisible(out)
 }
 
 
-plot.ex.summation <- function(x, grid = TRUE, ...) {
+plot.ex.summation <- function(x, grid = TRUE, col = "blue", ...) {
   abs.excess.summation <- c(NA, x[["bfd"]]$abs.excess.summation, NA)
   digits <- c(NA, x[["bfd"]]$digits, NA)
   out <- list()
   out$data <- data.frame(digits, abs.excess.summation)
   
-  benford.needle(digits, abs.excess.summation, "Summation Difference", "Digits", "Absolute Excess Summation")
+  needle.Benford(digits, abs.excess.summation, "Summation Difference", "Digits", "Absolute Excess Summation", grid, col)
   
   invisible(out)
 }
