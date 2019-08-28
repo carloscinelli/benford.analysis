@@ -57,11 +57,13 @@ ks.test.bfd <- function(expected.prop, actual.prop, n.records, data.name){
   D <- max(abs(cs.ep - cs.ap))
   names(D) <- "D"
   cv <- 1.36/sqrt(n.records)
- names(cv) <- "critical value"
+  names(cv) <- "critical value"
+  alpha <- 0.05
+  names(alpha) <- "alpha"
   
   ks.bfd <- list(statistic = D,
                  method = "Kolmogorov-Smirnov test",
-                 parameter = cv,
+                 parameter = c(cv, alpha),
                  data.name = data.name)
   
   class(ks.bfd) <- "htest"
