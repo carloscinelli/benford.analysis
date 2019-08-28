@@ -72,24 +72,6 @@ plot.Benford <- function(x,
   
   nGraphics <- length(plots)
   
-  # nw <- FALSE
-  # if((nGraphics == 1) & !multiple){
-  #   old.par <- par(no.readonly = TRUE)
-  #   #on.exit(par(old.par))
-  #   mfg <- par("mfg")
-  #   info_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
-  #   idx_plots <- info_plots$idx
-  #   print(idx_plots)
-  #   which_idx <- apply(idx_plots, 1, function(x)  all(mfg[1:2] == x))
-  #   idx_plots <- idx_plots[-which(which_idx),]
-  #   pos_plots <- info_plots$pos
-  #   if(all(mfg[1:2] == mfg[3:4])) pos_plots <- pos_plots[1,]
-  #   else pos_plots <- pos_plots[-c(1:which(which_idx)),]
-  #   lg_size <- ifelse(err.bounds, 0.6, 0.7)
-  #   plot_this <- plots
-  #   nw <- TRUE
-  # }else{
-  
     if (multiple) {
       old.par <- par(no.readonly = TRUE)
       on.exit(par(old.par))
@@ -112,39 +94,27 @@ plot.Benford <- function(x,
         }
       }
       
-      pos_plots <- position.plots(rows, cols)
       par(mfrow = c(rows, cols))
       nslots <- rows*cols
       plot_this <- c(rep("blank", nslots))
       plot_this[1:nGraphics] <- plots
       lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))/rows
       
-      nw <- FALSE
       for (i in 1:length(plot_this)) {
-        pp <- pos_plots[i, ]
-        par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
         if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
           plot.legend(x, err.bounds, lg_size)
-        }else{
-          plot(0, axes = F, type = 'n', xlab = "", ylab = "")
         }
-        nw <- TRUE
       }
       
     }else{
       old.par <- par(no.readonly = TRUE)
       on.exit(par(old.par))
       plot_this <- plots
-      pos_plots <- position.plots(old.par$mfrow[1], old.par$mfrow[2])
       lg_size <- ifelse(err.bounds, 0.6, 0.7)
       
-      pp <- pos_plots[1, ]
       for (i in 1:length(plot_this)) {
-        par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2))
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
         if(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank")){
           plot(0, axes = F, type = 'n', xlab = "", ylab = "")
         }else{
@@ -152,36 +122,6 @@ plot.Benford <- function(x,
         }
       }
     }
-#}
-  
-  # nw <- FALSE
-  #   for (i in 1:length(plot_this)) {
-  #     pp <- pos_plots[i, ]
-  #     par(fig = c(pp[1:2], pp[3] + 0.1*(pp[4] - pp[3]), pp[4]), mar = c(5,4,4,2), new = nw)
-  #     switch(plot_this[i],
-  #            "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-  #            "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-  #            "second order" = plot.second.order(x, col.bar, grid),
-  #            "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
-  #            "summation" = plot.summation(x, col.bar, grid),
-  #            "mantissa" = plot.ordered.mantissa(x, grid),
-  #            "chi squared" = plot.chi_squared(x, grid),
-  #            "abs diff" = plot.abs.diff(x, grid),
-  #            "ex summation" = plot.ex.summation(x, grid),
-  #            # "legend" = {
-  #            #   par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
-  #            #   plot.legend(x, err.bounds, lg_size)},
-  #            "blank" = plot.new()
-  #     )
-  #     par(fig = c(pp[1:3], pp[3] + 0.1*(pp[4] - pp[3])), mar = c(0,4,0,2), new=TRUE)
-  #     if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "blank"))){
-  #       plot.legend(x, err.bounds, lg_size)
-  #     }else{
-  #       plot(0, axes = F, type = 'n', xlab = "", ylab = "")
-  #     }
-  #     nw <- TRUE
-  #   }
-  
 }
 
 
@@ -212,16 +152,19 @@ check.plot.names <- function(x, y, ...){
   }
 }
 
-position.plots <- function(nrows, ncols){
-  rr <- seq(0, 1, 1/nrows)
-  cc <- seq(0, 1, 1/ncols)
-  pos <- c()
-  for(i in nrows:1){
-    for (j in 1:ncols) {
-      pos <- rbind(pos, c(cc[j], cc[j + 1], rr[i], rr[i + 1]))
-    }
-  }
-  return(pos)
+plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
+  switch(plot_this,
+         "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+         "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
+         "second order" = plot.second.order(x, col.bar, grid),
+         "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
+         "summation" = plot.summation(x, col.bar, grid),
+         "mantissa" = plot.ordered.mantissa(x, grid),
+         "chi squared" = plot.chi_squared(x, grid),
+         "abs diff" = plot.abs.diff(x, grid),
+         "ex summation" = plot.ex.summation(x, grid),
+         "blank" = plot.new()
+  )  
 }
 
 compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
@@ -234,7 +177,7 @@ compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
   }
 }
 
-plot.frequency <- function(digits,
+benford.frequency <- function(digits,
                            obs.freq,
                            exp.freq,
                            main = NULL,
@@ -281,7 +224,7 @@ plot.frequency <- function(digits,
 }
 
 
-plot.rootogram <- function(digits,
+benford.rootogram <- function(digits,
                            obs.freq,
                            exp.freq,
                            main = NULL,
@@ -331,7 +274,7 @@ plot.rootogram <- function(digits,
 }
 
 
-plot.needle <- function(digits,
+benford.needle <- function(digits,
                                  discrepancy,
                                  main = NULL,
                                  xlab = NULL,
@@ -357,22 +300,6 @@ plot.needle <- function(digits,
   points(xmarks, discrepancy, pch = 19, col = "blue", cex = 0.5)
 }
 
-plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
-  switch(plot_this,
-         "digits" = plot.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-         "rootogram digits" = plot.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha),
-         "second order" = plot.second.order(x, col.bar, grid),
-         "rootogram second order" = plot.rootogram.second.order(x, col.bar, grid),
-         "summation" = plot.summation(x, col.bar, grid),
-         "mantissa" = plot.ordered.mantissa(x, grid),
-         "chi squared" = plot.chi_squared(x, grid),
-         "abs diff" = plot.abs.diff(x, grid),
-         "ex summation" = plot.ex.summation(x, grid),
-         "blank" = plot.new()
-  )  
-}
- 
-
 
 # Separate plots --------------------------------------------------------------------------------------
 
@@ -385,7 +312,7 @@ plot.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE, err.boun
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
   
-  plot.data <- plot.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  plot.data <- benford.frequency(digits, obs.freq, exp.freq, "Digits distribution", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
   
   if(err.bounds){
     out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
@@ -406,7 +333,7 @@ plot.second.order <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
   out <- list()
   out$data <- data.frame(digits, obs.freq, exp.freq)
   
-  plot.frequency(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar)
+  benford.frequency(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar)
   
   invisible(out)
 }
@@ -418,7 +345,7 @@ plot.rootogram.data.vs.benford <- function(x, col.bar = "lightblue", grid = TRUE
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
 
-  plot.data <- plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
+  plot.data <- benford.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test", "Digits", "Frequency", grid, col.bar, err.bounds, alpha)
   
   if(err.bounds){
     out$data <- data.frame(digits, obs.freq, exp.freq, plot.data) 
@@ -438,7 +365,7 @@ plot.rootogram.second.order <- function(x, col.bar = "lightblue", grid = TRUE, .
   out <- list()
   out$data <- data.frame(digits, obs.freq, exp.freq)
   
-  plot.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test - Rootogram", "Digits", "Frequency", grid, col.bar)
+  benford.rootogram(digits, obs.freq, exp.freq, "Digits distribution\nSecond Order Test - Rootogram", "Digits", "Frequency", grid, col.bar)
   
   invisible(out)
 }
@@ -451,7 +378,7 @@ plot.summation <- function(x, col.bar = "lightblue", grid = TRUE, ...) {
   out <- list()
   out$data <- data.frame(digits, obs.freq, exp.freq)
   
-  plot.frequency(digits, obs.freq, exp.freq, "Summation Distribution by digits", "Digits", "Frequency", grid, col.bar)
+  benford.frequency(digits, obs.freq, exp.freq, "Summation Distribution by digits", "Digits", "Frequency", grid, col.bar)
   
   invisible(out)
 }
@@ -478,7 +405,7 @@ plot.chi_squared <- function(x, grid = TRUE, ...) {
   out <- list()
   out$data <- data.frame(digits, squared.diff)
   
-  plot.needle(digits, squared.diff, "Chi-Squared Difference", "Digits", "Chi-squared")
+  benford.needle(digits, squared.diff, "Chi-Squared Difference", "Digits", "Chi-squared")
   
   invisible(out)
 }
@@ -490,7 +417,7 @@ plot.abs.diff <- function(x, grid = TRUE, ...) {
   out <- list()
   out$data <- data.frame(digits, absolute.diff)
   
-  plot.needle(digits, absolute.diff, "Absolute Difference", "Digits", "Absolute Difference")
+  benford.needle(digits, absolute.diff, "Absolute Difference", "Digits", "Absolute Difference")
   
   invisible(out)
 }
@@ -502,18 +429,16 @@ plot.ex.summation <- function(x, grid = TRUE, ...) {
   out <- list()
   out$data <- data.frame(digits, abs.excess.summation)
   
-  plot.needle(digits, abs.excess.summation, "Summation Difference", "Digits", "Absolute Excess Summation")
+  benford.needle(digits, abs.excess.summation, "Summation Difference", "Digits", "Absolute Excess Summation")
   
   invisible(out)
 }
 
 
 plot.legend <- function(x, err.bounds, size) {
-  #par(mar = c(0,0,0,0))
-  plot(1, type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
   if (err.bounds) {
     plot_colors <- c("lightblue","red","red")
-    legend(x = "top",
+    legend(x = "topright",
            inset = 0,
            legend = c("Observed Frequency", 
                       "Expected: Benford's Law", 
@@ -525,7 +450,7 @@ plot.legend <- function(x, err.bounds, size) {
            horiz = TRUE)
   }else{
     plot_colors <- c("lightblue","red")
-    legend(x = "top",
+    legend(x = "topright",
            inset = 0,
            legend = c("Observed Frequency", 
                       "Expected: Benford's Law"), 
@@ -535,7 +460,6 @@ plot.legend <- function(x, err.bounds, size) {
            lty = rep(1, 2),
            horiz = TRUE)
   }
-  #par(mar = c(5, 4, 4, 2) + 0.1)
 }
 
 
