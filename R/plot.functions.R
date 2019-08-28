@@ -270,6 +270,26 @@ needle.Benford <- function(digits,
   points(xmarks, discrepancy, pch = 19, col = col, cex = 0.5)
 }
 
+xyplot.Berford <- function(exp.freq,
+                           obs.freq,
+                           main = "Expected vs observed frequencies",
+                           xlab = "Expected Frequency",
+                           ylab = "Observed Frequency",
+                           grid = TRUE,
+                           col = "blue",...){
+  plot(exp.freq,
+       obs.freq,
+       pch = 19,
+       col = col, 
+       main = main,
+       xlab = xlab,
+       ylab = ylab,
+       panel.first = {
+         if(grid) grid(lty = 1, col = "gray90")
+       })
+  abline(a = 0, b = 1, col = "red", lty = 2)
+}
+
 check.plot.names <- function(x, y, ...){
   if (!all(x %in% y)) {
     idx <- which(!x %in% y)
@@ -426,6 +446,17 @@ plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
   abline(a = 0, b = 1/length(x[["data"]]$data.mantissa), col = "red", lty = 2)
 }
 
+plot.xy.digits <- function(x, grid = TRUE, col = "blue", ...) {
+  
+  obs.freq <- x[["bfd"]]$data.dist.freq
+  exp.freq <- x[["bfd"]]$benford.dist.freq
+  out <- list()
+  
+  xyplot.Berford(obs.freq, exp.freq, "Expected vs observed frequencies", "Expected Frequency", "Observed Frequency", grid, col)
+  
+  out$data <- data.frame(obs.freq, exp.freq)
+  invisible(out)
+}
 
 plot.chi_squared <- function(x, grid = TRUE, col = "blue", ...) {
   squared.diff <- c(NA, x[["bfd"]]$squared.diff, NA)

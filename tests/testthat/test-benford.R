@@ -141,7 +141,7 @@ test_that("Exact printing, this sould not be tested on CRAN!",
                             "4     11          9.21", "5     15          8.03", "", "Stats:", 
                             "", "\tPearson's Chi-squared test", "", "data:  data", "X-squared = 83.095, df = 89, p-value = 0.6564", 
                             "", "", "\tMantissa Arc Test", "", "data:  data", "L2 = 0.0013529, df = 2, p-value = 0.2585", 
-                            "", "","\tKolmogorov-Smirnov test","","data:  data","D = 0.039781, critical value = 0.043007",
+                            "", "","\tKolmogorov-Smirnov test","","data:  data","D = 0.039781, critical value = 0.043007, alpha = 0.050000",
                             "", "Mean Absolute Deviation (MAD): 0.002609809", "MAD Conformity - Nigrini (2012): Nonconformity", 
                             "Distortion Factor: -6.228274", "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!"
             )
