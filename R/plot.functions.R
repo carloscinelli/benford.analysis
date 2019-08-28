@@ -42,7 +42,7 @@ plot.Benford <- function(x,
   
   if(!(alpha > 0 & alpha < 1)) stop(paste0(alpha, " is not a valid value for 'alpha' parameter"))
   
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff")
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "obs vs exp")
  
   if (!is.null(select)) {
     check.plot.names(select, c(available.plots, "all"))
@@ -101,7 +101,7 @@ plot.Benford <- function(x,
       
       for (i in 1:length(plot_this)) {
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation"))){
+        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp"))){
           plot.legend(x, err.bounds, lg_size)
         }
       }
@@ -114,7 +114,7 @@ plot.Benford <- function(x,
       
       for (i in 1:length(plot_this)) {
         plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha)
-        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation"))){
+        if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp"))){
           plot.legend(x, err.bounds, lg_size)
         }
       }
@@ -277,6 +277,9 @@ xyplot.Berford <- function(exp.freq,
                            ylab = "Observed Frequency",
                            grid = TRUE,
                            col = "blue",...){
+  old.par <- par(pty="s")
+  on.exit(par(old.par))
+  lim <- c(min(c(obs.freq,exp.freq)),  max(c(obs.freq,exp.freq)))
   plot(exp.freq,
        obs.freq,
        pch = 19,
@@ -284,6 +287,8 @@ xyplot.Berford <- function(exp.freq,
        main = main,
        xlab = xlab,
        ylab = ylab,
+       xlim = lim,
+       ylim = lim,
        panel.first = {
          if(grid) grid(lty = 1, col = "gray90")
        })
@@ -307,7 +312,8 @@ plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
          "mantissa" = plot.ordered.mantissa(x, grid),
          "chi squared" = plot.chi_squared(x, grid),
          "abs diff" = plot.abs.diff(x, grid),
-         "ex summation" = plot.ex.summation(x, grid)
+         "ex summation" = plot.ex.summation(x, grid),
+         "obs vs exp" = plot.xy.digits(x, grid = TRUE, col = "blue")
   )  
 }
 
@@ -433,6 +439,8 @@ plot.summation <- function(x, col.bar = "lightblue", grid = TRUE, err.bounds = F
 
 
 plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
+  old.par <- par(pty="s")
+  on.exit(par(old.par))
   plot(sort(x[["data"]]$data.mantissa), 
        pch = ".",
        col = "blue", 

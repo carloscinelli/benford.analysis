@@ -114,6 +114,7 @@ test_that("Both signs, simulated log-normal and plots",
             plot(bfd, select = "mantissa")
             plot(bfd, select = "abs diff")
             plot(bfd, select = "chi squared")
+            plot(bfd, select = "obs vs exp")
             
             plot(bfd, select=c("digits", "rootogram digits"), multiple=T, mfrow = c(2,1))
 
