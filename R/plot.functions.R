@@ -11,12 +11,13 @@
 ##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 ##' put except = "all"
-##' @param multiple if TRUE, all plots are grouped in the same window.
+##' @param multiple logical; if TRUE, all plots are grouped in the same window.
 ##' @param mfrow A vector of the form c(`nr`, `nc`). Subsequent figures will be drawn in an `nr`-by-`nc` array on the device by columns (`mfcol`), or rows (`mfrow`), respectively. For more details see `?par()`.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
-##' @param err.bounds if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.
+##' @param err.bounds logical; if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.
 ##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.
-##' @param grid if TRUE, adds an rectangular grid to plot.
+##' @param grid logical; if TRUE, adds an rectangular grid to plot.
+##' @param freq logical; if TRUE, the plot is a representation of counts; if FALSE, relative frequencies are plotted (so that the plot has a total area of one). Defaults to `TRUE`.
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
 ##' @details If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.

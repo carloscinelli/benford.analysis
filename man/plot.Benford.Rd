@@ -7,7 +7,7 @@
 \method{plot}{Benford}(x, select = c("digits", "second order",
   "summation", "chi squared", "ex summation"), except = NULL,
   multiple = TRUE, col.bar = "lightblue", err.bounds = FALSE,
-  alpha = 0.05, grid = TRUE, mfrow = NULL, ...)
+  alpha = 0.05, grid = TRUE, mfrow = NULL, freq = TRUE, ...)
 }
 \arguments{
 \item{x}{a "Benford" object}
@@ -20,17 +20,19 @@ Currently, you can choose from 9 plots: "digits", "rootogram digits", "second or
 put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 put except = "all"}
 
-\item{multiple}{if TRUE, all plots are grouped in the same window.}
+\item{multiple}{logical; if TRUE, all plots are grouped in the same window.}
 
 \item{col.bar}{a color to be used to fill the bars. The default is lightblue.}
 
-\item{err.bounds}{if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.}
+\item{err.bounds}{logical; if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.}
 
 \item{alpha}{it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.}
 
-\item{grid}{if TRUE, adds an rectangular grid to plot.}
+\item{grid}{logical; if TRUE, adds an rectangular grid to plot.}
 
 \item{mfrow}{A vector of the form c(`nr`, `nc`). Subsequent figures will be drawn in an `nr`-by-`nc` array on the device by columns (`mfcol`), or rows (`mfrow`), respectively. For more details see `?par()`.}
+
+\item{freq}{logical; if TRUE, the plot is a representation of counts; if FALSE, relative frequencies are plotted (so that the plot has a total area of one). Defaults to `TRUE`.}
 
 \item{...}{arguments to be passed to generic plot functions,}
 }
