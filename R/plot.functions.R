@@ -35,7 +35,8 @@ plot.Benford <- function(x,
                          err.bounds = FALSE, 
                          alpha = 0.05, 
                          grid = TRUE,
-                         mfrow = NULL, ...){
+                         mfrow = NULL,
+                         freq = TRUE, ...){
   
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
@@ -317,9 +318,14 @@ plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha){
   )  
 }
 
-compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE){
-  ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
-  lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
+compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE, freq = TRUE){
+  if(freq){
+    ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
+    lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2
+  }else{
+    ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq)/n) + 1/(2*n)
+    lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq)/n) - 1/(2*n)
+  }
   if(rootogram){
     data.frame(ub = ub - exp.freq, lb = lb - exp.freq)
   }else{

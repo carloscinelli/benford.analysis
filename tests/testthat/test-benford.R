@@ -107,6 +107,7 @@ test_that("Both signs, simulated log-normal and plots",
             plot(bfd, except = "none", select = NULL)
             plot(bfd, select = c("digits", "rootogram digits", "second order", "rootogram second order"))
             plot(bfd, select = "digits")
+            plot(bfd, select = "digits", err.bounds = T, freq = F)
             plot(bfd, select = "rootogram digits")
             plot(bfd, select = "second order")
             plot(bfd, select = "rootogram second order")
@@ -117,7 +118,21 @@ test_that("Both signs, simulated log-normal and plots",
             plot(bfd, select = "obs vs exp")
             
             plot(bfd, select=c("digits", "rootogram digits"), multiple=T, mfrow = c(2,1))
-
+            
+            needle.Benford.new(bfd, discrepancy = "chi squared")
+            rootogram.Benford.new(bfd, obs.freq = "digits")
+            rootogram.Benford.new(bfd, obs.freq = "second order")
+            rootogram.Benford.new(bfd, obs.freq = "digits", err.bounds = T)
+            rootogram.Benford.new(bfd, obs.freq = "second order", err.bounds = T)
+            rootogram.Benford.new(bfd, obs.freq = "digits", freq = F)
+            rootogram.Benford.new(bfd, obs.freq = "second order", freq = F)
+            histogram.Benford.new(bfd, obs.freq = "digits")
+            histogram.Benford.new(bfd, obs.freq = "second order")
+            histogram.Benford.new(bfd, obs.freq = "summation")
+            histogram.Benford.new(bfd, obs.freq = "digits", freq = F)
+            histogram.Benford.new(bfd, obs.freq = "second order", freq = F)
+            histogram.Benford.new(bfd, obs.freq = "summation", freq = F)
+            
             # check if object did not change
             expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))
           }
