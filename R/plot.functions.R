@@ -270,18 +270,18 @@ needle.Benford <- function(digits,
   points(xmarks, discrepancy, pch = 19, col = col, cex = 0.5)
 }
 
-xyplot.Berford <- function(exp.freq,
-                           obs.freq,
+xyplot.Berford <- function(obs.freq,
+                           exp.freq,
                            main = "Expected vs observed frequencies",
-                           xlab = "Expected Frequency",
-                           ylab = "Observed Frequency",
+                           xlab = "Observed Frequency",
+                           ylab = "Expected Frequency",
                            grid = TRUE,
                            col = "blue",...){
   old.par <- par(pty="s")
   on.exit(par(old.par))
   lim <- c(min(c(obs.freq,exp.freq)),  max(c(obs.freq,exp.freq)))
-  plot(exp.freq,
-       obs.freq,
+  plot(obs.freq,
+       exp.freq,
        pch = 19,
        col = col, 
        main = main,
@@ -460,7 +460,7 @@ plot.xy.digits <- function(x, grid = TRUE, col = "blue", ...) {
   exp.freq <- x[["bfd"]]$benford.dist.freq
   out <- list()
   
-  xyplot.Berford(obs.freq, exp.freq, "Expected vs observed frequencies", "Expected Frequency", "Observed Frequency", grid, col)
+  xyplot.Berford(obs.freq, exp.freq, "Expected vs observed frequencies", "Observed Frequency", "Expected Frequency", grid, col)
   
   out$data <- data.frame(obs.freq, exp.freq)
   invisible(out)
