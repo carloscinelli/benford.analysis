@@ -7,7 +7,8 @@
 \method{plot}{Benford}(x, select = c("digits", "second order",
   "summation", "chi squared", "ex summation"), except = NULL,
   multiple = TRUE, col.bar = "lightblue", err.bounds = FALSE,
-  alpha = 0.05, grid = TRUE, mfrow = NULL, freq = TRUE, ...)
+  alpha = 0.05, grid = TRUE, mfrow = NULL, exp.benford = TRUE,
+  freq = TRUE, ...)
 }
 \arguments{
 \item{x}{a "Benford" object}
@@ -15,7 +16,7 @@
 \item{select}{it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.}
 
 \item{except}{it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
+Currently, you can choose from 10 plots: "digits", "rootogram digits", "second order", "rootogram second order", "last two digits", "summation",
 "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
 put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 put except = "all"}
@@ -31,6 +32,8 @@ put except = "all"}
 \item{grid}{logical; if TRUE, adds an rectangular grid to plot.}
 
 \item{mfrow}{A vector of the form c(`nr`, `nc`). Subsequent figures will be drawn in an `nr`-by-`nc` array on the device by columns (`mfcol`), or rows (`mfrow`), respectively. For more details see `?par()`.}
+
+\item{exp.benford}{logical; if TRUE, adds a line representing the expected frequencies by Berford's Law.}
 
 \item{freq}{logical; if TRUE, the plot is a representation of counts; if FALSE, relative frequencies are plotted (so that the plot has a total area of one). Defaults to `TRUE`.}
 
