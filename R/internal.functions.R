@@ -192,9 +192,16 @@ last.two.digits <- function(data, sign="positive") {
   if (sign == "both")      positives <- abs(data[data != 0 & !is.na(data)]) 
   
   digits.as.str <- as.character(positives)
-  digits.as.str <- gsub("\\.", "", digits.as.str)
-  ltd <- as.integer(substr(digits.as.str, nchar(digits.as.str) - 1, nchar(digits.as.str)))
-  ltd[ltd < 10] <- ltd[ltd < 10]*10
+  nozeros <- grepl("\\.", digits.as.str)
+  digits.as.str.nz <- digits.as.str[nozeros]
+  dgts.after.dot <- sub("^[0-9]*\\.", "", digits.as.str.nz)
+  ltd.dgts.after.dot <- substr(dgts.after.dot, nchar(dgts.after.dot)-1, nchar(dgts.after.dot))
+  which.dgts.mult.10 <- grepl("^0", ltd.dgts.after.dot)
+  dgts.mult.10 <- as.character(as.numeric(ltd.dgts.after.dot[which.dgts.mult.10])*10)
+  ltd.dgts.after.dot[which.dgts.mult.10] <- dgts.mult.10
+  digits.as.str[!nozeros] <- 0
+  digits.as.str[nozeros] <- ltd.dgts.after.dot
+  ltd <- as.numeric(digits.as.str)
   
   results <- data.frame(data = positives,
                         data.digits = ltd)
@@ -270,13 +277,19 @@ generate.benford.distribution <- function(benford.digits) {
   return(benford.dist)
 }
 
-generate.empirical.distribution <- function(data, number.of.digits,sign, second.order = FALSE, benford.digits, discrete = TRUE, round = 3){
+generate.empirical.distribution <- function(data, number.of.digits, sign, last.two.dgts = FALSE, second.order = FALSE, benford.digits, discrete = TRUE, round = 3){
   x <- NULL
   v <- NULL
-  data.frame <- extract.digits(data, number.of.digits, sign, second.order, discrete = discrete, round = round)
+  if(last.two.dgts){
+    data.frame <- last.two.digits(data, sign)
+    DF <- data.table(x = c(data.frame$data.digits, 0:99),
+                     v = c(data.frame$data.digits, 0:99))
+  }else{
+    data.frame <- extract.digits(data, number.of.digits, sign, second.order, discrete = discrete, round = round) 
+    DF <- data.table(x = c(data.frame$data.digits, benford.digits),
+                     v = c(data.frame$data.digits, benford.digits) )
+  }
   n <- length(data.frame$data.digits)
-  DF <- data.table(x = c(data.frame$data.digits, benford.digits),
-                   v = c(data.frame$data.digits, benford.digits) )
   DFcount <- DF[ ,length(x) - 1, by = v][order(v)]
   dist.freq <- DFcount$V1
   dist <- dist.freq/n

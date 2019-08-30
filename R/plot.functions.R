@@ -124,7 +124,6 @@ plot.Benford <- function(x,
 }
 
 # Separate plots --------------------------------------------------------------------------------------
-#utils::globalVariables(c("x", "err.bounds", "alpha", "exp.benford"))
 
 histogram.Benford <- function(x,
                                   obs.freq = "digits",
@@ -183,8 +182,7 @@ histogram.Benford <- function(x,
   }
   
   if(is.null(xlab)){
-    ord <- c("","-two","-tree", "-order")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
-    xlab <- paste0("First", ord, " Digits") 
+    xlab <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
   }
   
   if(is.null(ylab)){
@@ -277,8 +275,7 @@ rootogram.Benford <- function(x,
   }
   
   if(is.null(xlab)){
-    ord <- c("","-two","-tree", "-order")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
-    xlab <- paste0("First", ord, " Digits") 
+    xlab <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
   }
   
   if(is.null(ylab)){
@@ -341,9 +338,9 @@ needle.Benford <- function(x,
   )
   
   if(is.null(xlab)){
-    ord <- c("","-two","-tree", "-order")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
-    xlab <- paste0("First", ord, " Digits") 
+    xlab <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
   }
+  
   
   if(is.null(ylab)){
     ylab <- "Frequency"
@@ -486,16 +483,6 @@ check.plot.names <- function(x, y, ...){
     stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
   }
 }
-
-# histogram.Benford(x,  obs.freq = "digits", freq = T, main = NULL, xlab = NULL, ylab = NULL, grid = TRUE, col.bar = "lightblue", err.bounds = FALSE, alpha = 0.05, exp.benford = TRUE, ...)
-# 
-# rootogram.Benford(x,obs.freq = "digits", freq = TRUE,main = NULL,xlab = NULL,ylab = NULL,grid = TRUE,col.bar = "lightblue",err.bounds = FALSE,alpha = 0.05, exp.benford = TRUE, ...)
-# 
-# needle.Benford(x,discrepancy = "abs diff",main = NULL,xlab = NULL,ylab = NULL,grid = TRUE,col = "blue", ...)
-# 
-# xyplot.Berford(x,obs.freq = "digits",freq = TRUE,main = "Expected vs observed frequencies",xlab = "Observed Frequency",ylab = "Expected Frequency",grid = TRUE,col = "blue",...)
-# 
-# histogram.Benford(x,  obs.freq = "digits", freq, main = NULL, xlab = NULL, ylab = NULL, grid, col.bar, err.bounds, alpha)
 
 plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha, freq){
   switch(plot_this,

@@ -152,13 +152,15 @@ benford <- function(data, number.of.digits = 2,
     
   benford.dist <- generate.benford.distribution(benford.digits)
   
-  empirical.distribution <- generate.empirical.distribution(data, number.of.digits,sign, second.order = FALSE, benford.digits)
+  empirical.distribution <- generate.empirical.distribution(data, number.of.digits, sign = sign, second.order = FALSE, benford.digits = benford.digits)
   
   n <- length(empirical.distribution$data)
   
-  second.order <- generate.empirical.distribution(data, number.of.digits,sign, second.order = TRUE, benford.digits, discrete = discrete, round = round)
+  second.order <- generate.empirical.distribution(data, number.of.digits, sign = sign, second.order = TRUE, benford.digits = benford.digits, discrete = discrete, round = round)
   
   n.second.order <- length(second.order$data)
+  
+  last.two.digits <- generate.empirical.distribution(data, sign = sign, last.two.dgts = TRUE, benford.digits = benford.digits)
   
   benford.dist.freq <- benford.dist*n
   
@@ -225,6 +227,9 @@ benford <- function(data, number.of.digits = 2,
                  
                  s.o.data = data.table(second.order = second.order$data,
                                        data.second.order.digits = second.order$data.digits),
+                 
+                 last.two.digits = data.table(last.two.digits = 0:99,
+                                              data.dist.freq = last.two.digits$dist.freq),
                  
                  bfd = data.table(digits = benford.digits,
                                   data.dist = empirical.distribution$dist,
