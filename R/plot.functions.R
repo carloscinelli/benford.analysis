@@ -33,7 +33,7 @@ plot.Benford <- function(x,
                          select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
                          except = NULL, 
                          multiple = TRUE,  
-                         col.bar = "lightblue", 
+                         col.bar = "turquoise3", 
                          err.bounds = FALSE, 
                          alpha = 0.05, 
                          grid = TRUE,
@@ -115,7 +115,7 @@ plot.Benford <- function(x,
     #par(mfrow = c(rows, cols))
     nslots <- rows*cols
     plot_this <- plots
-    lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.4, 0.7))/rows
+    lg_size <- ifelse(rows > 1, 1, 0.7)/rows
     
     for (i in 1:length(plot_this)) {
       plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha, exp.benford, freq)
@@ -128,7 +128,7 @@ plot.Benford <- function(x,
     old.par <- par(no.readonly = TRUE)
     #on.exit(par(old.par))
     plot_this <- plots
-    lg_size <- ifelse(err.bounds, 0.4, 0.7)
+    lg_size <- 0.7
     
     for (i in 1:length(plot_this)) {
       plot.switch(plot_this[i], x, col.bar, grid, err.bounds, alpha, exp.benford, freq)
@@ -488,8 +488,7 @@ legend.Berford <- function(x, err.bounds, size) {
            col = plot_colors, 
            cex = size,
            lwd = c(rep(2, 2), 2),
-           lty = c(rep(1, 2), 2),
-           horiz = TRUE)
+           lty = c(rep(1, 2), 2))
   }else{
     plot_colors <- c("lightblue","red")
     legend(x = "topright",
@@ -499,8 +498,7 @@ legend.Berford <- function(x, err.bounds, size) {
            col = plot_colors, 
            cex = size,
            lwd = 2,
-           lty = rep(1, 2),
-           horiz = TRUE)
+           lty = rep(1, 2))
   }
 }
 
