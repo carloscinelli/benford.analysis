@@ -83,22 +83,36 @@ plot.Benford <- function(x,
     if(!is.null(mfrow)){
       rows <- mfrow[1] 
       cols <- mfrow[2]
+      par(mfrow = c(rows, cols))
     }else{
       if (nGraphics < 4) {
         rows <- 1; 
         cols <- nGraphics
+        par(mfrow = c(rows, cols))
       }
-      if (nGraphics >= 4 & nGraphics <= 6) {
+      if (nGraphics == 4) {
+        rows <- 2; 
+        cols <- 2
+        par(mfrow = c(rows, cols))
+      }
+      if (nGraphics == 5) {
         rows <- 2; 
         cols <- 3
+        #layout(matrix(c(1,1,2,2,3,3,4,4,4,5,5,5), 2, 6, byrow = TRUE))
+      }
+      if (nGraphics == 6) {
+        rows <- 2; 
+        cols <- 3
+        par(mfrow = c(rows, cols))
       }
       if (nGraphics > 6) {
         rows <- 3; 
         cols <- 3
+        par(mfrow = c(rows, cols))
       }
     }
     
-    par(mfrow = c(rows, cols))
+    #par(mfrow = c(rows, cols))
     nslots <- rows*cols
     plot_this <- plots
     lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.4, 0.7))/rows
