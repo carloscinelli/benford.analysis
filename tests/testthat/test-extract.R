@@ -40,7 +40,7 @@ test_that("Exctracting digits from made up data",
   rd3 <- extract.digits(x, second.order=TRUE, discrete=FALSE)
   expect_that(nrow(rd3), equals(length(x[x>0])-1))
   
-  
+  # check whether last two digits work when there are not decimals
   y <- c(1234, 5678, 9101112)
   expect_equal(last.two.digits(y)$data.digits, c(34, 78, 12))
   

@@ -301,11 +301,13 @@ rootogram.Benford <- function(x,
     ylim <- c(min(exp_freq - obs_freq)*1.1, max(abs(exp_freq - obs_freq)*0.5, exp_freq)*1.1)
   }
   
-  if(is.null(xlab)){
-    xlab <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")[ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)]
+  if (is.null(xlab)) {
+    xlab.options <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")
+    lab.picker <- ifelse(x$info$number.of.digits <= 3, x$info$number.of.digits, 4)
+    xlab <- xlab.options[lab.picker]
   }
   
-  if(is.null(ylab)){
+  if (is.null(ylab)) {
     ylab <- "Frequency"
   }
   
@@ -317,7 +319,7 @@ rootogram.Benford <- function(x,
        ylim = ylim,
        yaxs = 'i', xaxs = 'i', xaxt = "n", type = 'n',
        panel.first = {
-         if(grid){
+         if (grid) {
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
            axis(1, at = xmarks[seq(1, length(xmarks), ifelse(length(digits) <= 90, 1, 10))], tck = 1, col.ticks = "gray90", labels = F)
          }
