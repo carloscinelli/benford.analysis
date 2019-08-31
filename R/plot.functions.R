@@ -142,16 +142,16 @@ plot.Benford <- function(x,
 # Separate plots --------------------------------------------------------------------------------------
 
 histogram.Benford <- function(x,
-                                  obs.freq = "digits",
-                                  main = NULL,
-                                  xlab = NULL,
-                                  ylab = NULL,
-                                  grid = TRUE,
-                                  col.bar = "lightblue",
-                                  err.bounds = FALSE,
-                                  alpha = 0.05,
-                                  exp.benford = TRUE,
-                                  freq = TRUE, ...){
+                              obs.freq = "digits",
+                              main = NULL,
+                              xlab = NULL,
+                              ylab = NULL,
+                              grid = TRUE,
+                              col.bar = "lightblue",
+                              err.bounds = FALSE,
+                              alpha = 0.05,
+                              exp.benford = TRUE,
+                              freq = TRUE, ...){
   
   digits <- x[["bfd"]]$digits
   obs.freq <- tolower(obs.freq)
@@ -255,16 +255,16 @@ histogram.Benford <- function(x,
 
 
 rootogram.Benford <- function(x,
-                                  obs.freq = "digits",
-                                  main = NULL,
-                                  xlab = NULL,
-                                  ylab = NULL,
-                                  grid = TRUE,
-                                  col.bar = "lightblue",
-                                  err.bounds = FALSE,
-                                  alpha = 0.05,
-                                  exp.benford = TRUE,
-                                  freq = TRUE, ...){
+                              obs.freq = "digits",
+                              main = NULL,
+                              xlab = NULL,
+                              ylab = NULL,
+                              grid = TRUE,
+                              col.bar = "lightblue",
+                              err.bounds = FALSE,
+                              alpha = 0.05,
+                              exp.benford = TRUE,
+                              freq = TRUE, ...){
   digits <- x[["bfd"]]$digits
   obs.freq <- tolower(obs.freq)
   

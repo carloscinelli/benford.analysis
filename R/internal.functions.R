@@ -1,4 +1,18 @@
-#### Benford ####
+### TODO
+# - last-two digits
+# - verificar se os números do last-two são inteiros (resto da divisão por 1)
+# - possível solução: se todos forem inteiros, "arrendodar" e não pegar "depois do ponto"
+#   - emitir warning falando que todos numeros parecem ser inteiros, então last-two não pegou decimal
+# - tem que ter uma opção para definir quantos decimais existem no número (inteiro = zero, dinheiro = 2)
+#    - argumento "round", "digits".
+
+
+
+
+
+# Tests -------------------------------------------------------------------
+
+
 
 DF <- function(data){
   data <- data[data >= 10]
@@ -109,6 +123,15 @@ MAD.conformity <- 	function(MAD = NULL,
   return(out)
 }
 
+
+
+
+# Extraction functions ----------------------------------------------------
+
+
+
+
+
 #' @title Extracts the leading digits from the data
 #' @description It extracts the leading digits from the data.
 #' 
@@ -168,6 +191,8 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
   return(results)
 }
 
+
+
 #' @title Extracts the last two digits from the data
 #' @description It extracts the last two digits from the data.
 #' 
@@ -182,7 +207,7 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
 #' for the incentives to manipulate the numbers are usually different.
 #' @return A data.frame with the data and the last digits.
 #' @export
-last.two.digits <- function(data, sign="positive") {
+last.two.digits <- function(data, round  = 2, sign="positive") {
   
   if (!is.numeric(data)) stop("Data must be a numeric vector")
   
@@ -195,7 +220,7 @@ last.two.digits <- function(data, sign="positive") {
   nozeros <- grepl("\\.", digits.as.str)
   digits.as.str.nz <- digits.as.str[nozeros]
   dgts.after.dot <- sub("^[0-9]*\\.", "", digits.as.str.nz)
-  ltd.dgts.after.dot <- substr(dgts.after.dot, nchar(dgts.after.dot)-1, nchar(dgts.after.dot))
+  ltd.dgts.after.dot <- substr(dgts.after.dot, nchar(dgts.after.dot) - 1, nchar(dgts.after.dot))
   which.dgts.mult.10 <- grepl("^0", ltd.dgts.after.dot)
   dgts.mult.10 <- as.character(as.numeric(ltd.dgts.after.dot[which.dgts.mult.10])*10)
   ltd.dgts.after.dot[which.dgts.mult.10] <- dgts.mult.10
@@ -207,6 +232,19 @@ last.two.digits <- function(data, sign="positive") {
                         data.digits = ltd)
   return(results)
 }
+
+
+extract.mantissa <- function(positives) {
+  log <- log10(positives)
+  log[log < 0] <- log[log < 0] + as.integer(log[log < 0])*(-1) + 1
+  mantissa <- log - trunc(log)
+  return(mantissa)
+}
+
+
+# Digits probability ------------------------------------------------------
+
+
 
 #' @title Probability of a digit sequence
 #' @description It calculates the probability of a digit sequence "d".
@@ -227,6 +265,11 @@ p.these.digits <- function(d){
   prob <- log10(1 + 1/d)
   return(prob)
 }
+
+
+
+
+
 
 
 #' @title Probability of a digit at the nth position
@@ -264,6 +307,12 @@ p.this.digit.at.n <- function(d,n){
   return(sum)
 }
 
+
+
+# Generating functions ----------------------------------------------------
+
+
+
 generate.benford.digits <- function(number.of.digits) {
   number.of.digits <- as.integer(number.of.digits)
   begin <- 10^(number.of.digits - 1)
@@ -300,12 +349,7 @@ generate.empirical.distribution <- function(data, number.of.digits, sign, last.t
   return(results)
 }
 
-extract.mantissa <- function(positives) {
-  log <- log10(positives)
-  log[log < 0] <- log[log < 0] + as.integer(log[log < 0])*(-1) + 1
-  mantissa <- log - trunc(log)
-  return(mantissa)
-}
+
 
 generate.summation <- function(benford.digits, data, data.digits) {
   x <- NULL
@@ -328,9 +372,12 @@ generate.summation <- function(benford.digits, data, data.digits) {
 
 #### Basic Calculations ####
 
-excess.kurtosis <- function(x) 
+excess.kurtosis <- function(x){ 
   (mean((x - mean(x))^4)/(mean((x - mean(x))^2)^2)) - 3
+}
 
 
-skewness <- function(x) (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
+skewness <- function(x) {
+  (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
+}
 
