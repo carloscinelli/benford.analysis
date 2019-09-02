@@ -191,6 +191,28 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
   return(results)
 }
 
+#' @title Trunc decimal values.
+#' @description It trunc decimal values from the data.
+#' 
+#'This function is used by the main function of the package \code{\link{benford}}
+#' to trunc the values in its ndec argument to the specified number of decimal places. 
+#'
+#' @param x a numeric vector. 
+#' @param n.dec integer indicating the number of decimal places (trunc) to be used.
+#' @return 
+#' @export
+
+truncDec <- function(x, n.dec = 2){
+  int <- floor(x)
+  isDec <- grepl("\\.", as.character(x))
+  dec <- sub("^[0-9]*\\.", "", as.character(x))
+  truncateDec <- substr(dec, 1, n.dec)
+  truncatedNumber <- vector("character", length = length(dec))
+  truncatedNumber[isDec] <- paste0(int[isDec], ".", dec[isDec])
+  truncatedNumber[!isDec] <- as.character(int[!isDec])
+  truncatedNumber <- as.numeric(truncatedNumber)
+  return(truncatedNumber)
+} 
 
 
 #' @title Extracts the last two digits from the data
@@ -200,14 +222,16 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
 #'ast two digits of the data.
 #'
 #' @param data a numeric vector. 
-#' @param sign  The default value for sign is "positive" and it analyzes only data greater than zero. 
+#' @param ndec it specifies the number of decimals to be used (default 2).
+#' @param sign The default value for sign is "positive" and it analyzes only data greater than zero. 
 #' There are also the options "negative" and "both" that will analyze only negative values or both positive and negative values of the data,
 #' respectively. For large datasets with both positive and negative numbers, 
 #' it is usually recommended to perform a separate analysis for each group,
 #' for the incentives to manipulate the numbers are usually different.
 #' @return A data.frame with the data and the last digits.
 #' @export
-last.two.digits <- function(data, round  = 2, sign="positive") {
+
+last.two.digits <- function(data, sign="positive", ndec = 2) {
   
   if (!is.numeric(data)) stop("Data must be a numeric vector")
   
@@ -216,19 +240,32 @@ last.two.digits <- function(data, round  = 2, sign="positive") {
   if (sign == "negative")  positives <- data[data < 0 & !is.na(data)]*(-1)
   if (sign == "both")      positives <- abs(data[data != 0 & !is.na(data)]) 
   
-  digits.as.str <- as.character(positives)
-  nozeros <- grepl("\\.", digits.as.str)
-  digits.as.str.nz <- digits.as.str[nozeros]
-  dgts.after.dot <- sub("^[0-9]*\\.", "", digits.as.str.nz)
-  ltd.dgts.after.dot <- substr(dgts.after.dot, nchar(dgts.after.dot) - 1, nchar(dgts.after.dot))
-  which.dgts.mult.10 <- grepl("^0", ltd.dgts.after.dot)
-  dgts.mult.10 <- as.character(as.numeric(ltd.dgts.after.dot[which.dgts.mult.10])*10)
-  ltd.dgts.after.dot[which.dgts.mult.10] <- dgts.mult.10
-  digits.as.str[!nozeros] <- 0
-  digits.as.str[nozeros] <- ltd.dgts.after.dot
-  ltd <- as.numeric(digits.as.str)
+  remainder <- positives %% 1
+  if (all(remainder == 0)){
+    warning("Data appears to be integers, so the argument 'ndec' is set to zero.")
+    ndec <- 0
+  } 
   
-  results <- data.frame(data = positives,
+  truncated.values <- truncDec(positives, ndec)
+  values.as.str <- as.character(truncated.values)
+  if (ndec == 0){
+    nchar.values <- nchar(truncated.values)
+    ltd <- substr(truncated.values, nchar.values - 1, nchar.values)
+    ltd <- as.numeric(ltd)
+  }else{
+    nozeros <- grepl("\\.", values.as.str)
+    values.as.str.nz <- values.as.str[nozeros]
+    dgts.after.dot <- sub("^[0-9]*\\.", "", values.as.str.nz)
+    ltd.dgts.after.dot <- substr(dgts.after.dot, nchar(dgts.after.dot) - 1, nchar(dgts.after.dot))
+    which.dgts.mult.10 <- nchar(ltd.dgts.after.dot) == 1
+    dgts.mult.10 <- as.character(as.numeric(ltd.dgts.after.dot[which.dgts.mult.10])*10)
+    ltd.dgts.after.dot[which.dgts.mult.10] <- dgts.mult.10
+    values.as.str[!nozeros] <- 0
+    values.as.str[nozeros] <- ltd.dgts.after.dot
+    ltd <- as.numeric(values.as.str)
+  }
+  
+  results <- data.frame(data = truncated.values,
                         data.digits = ltd)
   return(results)
 }

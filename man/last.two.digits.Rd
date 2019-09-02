@@ -4,7 +4,7 @@
 \alias{last.two.digits}
 \title{Extracts the last two digits from the data}
 \usage{
-last.two.digits(data, sign = "positive")
+last.two.digits(data, sign = "positive", ndec = 2)
 }
 \arguments{
 \item{data}{a numeric vector.}
@@ -14,6 +14,8 @@ There are also the options "negative" and "both" that will analyze only negative
 respectively. For large datasets with both positive and negative numbers, 
 it is usually recommended to perform a separate analysis for each group,
 for the incentives to manipulate the numbers are usually different.}
+
+\item{ndec}{it specifies the number of decimals to be used (default 2).}
 }
 \value{
 A data.frame with the data and the last digits.
