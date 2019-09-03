@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{Benford}(x, select = c("digits", "second order",
   "summation", "chi squared", "ex summation"), except = NULL,
-  multiple = TRUE, col.bar = "turquoise3", err.bounds = FALSE,
+  multiple = TRUE, col.bar = "lightblue", err.bounds = FALSE,
   alpha = 0.05, grid = TRUE, mfrow = NULL, exp.benford = TRUE,
   freq = TRUE, ...)
 }

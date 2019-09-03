@@ -30,10 +30,10 @@
 
 
 plot.Benford <- function(x, 
-                         select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
+                         select = c("digits", "obs vs exp", "chi squared", "summation"), 
                          except = NULL, 
                          multiple = TRUE,  
-                         col.bar = "turquoise3", 
+                         col.bar = "lightblue", 
                          err.bounds = FALSE, 
                          alpha = 0.05, 
                          grid = TRUE,
@@ -85,34 +85,11 @@ plot.Benford <- function(x,
       cols <- mfrow[2]
       par(mfrow = c(rows, cols))
     }else{
-      if (nGraphics < 4) {
-        rows <- 1; 
-        cols <- nGraphics
-        par(mfrow = c(rows, cols))
-      }
-      if (nGraphics == 4) {
-        rows <- 2; 
+        rows <- 2 
         cols <- 2
         par(mfrow = c(rows, cols))
-      }
-      if (nGraphics == 5) {
-        rows <- 2; 
-        cols <- 3
-        #layout(matrix(c(1,1,2,2,3,3,4,4,4,5,5,5), 2, 6, byrow = TRUE))
-      }
-      if (nGraphics == 6) {
-        rows <- 2; 
-        cols <- 3
-        par(mfrow = c(rows, cols))
-      }
-      if (nGraphics > 6) {
-        rows <- 3; 
-        cols <- 3
-        par(mfrow = c(rows, cols))
-      }
     }
     
-    #par(mfrow = c(rows, cols))
     nslots <- rows*cols
     plot_this <- plots
     lg_size <- ifelse(rows > 1, 1, 0.7)/rows
@@ -141,7 +118,7 @@ plot.Benford <- function(x,
 
 # Separate plots --------------------------------------------------------------------------------------
 
-histogram.Benford <- function(x,
+barplot.Benford <- function(x,
                               obs.freq = "digits",
                               main = NULL,
                               xlab = NULL,
@@ -514,17 +491,17 @@ check.plot.names <- function(x, y, ...){
 
 plot.switch <- function(plot_this, x, col.bar, grid, err.bounds, alpha, exp.benford, freq){
   switch(plot_this,
-         "digits" = histogram.Benford(x, obs.freq = "digits", main = "Digits distribution", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
+         "digits" = barplot.Benford(x, obs.freq = "digits", main = "Digits distribution", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
          "rootogram digits" = rootogram.Benford(x, obs.freq = "digits", main = "Digits distribution - Rootogram", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
-         "second order" = histogram.Benford(x,  obs.freq = "second order", main = "Digits distribution\nSecond Order Test", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
+         "second order" = barplot.Benford(x,  obs.freq = "second order", main = "Digits distribution\nSecond Order Test", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
          "rootogram second order" = rootogram.Benford(x, obs.freq = "second order", main = "Digits distribution\nSecond Order Test - Rootogram", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
-         "summation" = histogram.Benford(x,  obs.freq = "summation", main = "Summation Distribution by digits", xlab = NULL, ylab = "Summation", grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
+         "summation" = barplot.Benford(x,  obs.freq = "summation", main = "Summation Distribution by digits", xlab = NULL, ylab = "Summation", grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq),
          "mantissa" = plot.ordered.mantissa(x, grid),
          "chi squared" = needle.Benford(x, discrepancy = "chi squared", main = "Chi-Squared Difference", xlab = NULL, ylab = "Chi-squared", grid),
          "abs diff" = needle.Benford(x, discrepancy = "abs diff", main = "Absolute Difference", xlab = NULL, ylab = "Absolute Difference", grid),
          "ex summation" = needle.Benford(x, discrepancy = "ex summation", main = "Summation Difference", xlab = NULL, ylab = "Absolute Excess Summation", grid),
          "obs vs exp" = xyplot.Berford(x, obs.freq = "digits", main = "Expected vs observed frequencies", xlab = NULL, ylab = NULL, grid, freq),
-         "last two digits" = histogram.Benford(x, obs.freq = "last two digits", main = "Last-Two Digits distribution", xlab = "Last-Two Digits", ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
+         "last two digits" = barplot.Benford(x, obs.freq = "last two digits", main = "Last-Two Digits distribution", xlab = "Last-Two Digits", ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
          
   )  
 }
