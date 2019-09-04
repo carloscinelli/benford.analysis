@@ -16,12 +16,10 @@ test_that("Get functions are working",
                                                       12, 1261524, 1207281, 1270954)), 
                                        .Names = "value", row.names = c(NA, -57L), 
                               class = c("data.table", "data.frame"))
-            expect_that(suspects, equals(test_suspects))
-            expect_that(getSuspects("a"), throws_error("bfd must be a 'Benford' object."))
-            expect_that(getSuspects(bfd, sino.forest, "diff"), 
-                        throws_error("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'"))
-            expect_that(getSuspects(bfd, "a", "diff"), 
-                        throws_error("Data must be a data frame."))
+            expect_equal(suspects, test_suspects)
+            expect_error(getSuspects("a"), "bfd must be a 'Benford' object.")
+            expect_error(getSuspects(bfd, sino.forest, "diff"), "By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
+            expect_error(getSuspects(bfd, "a", "diff"), "Data must be a data frame.")
             
             
             duplicates <- getDuplicates(bfd, sino.forest)
@@ -30,9 +28,9 @@ test_that("Get functions are working",
                                          .Names = "value", 
                                          row.names = c(NA, -9L), 
                                          class = c("data.table", "data.frame"))
-            expect_that(duplicates, equals(test_duplicates))
-            expect_that(getDuplicates(mtcars), throws_error("bfd must be a 'Benford' object."))
-            expect_that(getDuplicates(bfd, 1), throws_error("Data must be a data frame."))
+            expect_equal(duplicates, test_duplicates)
+            expect_error(getDuplicates(mtcars), "bfd must be a 'Benford' object.")
+            expect_error(getDuplicates(bfd, 1), "Data must be a data frame.")
             
             digits <- getDigits(bfd, sino.forest, 10)
             test_digits <- structure(list(value = c(10609, 1054257, 103991, 10602, 1054257, 
@@ -41,15 +39,15 @@ test_that("Get functions are working",
                                                     1e+07, 108327000, 1060000, 107400000, 1007, 10328, 1074516, 1053191, 
                                                     1026, 10377, 100, 101, 107, 1040916)), 
                                      .Names = "value", row.names = c(NA, -36L), class = c("data.table", "data.frame"))
-            expect_that(digits, equals(test_digits))
+            expect_equal(digits, test_digits)
             
             data <- getData(bfd)
-            expect_that(data, equals(bfd$data))
-            expect_that(getData(1), throws_error("Object must be of class Benford"))
+            expect_equal(data, bfd$data)
+            expect_error(getData(1), "Object must be of class Benford")
             
             bfd_test <- getBfd(bfd)
-            expect_that(bfd_test, equals(bfd$bfd))
-            expect_that(getBfd(1), throws_error("Object must be of class Benford"))
+            expect_equal(bfd_test, bfd$bfd)
+            expect_error(getBfd(1), "Object must be of class Benford")
             
             mant <- marc(bfd)
             test_mant <- structure(list(statistic = structure(0.00216678894007925, .Names = "L2"), 
@@ -57,13 +55,11 @@ test_that("Get functions are working",
                                         method = "Mantissa Arc Test", data.name = "sino.forest$value"), 
                                    .Names = c("statistic", "parameter", "p.value", "method", "data.name"), 
                                    class = "htest")
-            expect_that(mant, equals(test_mant))
-            expect_that(marc(1), throws_error("Object must be of class Benford"))
+            expect_equal(mant, test_mant)
+            expect_error(marc(1), "Object must be of class Benford")
             
-            expect_that(suspectsTable(bfd, "diff"), 
-                        throws_error("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'"))
-            expect_that(suspectsTable(1), 
-                        throws_error("bfd must be a 'Benford' object."))
+            expect_error(suspectsTable(bfd, "diff"), "By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
+            expect_error(suspectsTable(1), "bfd must be a 'Benford' object.")
           })
 
 

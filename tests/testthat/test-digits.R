@@ -13,24 +13,24 @@ test_that("p.this.digit.at.n",{
   matrix <- as.data.frame(round(sapply(1:4, function(x) sapply(0:9,p.this.digit.at.n,n=x)),5))
   names(matrix) <- paste0("n=",1:4)
   rownames(matrix) <- paste0("d=",0:9)
-  expect_that(matrix, equals(test))
+  expect_equal(matrix, test)
   
-  expect_that(p.this.digit.at.n("a",1), throws_error("d must be numeric or integer"))
-  expect_that(p.this.digit.at.n(0,1), equals(NA))
-  expect_that(p.this.digit.at.n(2,"b"), throws_error("n must be numeric or integer"))
-  expect_that(p.this.digit.at.n(2123,0), throws_error("d must have only 1 digit. This function evaluates 1 digit at position n"))
-  expect_that(p.this.digit.at.n(1,0),throws_error("n must be greater than 1"))
-  expect_that(p.this.digit.at.n(-3,3), equals(p.this.digit.at.n(3,3)))
-  expect_that(p.this.digit.at.n(1,9), equals(0.1))
+  expect_error(p.this.digit.at.n("a",1), "d must be numeric or integer")
+  expect_equal(p.this.digit.at.n(0,1), NA)
+  expect_error(p.this.digit.at.n(2,"b"), "n must be numeric or integer")
+  expect_error(p.this.digit.at.n(2123,0), "d must have only 1 digit. This function evaluates 1 digit at position n")
+  expect_error(p.this.digit.at.n(1,0),"n must be greater than 1")
+  expect_equal(p.this.digit.at.n(-3,3), p.this.digit.at.n(3,3))
+  expect_equal(p.this.digit.at.n(1,9), 0.1)
 }
 )
 
 test_that("p.these.digits",{
-  expect_that(p.these.digits(1), equals(0.30103))
-  expect_that(p.these.digits(11), equals(0.03778856, tolerance=1e-07))
-  expect_that(p.these.digits(999999), equals(4.342947e-07))
-  expect_that(p.these.digits("123"), throws_error("d must be numeric or integer"))
-  expect_that(p.these.digits(-123),equals(p.these.digits(123)))
+  expect_equal(p.these.digits(1), 0.30103)
+  expect_equal(p.these.digits(11), 0.03778856, tolerance=1e-07)
+  expect_equal(p.these.digits(999999), 4.342947e-07)
+  expect_error(p.these.digits("123"), "d must be numeric or integer")
+  expect_equal(p.these.digits(-123), p.these.digits(123))
 }
 )
 
