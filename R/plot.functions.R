@@ -7,8 +7,8 @@
 ##' @param  x a "Benford" object
 ##' @param select it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.
 ##' @param except it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-##' Currently, you can choose from 10 plots: "digits", "rootogram digits", "second order", "rootogram second order", "last two digits", "summation",
-##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
+##' Currently, you can choose from 12 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
+##' "mantissa", "mantissa arc", "chi square", "abs diff", "ex summation". If you want to plot all, just
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 ##' put except = "all"
 ##' @param multiple logical; if TRUE, all plots are grouped in the same window.
@@ -23,7 +23,7 @@
 ##' @return Plots the Benford object.
 ##' @details If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
 ##' @export
-##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new title
+##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new title box grid text
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
@@ -45,7 +45,7 @@ plot.Benford <- function(x,
   
   if(!(alpha > 0 & alpha < 1)) stop(paste0(alpha, " is not a valid value for 'alpha' parameter"))
   
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "obs vs exp", "last two digits")
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "obs vs exp", "last two digits", "mantissa arc")
   
   if (!is.null(select)) {
     check.plot.names(select, c(available.plots, "all"))
@@ -101,7 +101,7 @@ plot.Benford <- function(x,
     
     for (i in 1:length(plot_this)) {
       switch.plot(plot_this[i], bfd = x, col.bar = col.bar, grid = grid, err.bounds = err.bounds, alpha = alpha, exp.benford = exp.benford, freq = freq)
-      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp"))){
+      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc"))){
         draw.legend(x, err.bounds, lg_size)
       }
     }
@@ -114,7 +114,7 @@ plot.Benford <- function(x,
     
     for (i in 1:length(plot_this)) {
       switch.plot(plot_this[i], bfd = x, col.bar = col.bar, grid = grid, err.bounds = err.bounds, alpha = alpha, exp.benford = exp.benford, freq = freq)
-      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp"))){
+      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc"))){
         draw.legend(x, err.bounds, lg_size)
       }
     }
@@ -214,7 +214,7 @@ needle.Benford <- function(x, y,
                            col = "blue", ...){
   
   xmarks <- seq(0.7, length(x)*1.2, 1.2)
-  plot.base(x, xmarks, y, xlim = NULL, ylim = NULL, grid, type = "h")
+  plot.base(x, xmarks, y, xlim = NULL, ylim = NULL, grid, type = "h", col = col)
   points(xmarks, y, pch = 19, col = col, cex = 0.5)
   main.and.labs(main, xlab, ylab, ndigits)
   
@@ -273,6 +273,31 @@ plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
          if(grid) grid(lty = 1, col = "gray90")
        })
   abline(a = 0, b = 1/length(x), col = "red", lty = 2)
+}
+
+mantissa.arc.plot <- function(mantissa, L2, ...){
+  x_coord <- mean(cos(2 * pi * mantissa))
+  y_coord <- mean(sin(2 * pi * mantissa))
+  l <- seq(0, 1, length.out = 100)
+  x <- cos(2 * pi * l)
+  y <- sin(2 * pi * l)
+  oldpar <- par(pty = "s")
+  on.exit(par(oldpar))
+  plot(x, y, type = "l", xlab = "", ylab = "",
+       panel.first = {
+         grid(lty = 'solid')
+         abline(h = 0, v = 0, col = 'gray40', asp = 1, )
+       })
+  box(col = 'white')
+  points(0, 0, col = "red", pch = "+", cex = 2)
+  points(x_coord, y_coord, col = "blue", pch = 19, cex = 1.5)
+  x_obs <- sqrt(L2) * cos(2 * pi * l)
+  y_obs <- sqrt(L2) * sin(2 * pi * l)
+  lines(x_obs, y_obs, col = "blue", lty = 2)
+  
+  pvalor <- exp(-L2 * length(mantissa))
+  text(0.7, 1.05, labels = paste0("p-value: ", format.pval(pvalor)), col = "blue", cex = 0.7)
+  text(x_coord + 0.1, y_coord - 0.1, labels = paste0("(", round(x_coord, 3), ", ", round(y_coord, 3), ")"), col = "blue", cex = 0.7)
 }
 
 
@@ -402,8 +427,10 @@ switch.plot <- function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.be
            },
          "last two digits" = {
            barplot.Benford(y$last.two.digits, y$data.dist.freq, rep(mean(y$data.dist.freq), 100), n.digits, main = "Last-Two Digits distribution", xlab = "Last-Two Digits", ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
-           }
-         
+           },
+         "mantissa arc" = {
+           mantissa.arc.plot(z$data.mantissa, marc(bfd)$statistic)
+         }
   )
 }
 

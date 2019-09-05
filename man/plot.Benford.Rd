@@ -15,8 +15,8 @@
 \item{select}{it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.}
 
 \item{except}{it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-Currently, you can choose from 10 plots: "digits", "rootogram digits", "second order", "rootogram second order", "last two digits", "summation",
-"mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
+Currently, you can choose from 12 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
+"mantissa", "mantissa arc", "chi square", "abs diff", "ex summation". If you want to plot all, just
 put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 put except = "all"}
 
