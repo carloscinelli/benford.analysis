@@ -1,18 +1,5 @@
-### TODO
-# - last-two digits
-# - verificar se os números do last-two são inteiros (resto da divisão por 1)
-# - possível solução: se todos forem inteiros, "arrendodar" e não pegar "depois do ponto"
-#   - emitir warning falando que todos numeros parecem ser inteiros, então last-two não pegou decimal
-# - tem que ter uma opção para definir quantos decimais existem no número (inteiro = zero, dinheiro = 2)
-#    - argumento "round", "digits".
-
-
-
-
 
 # Tests -------------------------------------------------------------------
-
-
 
 DF <- function(data){
   data <- data[data >= 10]
@@ -199,16 +186,19 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
 #'
 #' @param x a numeric vector. 
 #' @param n.dec integer indicating the number of decimal places (trunc) to be used.
-#' @return 
+#' @return A numeric vector with the data with deciml values truncated.
 #' @export
 
 truncDec <- function(x, n.dec = 2){
-  int <- floor(x)
-  isDec <- grepl("\\.", as.character(x))
-  dec <- sub("^[0-9]*\\.", "", as.character(x))
+  int <- format(floor(x), scientific = FALSE)
+  int <- gsub("[ ]*", "",  int)
+  x.as.str <- format(x, scientific = FALSE)
+  dec <- gsub("[ ]*", "",  x.as.str)
+  isDec <- grepl("\\.", dec)
+  dec <- sub("^[0-9]*\\.", "", dec)
   truncateDec <- substr(dec, 1, n.dec)
   truncatedNumber <- vector("character", length = length(dec))
-  truncatedNumber[isDec] <- paste0(int[isDec], ".", dec[isDec])
+  truncatedNumber[isDec] <- paste(int[isDec], ".", truncateDec[isDec], sep = "")
   truncatedNumber[!isDec] <- as.character(int[!isDec])
   truncatedNumber <- as.numeric(truncatedNumber)
   return(truncatedNumber)
@@ -240,14 +230,15 @@ last.two.digits <- function(data, sign="positive", ndec = 2) {
   if (sign == "negative")  positives <- data[data < 0 & !is.na(data)]*(-1)
   if (sign == "both")      positives <- abs(data[data != 0 & !is.na(data)]) 
   
-  remainder <- positives %% 1
+  remainder <- (positives - floor(positives))
   if (all(remainder == 0)){
     warning("Data appears to be integers, so the argument 'ndec' is set to zero.")
     ndec <- 0
   } 
   
   truncated.values <- truncDec(positives, ndec)
-  values.as.str <- as.character(truncated.values)
+  values.as.str <- format(truncated.values, scientific = FALSE)
+  values.as.str <- gsub("[ ]*", "", values.as.str)
   if (ndec == 0){
     nchar.values <- nchar(truncated.values)
     ltd <- substr(truncated.values, nchar.values - 1, nchar.values)

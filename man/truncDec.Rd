@@ -11,6 +11,9 @@ truncDec(x, n.dec = 2)
 
 \item{n.dec}{integer indicating the number of decimal places (trunc) to be used.}
 }
+\value{
+A numeric vector with the data with deciml values truncated.
+}
 \description{
 It trunc decimal values from the data.
 
