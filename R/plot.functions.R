@@ -1,3 +1,7 @@
+#todo
+#implemetar err.bounds no gráfico de frequencias esperadas vs observadas
+
+
 
 # Main plot ---------------------------------------------------------------------------------------------
 
@@ -7,8 +11,8 @@
 ##' @param  x a "Benford" object
 ##' @param select it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.
 ##' @param except it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-##' Currently, you can choose from 12 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
-##' "mantissa", "mantissa arc", "chi square", "abs diff", "ex summation". If you want to plot all, just
+##' Currently, you can choose from 13 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
+##' "mantissa", "mantissa arc", "chi square", "abs diff", "ex summation", "diff vs ex summation". If you want to plot all, just
 ##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 ##' put except = "all"
 ##' @param multiple logical; if TRUE, all plots are grouped in the same window.
@@ -22,64 +26,68 @@
 ##' @param ... arguments to be passed to generic plot functions,
 ##' @return Plots the Benford object.
 ##' @details If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
+##' For more flexibility in plotting, use (`separate plots here`)...
 ##' @export
-##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new title box grid text
+##' @importFrom graphics abline axis barplot legend lines par plot rect points arrows layout plot.new title box grid text mtext
 ##' @importFrom stats pchisq var
 ##' @importFrom utils head
 ##' @importFrom stats setNames qnorm
 
-plot.Benford <- function(x, 
-                         select = c("digits", "obs vs exp", "chi squared", "summation"), 
-                         except = NULL, 
-                         multiple = TRUE,  
-                         col.bar = "lightblue", 
-                         err.bounds = FALSE, 
-                         alpha = 0.05, 
-                         grid = TRUE,
-                         mfrow = NULL,
-                         exp.benford = TRUE,
-                         freq = TRUE, ...){
-  
+
+plot.Benford <-
+function(x, select = c("digits", "obs vs exp", "summation", "diff vs ex summation",
+                       "last two digits", "mantissa", "mantissa arc", "second order"), 
+         except = NULL, 
+         multiple = TRUE,
+         col.bar = "lightblue",
+         err.bounds = FALSE,
+         alpha = 0.05,
+         grid = TRUE,
+         mfrow = NULL,
+         exp.benford = TRUE,
+         freq = TRUE, ...)
+{
   
   if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
   
   if(!(alpha > 0 & alpha < 1)) stop(paste0(alpha, " is not a valid value for 'alpha' parameter"))
   
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "obs vs exp", "last two digits", "mantissa arc")
+  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "obs vs exp", "last two digits", "mantissa arc", "diff vs ex summation")
   
-  if (!is.null(select)) {
-    check.plot.names(select, c(available.plots, "all"))
+  if (!is.null(select)) {# if select is used, overrides the except parameter
     select <- tolower(select)
-    if (all(select == "all")) plots <- available.plots
-    else plots <- select
+    check.plot.names(select, c(available.plots, "all"))
+    if (all(select == "all")) plot_this <- available.plots
+    else plot_this <- select
     
-    if (!is.null(except)) {
+    if (!is.null(except))
       warning("the argument 'except' was ignored. See ?plot.Benford for more datails.")
-    }
     
   }else{
     
     if (!is.null(except)) {
-      check.plot.names(except, c(available.plots, "none"))
       except <- tolower(except)
+      check.plot.names(except, c(available.plots, "none"))
       if (all(except == "none")) {
-        plots <- available.plots
+        plot_this <- available.plots
       }else{
         ap <- available.plots
-        plots <- ap[!(ap %in% except)]
+        plot_this <- ap[!(ap %in% except)] # remove plots listed in except
       }
     }else{
       stop("the 'select' and 'except' arguments must not be equal to NULL at the same time")
     }
-  }  
+  }
   
-  nGraphics <- length(plots)
+  nGraphics <- length(plot_this)
+  # list of plots to draw without legend
+  no.legend <- c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc", "diff vs ex summation")
   
-  if (multiple) {
+  if (multiple) {# multiple plots in a same panel
     old.par <- par(no.readonly = TRUE)
     #on.exit(par(old.par))
     
-    if(!is.null(mfrow)){
+    if(!is.null(mfrow)){# mfrow is a parameter of the plot.Berford
       rows <- mfrow[1] 
       cols <- mfrow[2]
       par(mfrow = c(rows, cols))
@@ -96,27 +104,24 @@ plot.Benford <- function(x,
     }
     
     nslots <- rows*cols
-    plot_this <- plots
-    lg_size <- ifelse(rows > 1, 1, 0.7)/rows
-    
+    lg_size <- ifelse(rows > 1, 1, 0.7) / rows # legend size
+
     for (i in 1:length(plot_this)) {
       switch.plot(plot_this[i], bfd = x, col.bar = col.bar, grid = grid, err.bounds = err.bounds, alpha = alpha, exp.benford = exp.benford, freq = freq)
-      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc"))){
+      if(!(plot_this[i] %in% no.legend))
         draw.legend(x, err.bounds, lg_size)
-      }
     }
     
-  }else{
+  }else{ # plot individual graphs
     old.par <- par(no.readonly = TRUE)
     #on.exit(par(old.par))
-    plot_this <- plots
+    plot_this <- select
     lg_size <- 0.7
     
     for (i in 1:length(plot_this)) {
       switch.plot(plot_this[i], bfd = x, col.bar = col.bar, grid = grid, err.bounds = err.bounds, alpha = alpha, exp.benford = exp.benford, freq = freq)
-      if(!(plot_this[i] %in% c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc"))){
+      if(!(plot_this[i] %in% no.legend))
         draw.legend(x, err.bounds, lg_size)
-      }
     }
   }
 }
@@ -125,18 +130,21 @@ plot.Benford <- function(x,
 # Separate plots --------------------------------------------------------------------------------------
 utils::globalVariables(c("title", "digits", "y"))
 
-barplot.Benford <- function(x, y,
-                            exp.freq,
-                            ndigits,
-                            main = NULL,
-                            xlab = NULL,
-                            ylab = NULL,
-                            grid = TRUE,
-                            col.bar = "lightblue",
-                            err.bounds = FALSE,
-                            alpha = 0.05,
-                            exp.benford = TRUE,
-                            freq = T, ...){
+barplot.Benford <-
+function(x, y,
+         exp.freq,
+         ndigits,
+         main = NULL,
+         xlab = NULL,
+         ylab = NULL,
+         grid = TRUE,
+         col.bar = "lightblue",
+         err.bounds = FALSE,
+         alpha = 0.05,
+         exp.benford = TRUE,
+         freq = TRUE, ...)
+{
+  
   out <- list()
   if (err.bounds){
     bounds <- compute.error.bounds(exp.freq, length(x), alpha, rootogram = FALSE, freq)
@@ -144,15 +152,16 @@ barplot.Benford <- function(x, y,
     lb <- bounds$lb
     out$data <- data.frame(x, y, exp.freq, bounds)
     out$params <- data.frame(alpha = alpha)
-    ylim <- c(0, max(c(y, exp.freq, ub))*1.1)
+    ylim <- c(0, max(c(y, exp.freq, ub))*1.1)# y axis limits adjusted by upper error bounds
   } else{
     out$data <- data.frame(x, y, exp.freq)
     ylim <- c(0, max(c(y, exp.freq))*1.1)
   }
   
-  xmarks <- seq(0.7, length(exp.freq)*1.2, 1.2)
-  xlim <- c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)]))
+  xmarks <- seq(0.7, length(exp.freq)*1.2, 1.2) # ticks
+  xlim <- c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)])) # x axis limits
   
+  # draw plot
   plot.base(x, xmarks, y, xlim, ylim, grid, type = "n")
   draw.barchart(y, col.bar)
   draw.error.bounds(xmarks, ub, lb, err.bounds)
@@ -165,24 +174,27 @@ barplot.Benford <- function(x, y,
 # barplot.Benford(bfd.cp$bfd$digits, bfd.cp$bfd$data.dist.freq, bfd.cp$bfd$benford.dist.freq, bfd.cp$info$number.of.digits, main="teste", err.bounds = T)
 
 
-rootogram.Benford <- function(x, y,
-                              exp.freq,
-                              ndigits,
-                              main = NULL,
-                              xlab = NULL,
-                              ylab = NULL,
-                              grid = TRUE,
-                              col.bar = "lightblue",
-                              err.bounds = FALSE,
-                              alpha = 0.05,
-                              exp.benford = TRUE,
-                              freq = T, ...){
+rootogram.Benford <-
+function(x, y,
+         exp.freq,
+         ndigits,
+         main = NULL,
+         xlab = NULL,
+         ylab = NULL,
+         grid = TRUE,
+         col.bar = "lightblue",
+         err.bounds = FALSE,
+         alpha = 0.05,
+         exp.benford = TRUE,
+         freq = TRUE, ...)
+{
 
   out <- list()
   if(err.bounds){
     bounds <- compute.error.bounds(exp.freq, length(x), alpha, rootogram = TRUE, freq)
     ub <- bounds$ub
     lb <- bounds$lb
+    # y axis limits adjusted by error bounds
     ylim <- c(min(exp.freq - y, lb)*1.1, max(abs(exp.freq - y)*0.5, exp.freq, ub)*1.1)
     out$data <- data.frame(x, y, exp.freq, bounds) 
     out$params <- data.frame(alpha = alpha)
@@ -191,9 +203,10 @@ rootogram.Benford <- function(x, y,
     out$data <- data.frame(x, y, exp.freq)
   }
   
-  xmarks <- seq(0.7, length(x)*1.2, 1.2)
+  xmarks <- seq(0.7, length(x)*1.2, 1.2)# ticks
   xlim <- c(floor(xmarks[1]), ceiling(xmarks[length(xmarks)]))
   
+  # draw plot
   plot.base(x, xmarks, y, xlim, ylim, grid, type = "n")
   draw.rootogram(xmarks, y, exp.freq, col.bar)
   draw.line.benford(xmarks, exp.freq, exp.benford)
@@ -205,15 +218,18 @@ rootogram.Benford <- function(x, y,
 
 #rootogram.Benford(bfd.cp$bfd$digits, bfd.cp$bfd$data.dist.freq, bfd.cp$bfd$benford.dist.freq, bfd.cp$info$number.of.digits, main="teste", err.bounds = T)
 
-needle.Benford <- function(x, y,
-                           ndigits,
-                           main = NULL,
-                           xlab = NULL,
-                           ylab = NULL,
-                           grid = TRUE,
-                           col = "blue", ...){
+needle.Benford <-
+function(x, y,
+         ndigits,
+         main = NULL,
+         xlab = NULL,
+         ylab = NULL,
+         grid = TRUE,
+         col = "blue", ...)
+{
   
   xmarks <- seq(0.7, length(x)*1.2, 1.2)
+  
   plot.base(x, xmarks, y, xlim = NULL, ylim = NULL, grid, type = "h", col = col)
   points(xmarks, y, pch = 19, col = col, cex = 0.5)
   main.and.labs(main, xlab, ylab, ndigits)
@@ -224,13 +240,15 @@ needle.Benford <- function(x, y,
 }
 
 
-xyplot.Berford <- function(x, y,
-                           main = "Expected vs observed frequencies",
-                           xlab = NULL,
-                           ylab = NULL,
-                           grid = TRUE,
-                           col = "black",
-                           freq = TRUE, ...){
+xyplot.Berford <-
+function(x, y,
+         main = "Expected vs observed frequencies",
+         xlab = NULL,
+         ylab = NULL,
+         grid = TRUE,
+         col = "black",
+         freq = TRUE, ...)
+{
   
   if(is.null(xlab)){
     xlab <- "Observed Frequency"
@@ -256,7 +274,7 @@ xyplot.Berford <- function(x, y,
        panel.first = {
          if(grid) grid(lty = 1, col = "gray90")
        })
-  abline(a = 0, b = 1, col = "red", lty = 2)
+  abline(a = 0, b = 1, col = "red", lwd = 2)
 }
 
 plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
@@ -275,7 +293,7 @@ plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
   abline(a = 0, b = 1/length(x), col = "red", lty = 2)
 }
 
-mantissa.arc.plot <- function(mantissa, L2, ...){
+plot.mantissa.arc <- function(mantissa, L2, ...){
   x_coord <- mean(cos(2 * pi * mantissa))
   y_coord <- mean(sin(2 * pi * mantissa))
   l <- seq(0, 1, length.out = 100)
@@ -300,6 +318,28 @@ mantissa.arc.plot <- function(mantissa, L2, ...){
   text(x_coord + 0.1, y_coord - 0.1, labels = paste0("(", round(x_coord, 3), ", ", round(y_coord, 3), ")"), col = "blue", cex = 0.7)
 }
 
+# this function can be modular
+plot.diff.vs.ex.summation <- function(digits, diff.1, diff.2, grid, ...){
+  out <- list()
+  out$data <- data.frame(digits, diff.1, diff.2)
+  xlimit <- max(abs(diff.1))
+  ylimit <- max(abs(diff.2))
+  plot(diff.1, diff.2,
+       xlab = "Difference",
+       ylab = "Excess Summation",
+       xlim = c(-xlimit, xlimit),
+       ylim = c(-ylimit, ylimit),
+       pch = 19,
+       cex = 1,
+       panel.first = {
+         if(grid) grid(lty = 1, col = "gray90")
+       })
+  abline(v = 0, h = 0)
+  
+  picker <- (out$data$diff.1 > 0) & (out$data$diff.2 > 0)
+  if(any(picker))
+    text(out$data$diff.1[picker] + xlimit*0.03, out$data$diff.2[picker] - ylimit*0.03, out$data$digits[picker], cex = .6)
+}
 
 ## Generic functions -------------------------------------------------------------------------------------------
 
@@ -310,7 +350,7 @@ plot.base <- function(digits, x, y, xlim, ylim, grid, type = 'n', col = "black",
        panel.first = {
          if(grid) {
            grid(nx = NA, ny = NULL, lty = 1, col = "gray90")
-           pickers <- seq(1, length(x), ifelse(length(digits) <= 90, 1, 10))
+           pickers <- seq(1, length(x), 10)
            axis(1, at = x[pickers], tck = 1, col.ticks = "gray90", labels = F)
          }
          axis(1, at = x,  labels = digits)
@@ -397,6 +437,10 @@ switch.plot <- function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.be
   switch(plot_this,
          "digits" = {
            barplot.Benford(ds.bfd$digits, ds.bfd$data.dist.freq, ds.bfd$benford.dist.freq, n.digits, main = "Digits distribution", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
+           mtext(paste("X-squared: ", round(chisq(bfd)$statistic, 5), "\n\n ", sep = ""), line = 0, adj = 0, cex = 0.6)
+           mtext(paste("KS: ", round(ks(bfd)$statistic, 5), "\n", sep = ""), line = 0, adj = 0, cex = 0.6)
+           mtext(paste("MAD: ", round(MAD(bfd), 5), "- Conclusion: ", bfd$MAD.conformity, sep = ""), line = 0, adj = 0, cex = 0.6)
+           
            },
          "rootogram digits" = {
            rootogram.Benford(ds.bfd$digits, ds.bfd$data.dist.freq, ds.bfd$benford.dist.freq, n.digits, main = "Digits distribution - Rootogram", xlab = NULL, ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
@@ -429,7 +473,10 @@ switch.plot <- function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.be
            barplot.Benford(y$last.two.digits, y$data.dist.freq, rep(mean(y$data.dist.freq), 100), n.digits, main = "Last-Two Digits distribution", xlab = "Last-Two Digits", ylab = NULL, grid = grid, col.bar = col.bar, err.bounds = err.bounds, alpha =  alpha, exp.berford = exp.benford, freq = freq)
            },
          "mantissa arc" = {
-           mantissa.arc.plot(z$data.mantissa, marc(bfd)$statistic)
+           plot.mantissa.arc(z$data.mantissa, marc(bfd)$statistic)
+         },
+         "diff vs ex summation" = {
+           plot.diff.vs.ex.summation(ds.bfd$digits, ds.bfd$difference, ds.bfd$data.summation - mean(ds.bfd$data.summation), grid)
          }
   )
 }

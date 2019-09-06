@@ -135,10 +135,14 @@ NULL
 ##' plot(bfd.cp) #plots
 ##' 
 ##' @export
-benford <- function(data, number.of.digits = 2, 
-                    sign = "positive", 
-                    discrete=TRUE, round=3, 
-                    data.name = NULL){
+
+
+benford <-
+function(data, number.of.digits = 2, 
+         sign = "positive", 
+         discrete = TRUE, round = 3, 
+         data.name = NULL)
+{
   
   if (!is.numeric(data)) stop("Data must be a numeric vector")
   
@@ -164,20 +168,12 @@ benford <- function(data, number.of.digits = 2,
   
   benford.dist.freq <- benford.dist*n
   
-  ## calculating useful summaries and differences
+  ## calculating useful summaries and differences:
   difference <- empirical.distribution$dist.freq - benford.dist.freq
-  
   squared.diff <- ((empirical.distribution$dist.freq - benford.dist.freq)^2)/benford.dist.freq
-  
   absolute.diff <- abs(empirical.distribution$dist.freq - benford.dist.freq)
-  
-  ### z-statistic
   z.stat <- z.stat.bfd(benford.dist, empirical.distribution$dist, n)
-  
-  ### chi-squared test
   chisq.bfd <- chisq.test.bfd(squared.diff, data.name)
-  
-  ### MAD
   mean.abs.dev <- sum(abs(empirical.distribution$dist - benford.dist)/(length(benford.dist)))
   
   if (number.of.digits > 3) {
@@ -187,8 +183,7 @@ benford <- function(data, number.of.digits = 2,
     MAD.conformity <- MAD.conformity(MAD = mean.abs.dev, digits.used)$conformity
   }
   
-  
-  ### Summation
+  ## Summation
   summation <- generate.summation(benford.digits,empirical.distribution$data, empirical.distribution$data.digits)
   abs.excess.summation <- abs(summation - mean(summation))
   
@@ -282,8 +277,12 @@ benford <- function(data, number.of.digits = 2,
 ##' @param ... arguments to be passed to generic print functions.
 ##' @return Prints the Benford object.
 ##' @export
-print.Benford <- function(x,how.many=5,...){
-  
+
+
+print.Benford <-
+function(x, how.many = 5,...)
+{
+
   if(class(x)!="Benford") stop("Class(x) must be 'Benford'")
   cat("\nBenford object:\n",
       "\nData:", x[["info"]]$data.name,

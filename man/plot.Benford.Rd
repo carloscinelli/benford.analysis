@@ -4,8 +4,9 @@
 \alias{plot.Benford}
 \title{Plot method for Benford Analysis}
 \usage{
-\method{plot}{Benford}(x, select = c("digits", "obs vs exp",
-  "chi squared", "summation"), except = NULL, multiple = TRUE,
+\method{plot}{Benford}(x, select = c("digits", "obs vs exp", "summation",
+  "diff vs ex summation", "last two digits", "mantissa", "mantissa arc",
+  "second order"), except = NULL, multiple = TRUE,
   col.bar = "lightblue", err.bounds = FALSE, alpha = 0.05,
   grid = TRUE, mfrow = NULL, exp.benford = TRUE, freq = TRUE, ...)
 }
@@ -15,8 +16,8 @@
 \item{select}{it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.}
 
 \item{except}{it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-Currently, you can choose from 12 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
-"mantissa", "mantissa arc", "chi square", "abs diff", "ex summation". If you want to plot all, just
+Currently, you can choose from 13 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
+"mantissa", "mantissa arc", "chi square", "abs diff", "ex summation", "diff vs ex summation". If you want to plot all, just
 put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
 put except = "all"}
 
@@ -46,4 +47,5 @@ The \code{plot} method for "Benford" objects.
 }
 \details{
 If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
+For more flexibility in plotting, use (`separate plots here`)...
 }
