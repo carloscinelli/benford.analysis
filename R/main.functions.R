@@ -316,3 +316,165 @@ function(x, how.many = 5,...)
   absolute.diff <- NULL
   digits <- NULL
 }
+
+
+##' @title Summary method for Benford Analysis
+##' @description The \code{summary} method for "Benford" objects.
+##' 
+##' 
+##' @param x a "Benford" object
+##' @param what options: "first digits", "summation", "last two digits", "second order".
+##' @param sort.by (not implemented)
+##' @param freq (not implemented)
+##' @return Summary of the Benford object.
+##' @export
+
+summary.Benford <- function(x, what = c("first digits", "summation", "last two digits", "second order"), sort.by = "abs diff", freq = TRUE){
+  
+  if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
+  
+  if(class(x)!="Benford") stop("Class(x) must be 'Benford'")
+  cat("\nBenford object:\n",
+      "\nData:", x[["info"]]$data.name,
+      "\nNumber of observations used (positives, negatives or both?) =", x[["info"]]$n,
+      "\nFirst digits analysed =", x[["info"]]$number.of.digits)   
+  
+  what <- tolower(what)
+  
+  for(i in 1:length(what)){
+    switch(what[i], 
+           "first digits" = {
+             cat("First Digits Analysis:\n\n")
+             print.first.digit.analysis(x)
+             cat("\n\n")
+           },
+           "summation" = {
+             cat("Summation Analysis:\n\n")
+             print.summation.analysis(x)
+             cat("\n\n")
+           },
+           "last two digits" = {
+             cat("Last-Two Digits Analysis:\n\n")
+             print.last.two.digits.analysis(x)
+             cat("\n\n")
+           },
+           "second order" = {
+             cat("Second Order Analysis:\n\n")
+             print.second.order.analysis(x)
+             cat("\n\n")
+           }
+    )
+  }
+  
+  cat("Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
+}
+
+
+print.first.digit.analysis <- function(x, freq = TRUE, ...)
+{
+  
+  out <- list()
+  statistics <- getBfd(x)
+  first.digits <- statistics[, c("digits", "data.dist.freq", "benford.dist.freq", "absolute.diff", "squared.diff", "z.statistic")]
+  names(first.digits) <- c("Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(first.digits, topn = 4)
+  
+  cat("---\n")
+  
+  cat("\nMean Absolute Deviation (MAD): ", MAD(x))
+  if (!is.na(x[["MAD.conformity"]]))
+    cat(" - Conclusion:", x[["MAD.conformity"]], "\n")
+  
+  cat(paste0(chisq(x)$methods, ": X-squared = ", round(chisq(x)$statistic, 7), " on ", chisq(x)$parameter, " DF, ", "p-value: ", format.pval(chisq(x)$p.value), "\n"))
+  cat(paste0(ks(x)$method, ": D = ", round(ks(x)$statistic, 7), ", critical value = ", round(ks(x)$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+  
+  out$data <- first.digits
+  out$MAD <- MAD(x)
+  if (!is.na(x[["MAD.conformity"]]))
+    out$MAD.Conformity <- x[["MAD.conformity"]]
+  out$chisq <- chisq(x)
+  out$ks <- ks(x)
+  invisible(out)
+}
+
+print.last.two.digits.analysis <- function(x, freq = TRUE, ...)
+{
+  
+  out <- list()
+  last2digits <- x$last.two.digits
+  last2digits$bf <- mean(last2digits$data.dist.freq)
+  absolute.diff <- abs(last2digits$data.dist.freq - last2digits$bf)
+  squared.diff <- ((last2digits$data.dist.freq - last2digits$bf)^2)/last2digits$bf
+  ep <- last2digits$bf/sum(last2digits$bf)
+  ap <- last2digits$data.dist.freq/sum(last2digits$data.dist.freq)
+  z.stat <- z.stat.bfd(ep, ap, sum(last2digits$data.dist.freq))
+  last2digits$absolute.diff <- absolute.diff
+  last2digits$squared.diff <- squared.diff
+  last2digits$z.stat <- z.stat
+  names(last2digits) <- c("Last-Two Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(last2digits, topn = 4)
+  cat("---\n")
+  
+  mean.abs.dev <- sum(abs(ep - ap)/(nrow(last2digits)))
+  chisq.bfd <- chisq.test.bfd(squared.diff, "")
+  ks.bfd <- ks.test.bfd(ep, ap, sum(last2digits$Count), "")
+  
+  cat("\nMean Absolute Deviation (MAD): ", mean.abs.dev, "\n")
+  cat(paste0("Pearson's Chi-squared test", ": X-squared = ", round(chisq.bfd$statistic, 7), " on ", chisq.bfd$parameter, " DF, ", "p-value: ", format.pval(chisq.bfd$p.value), "\n"))
+  cat(paste0("Kolmogorov-Smirnov test", ": D = ", round(ks.bfd$statistic, 7), ", critical value = ", round(ks.bfd$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+  
+  out$data <- last2digits
+  out$MAD <- mean.abs.dev
+  out$chisq <- chisq.bfd
+  out$ks <- ks.bfd
+  invisible(out)
+}
+
+
+print.second.order.analysis <- function(x, ...)
+{
+  
+  out <- list()
+  statistics <- getBfd(x)
+  second.order <- statistics[, c("digits", "data.second.order.dist.freq", "benford.so.dist.freq")]
+  
+  absolute.diff <- abs(second.order$data.second.order.dist.freq - second.order$benford.so.dist.freq)
+  squared.diff <- ((second.order$data.second.order.dist.freq - second.order$benford.so.dist.freq)^2)/second.order$benford.so.dist.freq
+  ep <- second.order$benford.so.dist.freq/sum(second.order$benford.so.dist.freq)
+  ap <- second.order$data.second.order.dist.freq/sum(second.order$data.second.order.dist.freq)
+  z.stat <- z.stat.bfd(ep, ap, sum(second.order$data.second.order.dist.freq))
+  second.order$absolute.diff <- absolute.diff
+  second.order$squared.diff <- squared.diff
+  second.order$z.stat <- z.stat
+  names(second.order) <- c("Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(second.order, topn = 4)
+  cat("---\n")
+  
+  mean.abs.dev <- sum(abs(ep - ap)/(nrow(second.order)))
+  chisq.bfd <- chisq.test.bfd(squared.diff, "")
+  ks.bfd <- ks.test.bfd(ep, ap, sum(second.order$Count), "")
+  
+  cat("\nMean Absolute Deviation (MAD): ", mean.abs.dev, "\n")
+  cat(paste0("Pearson's Chi-squared test", ": X-squared = ", round(chisq.bfd$statistic, 7), " on ", chisq.bfd$parameter, " DF, ", "p-value: ", format.pval(chisq.bfd$p.value), "\n"))
+  cat(paste0("Kolmogorov-Smirnov test", ": D = ", round(ks.bfd$statistic, 7), ", critical value = ", round(ks.bfd$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+  
+}
+
+
+print.summation.analysis <- function(x, ...)
+{
+  
+  statistics <- getBfd(x)
+  bl <- mean(statistics$data.summation)
+  summation.analysis <- data.table(statistics[, c("digits", "data.summation", "abs.excess.summation")], bl)
+  summation.analysis <- summation.analysis[, c(1,2,4,3)]
+  summation.analysis <- summation.analysis[order(summation.analysis$abs.excess.summation, decreasing = T), ]
+  names(summation.analysis) <- c("Digits", "Summation", "Benford's Law", "Abs. Excess Summation")
+  
+  cat("The largest deviations:\n\n")
+  print(head(summation.analysis))
+  
+}
