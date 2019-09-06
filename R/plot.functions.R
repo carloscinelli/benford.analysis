@@ -277,7 +277,10 @@ function(x, y,
   abline(a = 0, b = 1, col = "red", lwd = 2)
 }
 
-plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
+plot.ordered.mantissa <-
+function(x, grid = TRUE, ...)
+{
+  
   old.par <- par(pty = "s")
   on.exit(par(old.par))
   plot(sort(x), 
@@ -293,7 +296,10 @@ plot.ordered.mantissa <- function(x, grid = TRUE, ...) {
   abline(a = 0, b = 1/length(x), col = "red", lty = 2)
 }
 
-plot.mantissa.arc <- function(mantissa, L2, ...){
+plot.mantissa.arc <-
+function(mantissa, L2, ...)
+{
+  
   x_coord <- mean(cos(2 * pi * mantissa))
   y_coord <- mean(sin(2 * pi * mantissa))
   l <- seq(0, 1, length.out = 100)
@@ -304,7 +310,7 @@ plot.mantissa.arc <- function(mantissa, L2, ...){
   plot(x, y, type = "l", xlab = "", ylab = "",
        panel.first = {
          grid(lty = 'solid')
-         abline(h = 0, v = 0, col = 'gray40', asp = 1, )
+         abline(h = 0, v = 0, col = 'gray40', asp = 1)
        })
   box(col = 'white')
   points(0, 0, col = "red", pch = "+", cex = 2)
@@ -319,7 +325,10 @@ plot.mantissa.arc <- function(mantissa, L2, ...){
 }
 
 # this function can be modular
-plot.diff.vs.ex.summation <- function(digits, diff.1, diff.2, grid, ...){
+plot.diff.vs.ex.summation <-
+function(digits, diff.1, diff.2, grid, ...)
+{
+  
   out <- list()
   out$data <- data.frame(digits, diff.1, diff.2)
   xlimit <- max(abs(diff.1))
@@ -332,18 +341,21 @@ plot.diff.vs.ex.summation <- function(digits, diff.1, diff.2, grid, ...){
        pch = 19,
        cex = 1,
        panel.first = {
-         if(grid) grid(lty = 1, col = "gray90")
+         if (grid) grid(lty = 1, col = "gray90")
        })
   abline(v = 0, h = 0)
   
   picker <- (out$data$diff.1 > 0) & (out$data$diff.2 > 0)
-  if(any(picker))
+  if (any(picker))
     text(out$data$diff.1[picker] + xlimit*0.03, out$data$diff.2[picker] - ylimit*0.03, out$data$digits[picker], cex = .6)
 }
 
 ## Generic functions -------------------------------------------------------------------------------------------
 
-plot.base <- function(digits, x, y, xlim, ylim, grid, type = 'n', col = "black", ...){
+plot.base <-
+function(digits, x, y, xlim, ylim, grid, type = 'n', col = "black", ...)
+{
+  
   plot(x, y, xlim = xlim, ylim = ylim, type = type, col = col,
        main = "", xlab = "", ylab = "",
        yaxs = 'i', xaxs = 'i', xaxt = "n",
@@ -358,11 +370,15 @@ plot.base <- function(digits, x, y, xlim, ylim, grid, type = 'n', col = "black",
   )
 }
 
-draw.barchart <- function(y, col, ...){
+draw.barchart <-
+function(y, col, ...)
+{
   barplot(y, col = col, yaxt = "n", add = T)
 }
 
-draw.rootogram <- function(x, y, exp.freq, col, ...){
+draw.rootogram <-
+function(x, y, exp.freq, col, ...)
+{
   rect(xleft = x - 0.5,
        xright = x + 0.5,
        ybottom = exp.freq,
@@ -371,18 +387,25 @@ draw.rootogram <- function(x, y, exp.freq, col, ...){
   abline(h = 0)
 }
 
-draw.line.benford <- function(x, y, draw = TRUE, ...){
+draw.line.benford <-
+function(x, y, draw = TRUE, ...)
+{
   if (draw) lines(x, y, col = "red", lwd = 2)
 }
 
-draw.error.bounds <- function(x, upper.bound, lower.bound, draw = TRUE, ...){
+draw.error.bounds <-
+function(x, upper.bound, lower.bound, draw = TRUE, ...)
+{
   if (draw){
     lines(upper.bound ~ x, lty = 2, col = "red")
     lines(lower.bound ~ x, lty = 2, col = "red")
   }
 }
 
-draw.legend <- function(x, err.bounds, size) {
+draw.legend <-
+function(x, err.bounds, size)
+{
+  
   if (err.bounds) {
     plot_colors <- c("lightblue","red","red")
     legend(x = "topright",
@@ -407,7 +430,10 @@ draw.legend <- function(x, err.bounds, size) {
   }
 }
 
-main.and.labs <- function(main = NULL, xlab = NULL, ylab = NULL, ndigits, ...){
+main.and.labs <-
+function(main = NULL, xlab = NULL, ylab = NULL, ndigits, ...)
+{
+  
   if(is.null(xlab)){
     xlab.options <- c("First Digit", "First-Two Digits", "First-Three Digits", "First-Order Digits")
     lab.picker <- ifelse(ndigits <= 3, ndigits, 4)
@@ -422,14 +448,19 @@ main.and.labs <- function(main = NULL, xlab = NULL, ylab = NULL, ndigits, ...){
 }
 
 
-check.plot.names <- function(x, y, ...){
+check.plot.names <-
+function(x, y, ...)
+{
   if (!all(x %in% y)) {
     idx <- which(!x %in% y)
     stop("Invalid plot name:", x[idx], "\nType ?plot.Benford for help.")
   }
 }
 
-switch.plot <- function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.benford, freq){
+switch.plot <-
+function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.benford, freq)
+{
+  
   ds.bfd <- getBfd(bfd)
   y <- bfd$last.two.digits
   z <- getData(bfd)
@@ -482,7 +513,10 @@ switch.plot <- function(plot_this, bfd, col.bar, grid, err.bounds, alpha, exp.be
 }
 
 
-compute.error.bounds <- function(exp.freq, n, alpha, rootogram = FALSE, freq = TRUE){
+compute.error.bounds <-
+function(exp.freq, n, alpha, rootogram = FALSE, freq = TRUE)
+{
+  
   if(freq){
     ub <- exp.freq + qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) + 1/2
     lb <- exp.freq - qnorm(1 - alpha/2)*sqrt(exp.freq*(1 - exp.freq/n)) - 1/2

@@ -1,14 +1,17 @@
 
 # Tests -------------------------------------------------------------------
 
-DF <- function(data){
+DF <- function(data)
+{
   data <- data[data >= 10]
   collapsed <- 10 * (data) / 10^trunc(log10(data))
   DF <- (mean(collapsed) - 39.0865) / (39.0685)
   DF * 100
 }
 
-mantissa.arc.test <- function(data, data.name){ #data must be the mantissa of the log10
+mantissa.arc.test <-
+function(data, data.name)
+{ #data must be the mantissa of the log10
   x.coord <- cos(2*pi*data)
   y.coord <- sin(2*pi*data)
   
@@ -31,7 +34,9 @@ mantissa.arc.test <- function(data, data.name){ #data must be the mantissa of th
 }
 
 
-chisq.test.bfd <- function(squared.diff, data.name){
+chisq.test.bfd <-
+function(squared.diff, data.name)
+{
   
   chisq <- sum(squared.diff)
   names(chisq) <- "X-squared"
@@ -52,7 +57,10 @@ chisq.test.bfd <- function(squared.diff, data.name){
   return(chisq.bfd)
 }
 
-ks.test.bfd <- function(expected.prop, actual.prop, n.records, data.name){
+ks.test.bfd <-
+function(expected.prop, actual.prop, n.records, data.name)
+{
+  
   cs.ep <- cumsum(expected.prop)
   cs.ap <- cumsum(actual.prop)
   D <- max(abs(cs.ep - cs.ap))
@@ -72,7 +80,9 @@ ks.test.bfd <- function(expected.prop, actual.prop, n.records, data.name){
   return(ks.bfd)
 }
 
-z.stat.bfd <- function(expected.prop, actual.prop, n.records){
+z.stat.bfd <-
+function(expected.prop, actual.prop, n.records)
+{
   (abs(actual.prop - expected.prop) - 1/(2*n.records))/sqrt(expected.prop*(1-expected.prop)/n.records)
 }
 
@@ -87,11 +97,13 @@ z.stat.bfd <- function(expected.prop, actual.prop, n.records){
 ##' @return A list with the MAD, digits.used and the conformity level.
 ##' 
 ##' @references Nigrini, M. J. (2012). Benford's Law: Application for Forensic Accounting, Auditing and Fraud Detection. Wiley and Sons: New Jersey.
-MAD.conformity <- 	function(MAD = NULL,
-                            digits.used = c("First Digit",
-                                            "Second Digit",
-                                            "First-Two Digits",
-                                            "First-Three Digits")){
+
+
+MAD.conformity <-
+function(MAD = NULL,
+         digits.used = c("First Digit", "Second Digit", "First-Two Digits", "First-Three Digits"))
+{
+  
   Conformity.Levels <- c("Close conformity", 
                          "Acceptable conformity", 
                          "Marginally acceptable conformity", 
@@ -111,13 +123,7 @@ MAD.conformity <- 	function(MAD = NULL,
 }
 
 
-
-
 # Extraction functions ----------------------------------------------------
-
-
-
-
 
 #' @title Extracts the leading digits from the data
 #' @description It extracts the leading digits from the data.
@@ -144,7 +150,16 @@ MAD.conformity <- 	function(MAD = NULL,
 #' @param round it defines the number of digits that the rounding will use if discrete = TRUE and second.order = TRUE.
 #' @return A data.frame with the data and the first digits.
 #' @export
-extract.digits <- function(data, number.of.digits = 2, sign="positive", second.order = FALSE, discrete = TRUE, round = 3) {
+
+
+extract.digits <-
+function(data,
+         number.of.digits = 2,
+         sign="positive",
+         second.order = FALSE,
+         discrete = TRUE,
+         round = 3)
+{
   
   if (!is.numeric(data)) stop("Data must be a numeric vector")
   
@@ -178,6 +193,7 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
   return(results)
 }
 
+
 #' @title Trunc decimal values.
 #' @description It trunc decimal values from the data.
 #' 
@@ -189,7 +205,10 @@ extract.digits <- function(data, number.of.digits = 2, sign="positive", second.o
 #' @return A numeric vector with the data with deciml values truncated.
 #' @export
 
-truncDec <- function(x, n.dec = 2){
+
+truncDec <- function(x, n.dec = 2)
+{
+  
   int <- format(floor(x), scientific = FALSE)
   int <- gsub("[ ]*", "",  int)
   x.as.str <- format(x, scientific = FALSE)
@@ -221,7 +240,10 @@ truncDec <- function(x, n.dec = 2){
 #' @return A data.frame with the data and the last digits.
 #' @export
 
-last.two.digits <- function(data, sign="positive", ndec = 2) {
+
+last.two.digits <-
+function(data, sign = "positive", ndec = 2)
+{
   
   if (!is.numeric(data)) stop("Data must be a numeric vector")
   
@@ -262,7 +284,9 @@ last.two.digits <- function(data, sign="positive", ndec = 2) {
 }
 
 
-extract.mantissa <- function(positives) {
+extract.mantissa <- function(positives)
+{
+  
   log <- log10(positives)
   log[log < 0] <- log[log < 0] + as.integer(log[log < 0])*(-1) + 1
   mantissa <- log - trunc(log)
@@ -271,8 +295,6 @@ extract.mantissa <- function(positives) {
 
 
 # Digits probability ------------------------------------------------------
-
-
 
 #' @title Probability of a digit sequence
 #' @description It calculates the probability of a digit sequence "d".
@@ -286,18 +308,17 @@ extract.mantissa <- function(positives) {
 #' p.these.digits(11) # 0.03778856
 #' p.these.digits(999999) # 4.342947e-07
 #' @export 
-p.these.digits <- function(d){
+ 
+
+p.these.digits <- function(d)
+{
+  
   if (!is.numeric(d)) stop("d must be numeric or integer")
   d <- trunc(d)
   d[d < 0] <- d[d < 0]*(-1)
   prob <- log10(1 + 1/d)
   return(prob)
 }
-
-
-
-
-
 
 
 #' @title Probability of a digit at the nth position
@@ -317,7 +338,11 @@ p.these.digits <- function(d){
 #' rownames(matrix) <- paste0("d=",0:9)
 #' matrix # a table with the probabilities of digits 0 to 9 in positions 1 to 4.
 #' @export 
-p.this.digit.at.n <- function(d,n){
+
+
+p.this.digit.at.n <- function(d, n)
+{
+  
   if (d < 0) d <- d*(-1)
   if (d == 0 & n == 1) return(NA)
   n1 <- strsplit(as.character(d), "")[[1]]
@@ -336,12 +361,11 @@ p.this.digit.at.n <- function(d,n){
 }
 
 
-
 # Generating functions ----------------------------------------------------
 
-
-
-generate.benford.digits <- function(number.of.digits) {
+generate.benford.digits <- function(number.of.digits)
+{
+  
   number.of.digits <- as.integer(number.of.digits)
   begin <- 10^(number.of.digits - 1)
   ends <- 10^(number.of.digits) - 1
@@ -349,12 +373,23 @@ generate.benford.digits <- function(number.of.digits) {
   return(benford.digits)
 }
 
-generate.benford.distribution <- function(benford.digits) {
+generate.benford.distribution <- function(benford.digits)
+{
   benford.dist <- sapply(benford.digits, p.these.digits)
   return(benford.dist)
 }
 
-generate.empirical.distribution <- function(data, number.of.digits, sign, last.two.dgts = FALSE, second.order = FALSE, benford.digits, discrete = TRUE, round = 3){
+generate.empirical.distribution <-
+function(data,
+         number.of.digits,
+         sign,
+         last.two.dgts = FALSE,
+         second.order = FALSE,
+         benford.digits,
+         discrete = TRUE,
+         round = 3)
+{
+  
   x <- NULL
   v <- NULL
   if(last.two.dgts){
@@ -378,8 +413,10 @@ generate.empirical.distribution <- function(data, number.of.digits, sign, last.t
 }
 
 
-
-generate.summation <- function(benford.digits, data, data.digits) {
+generate.summation <-
+function(benford.digits, data, data.digits)
+{
+  
   x <- NULL
   v <- NULL
   table <- data.table(x = data.digits, v = data)
@@ -400,12 +437,14 @@ generate.summation <- function(benford.digits, data, data.digits) {
 
 #### Basic Calculations ####
 
-excess.kurtosis <- function(x){ 
+excess.kurtosis <- function(x)
+{ 
   (mean((x - mean(x))^4)/(mean((x - mean(x))^2)^2)) - 3
 }
 
 
-skewness <- function(x) {
+skewness <- function(x)
+{
   (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
 }
 

@@ -13,15 +13,20 @@
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' suspectsTable(cp) 
 #' @export
-suspectsTable<- function(bfd, by="absolute.diff"){
-  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
-  if(!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
+
+
+suspectsTable <- function(bfd, by = "absolute.diff")
+{
+  
+  if (class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
+  if (!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
     stop("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
   }
   digits <- bfd[["bfd"]][order(get(by), decreasing=TRUE)][,list(digits, get(by))]
   setnames(digits, c("digits", "V2"), c("digits", by))
   digits
 }
+
 
 #' @title Gets the 'suspicious' observations according to Benford's Law
 #' @description It gets the original data from the 'suspicious' digits groups according
@@ -40,16 +45,25 @@ suspectsTable<- function(bfd, by="absolute.diff"){
 #' lk <- benford(lakes.perimeter[,1]) #generates benford object
 #' suspects <- getSuspects(lk, lakes.perimeter)
 #' @export
-getSuspects <-function(bfd, data, by="absolute.diff", how.many=2){
-  if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
-  if(!is.data.frame(data)) stop("Data must be a data frame.")
-  if(!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
+
+
+getSuspects <-
+function(bfd,
+         data,
+         by = "absolute.diff",
+         how.many = 2)
+{
+  
+  if (class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
+  if (!is.data.frame(data)) stop("Data must be a data frame.")
+  if (!by %in% c("abs.excess.summation","difference","squared.diff","absolute.diff")){
     stop("By must be one of these: 'abs.excess.summation','difference','squared.diff','absolute.diff'")
   }
   digits <- bfd[["bfd"]][order(get(by), decreasing=TRUE)][,list(digits)][1:how.many]
   suspects.lines <- bfd[["data"]]$lines.used[bfd[["data"]]$data.digits %in% digits$digits]
   data.table(data[suspects.lines, ,drop = FALSE])
 }
+
 
 #' @title Shows the duplicates of the data
 #' @description It creates a data frame with the duplicates in decreasing order.
@@ -64,7 +78,11 @@ getSuspects <-function(bfd, data, by="absolute.diff", how.many=2){
 #' duplicatesTable(c2009)
 #' @import data.table
 #' @export 
-duplicatesTable <- function(bfd){
+
+
+duplicatesTable <- function(bfd)
+{
+  
   data.used <- NULL
   v <- NULL
   V1 <- NULL
@@ -75,6 +93,7 @@ duplicatesTable <- function(bfd){
   setnames(duplicates.count,c("v", "V1"),c("number", "duplicates"))
   duplicates.count
 }
+
 
 #' @title Gets the duplicates from data
 #' @description It gets the duplicates from the original data.
@@ -90,8 +109,13 @@ duplicatesTable <- function(bfd){
 #' c2010 <- benford(census.2000_2010$pop.2010) #generates benford object
 #' duplicates <- getDuplicates(c2010, census.2000_2010)
 #' @export
-getDuplicates <-function(bfd, data, how.many=2){
-  v<- NULL
+
+
+getDuplicates <-
+function(bfd, data, how.many = 2)
+{
+  
+  v <- NULL
   data.used <- NULL
   V1 <- NULL
   if(class(bfd)!="Benford") stop("bfd must be a 'Benford' object.")
@@ -102,6 +126,7 @@ getDuplicates <-function(bfd, data, how.many=2){
   duplicates.lines <- bfd[["data"]]$lines.used[bfd[["data"]]$data.used %in% duplicates.count$v]
   data.table(data[duplicates.lines, ,drop = FALSE])
 }
+
 
 #' @title Gets the data starting with some specific digits
 #' @description It subsets the original data according to the leading digits.
@@ -121,10 +146,14 @@ getDuplicates <-function(bfd, data, how.many=2){
 #' #subsets data starting with digits 10 and 25
 #' digits.10.25 <- getDigits(c2010, census.2000_2010, c(10,25)) 
 #' @export
-getDigits <- function(bfd, data, digits){
+
+
+getDigits <- function(bfd, data, digits)
+{
   data <- data.table(data[bfd[["data"]]$lines.used[bfd[["data"]]$data.digits %in% digits], ,drop=FALSE])
   return(data)
 }
+
 
 #' @title Gets the MAD of a Benford object
 #' @description It gets the Mean Absolute Deviation (MAD) of a Benford object.
@@ -139,7 +168,10 @@ getDigits <- function(bfd, data, digits){
 #' c2010 <- benford(census.2000_2010$pop.2010) #generates benford object
 #' MAD(c2010) #equivalent to c2010$MAD
 #' @export
-MAD <- function(bfd){
+
+
+MAD <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$MAD
 }
@@ -158,7 +190,10 @@ MAD <- function(bfd){
 #' c2009 <- benford(census.2009$pop.2009) #generates benford object
 #' chisq(c2009) # equivalent to c2009$stats$chisq
 #' @export 
-chisq <- function(bfd){
+
+
+chisq <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$stats$chisq
 }
@@ -175,11 +210,15 @@ chisq <- function(bfd){
 #' data(census.2009) #gets data
 #' c2009 <- benford(census.2009$pop.2009) #generates benford object
 #' ks(c2009) # equivalent to c2009$stats$ks.test
-#' @export 
-ks <- function(bfd){
+#' @export
+
+ 
+ks <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$stats$ks.test
 }
+
 
 #' @title Gets the Mantissa Arc test of a Benford object
 #' @description It gets the Mantissa Arc Test of a Benford object.
@@ -194,10 +233,14 @@ ks <- function(bfd){
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' marc(cp) # equivalent to cp$stats$mantissa.arc.test
 #' @export
-marc <- function(bfd){
+
+
+marc <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$stats$mantissa.arc.test
 }
+
 
 #' @title Gets the Distortion Factor of a Benford object
 #' @description It gets the Distortion Factor of a Benford object.
@@ -212,7 +255,10 @@ marc <- function(bfd){
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' dfactor(cp) # equivalent to cp$distortion.factor
 #' @export
-dfactor <- function(bfd){
+
+
+dfactor <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$distortion.factor
 }
@@ -231,10 +277,14 @@ dfactor <- function(bfd){
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' mantissa(cp) # equivalent to cp$mantissa
 #' @export
-mantissa <- function(bfd){
+
+
+mantissa <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$mantissa
 }
+
 
 #' @title Gets the data used of a Benford object
 #' @description It gets the lines, values, mantissa and first digits of the data used of a Benford object .
@@ -249,7 +299,10 @@ mantissa <- function(bfd){
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' getData(cp) # equivalent to cp$data
 #' @export
-getData <- function(bfd){
+
+
+getData <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$data
 }
@@ -267,7 +320,10 @@ getData <- function(bfd){
 #' cp <- benford(corporate.payment$Amount) #generates benford object
 #' getBfd(cp) # equivalent to cp$bfd
 #' @export
-getBfd <- function(bfd){
+
+
+getBfd <- function(bfd)
+{
   if (class(bfd)!="Benford") stop("Object must be of class Benford")
   bfd$bfd
 }
