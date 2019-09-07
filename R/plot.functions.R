@@ -36,7 +36,7 @@
 
 plot.Benford <-
 function(x, select = c("digits", "obs vs exp", "summation", "diff vs ex summation",
-                       "last two digits", "mantissa", "mantissa arc", "second order"), 
+                       "last two digits", "second order", "mantissa", "mantissa arc"), 
          except = NULL, 
          multiple = TRUE,
          col.bar = "lightblue",
@@ -81,7 +81,7 @@ function(x, select = c("digits", "obs vs exp", "summation", "diff vs ex summatio
   
   nGraphics <- length(plot_this)
   # list of plots to draw without legend
-  no.legend <- c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa arc", "diff vs ex summation")
+  no.legend <- c("chi squared", "abs diff", "ex summation", "obs vs exp", "mantissa", "mantissa arc", "diff vs ex summation")
   
   if (multiple) {# multiple plots in a same panel
     old.par <- par(no.readonly = TRUE)

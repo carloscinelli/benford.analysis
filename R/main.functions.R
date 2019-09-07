@@ -350,7 +350,7 @@ summary.Benford <- function(object, what = c("first digits", "summation", "last 
              cat("\n\n")
            },
            "summation" = {
-             cat("Summation Analysis:\n\n")
+             cat("First Digits - Summation Analysis:\n\n")
              print.summation.analysis(object)
              cat("\n\n")
            },
@@ -370,6 +370,7 @@ summary.Benford <- function(object, what = c("first digits", "summation", "last 
   cat("Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
 }
 
+
 print.first.digit.analysis <- function(x, freq = TRUE, ...)
 {
   
@@ -382,12 +383,11 @@ print.first.digit.analysis <- function(x, freq = TRUE, ...)
   
   cat("---\n")
   
-  cat("\nMean Absolute Deviation (MAD): ", MAD(x))
+  print.MAD(MAD(x))
   if (!is.na(x[["MAD.conformity"]]))
-    cat(" - Conclusion:", x[["MAD.conformity"]], "\n")
-  
-  cat(paste0(chisq(x)$methods, ": X-squared = ", round(chisq(x)$statistic, 7), " on ", chisq(x)$parameter, " DF, ", "p-value: ", format.pval(chisq(x)$p.value), "\n"))
-  cat(paste0(ks(x)$method, ": D = ", round(ks(x)$statistic, 7), ", critical value = ", round(ks(x)$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+    cat("Conclusion:", x[["MAD.conformity"]], "\n")
+  print.chisq(chisq(x))
+  print.ks(ks(x))
   
   out$data <- first.digits
   out$MAD <- MAD(x)
@@ -404,8 +404,8 @@ print.last.two.digits.analysis <- function(x, freq = TRUE, ...)
   out <- list()
   last2digits <- x$last.two.digits
   last2digits$bf <- mean(last2digits$data.dist.freq)
-  absolute.diff <- abs(last2digits$data.dist.freq - last2digits$bf)
-  squared.diff <- ((last2digits$data.dist.freq - last2digits$bf)^2)/last2digits$bf
+  absolute.diff <- abs.diff(last2digits$data.dist.freq, last2digits$bf)
+  squared.diff <- squared.diff(last2digits$data.dist.freq, last2digits$bf)
   ep <- last2digits$bf/sum(last2digits$bf)
   ap <- last2digits$data.dist.freq/sum(last2digits$data.dist.freq)
   z.stat <- z.stat.bfd(ep, ap, sum(last2digits$data.dist.freq))
@@ -421,9 +421,9 @@ print.last.two.digits.analysis <- function(x, freq = TRUE, ...)
   chisq.bfd <- chisq.test.bfd(squared.diff, "")
   ks.bfd <- ks.test.bfd(ep, ap, sum(last2digits$Count), "")
   
-  cat("\nMean Absolute Deviation (MAD): ", mean.abs.dev, "\n")
-  cat(paste0("Pearson's Chi-squared test", ": X-squared = ", round(chisq.bfd$statistic, 7), " on ", chisq.bfd$parameter, " DF, ", "p-value: ", format.pval(chisq.bfd$p.value), "\n"))
-  cat(paste0("Kolmogorov-Smirnov test", ": D = ", round(ks.bfd$statistic, 7), ", critical value = ", round(ks.bfd$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+  print.MAD(mean.abs.dev)
+  print.chisq(chisq.bfd)
+  print.ks(ks.bfd)
   
   out$data <- last2digits
   out$MAD <- mean.abs.dev
@@ -440,8 +440,8 @@ print.second.order.analysis <- function(x, ...)
   statistics <- getBfd(x)
   second.order <- statistics[, c("digits", "data.second.order.dist.freq", "benford.so.dist.freq")]
   
-  absolute.diff <- abs(second.order$data.second.order.dist.freq - second.order$benford.so.dist.freq)
-  squared.diff <- ((second.order$data.second.order.dist.freq - second.order$benford.so.dist.freq)^2)/second.order$benford.so.dist.freq
+  absolute.diff <- abs.diff(second.order$data.second.order.dist.freq , second.order$benford.so.dist.freq)
+  squared.diff <- squared.diff(second.order$data.second.order.dist.freq, second.order$benford.so.dist.freq)
   ep <- second.order$benford.so.dist.freq/sum(second.order$benford.so.dist.freq)
   ap <- second.order$data.second.order.dist.freq/sum(second.order$data.second.order.dist.freq)
   z.stat <- z.stat.bfd(ep, ap, sum(second.order$data.second.order.dist.freq))
@@ -457,10 +457,10 @@ print.second.order.analysis <- function(x, ...)
   chisq.bfd <- chisq.test.bfd(squared.diff, "")
   ks.bfd <- ks.test.bfd(ep, ap, sum(second.order$Count), "")
   
-  cat("\nMean Absolute Deviation (MAD): ", mean.abs.dev, "\n")
-  cat(paste0("Pearson's Chi-squared test", ": X-squared = ", round(chisq.bfd$statistic, 7), " on ", chisq.bfd$parameter, " DF, ", "p-value: ", format.pval(chisq.bfd$p.value), "\n"))
-  cat(paste0("Kolmogorov-Smirnov test", ": D = ", round(ks.bfd$statistic, 7), ", critical value = ", round(ks.bfd$parameter[1], 7), " for alpha = ", 0.05, "\n"))
-  
+  print.MAD(mean.abs.dev)
+  print.chisq(chisq.bfd)
+  print.ks(ks.bfd)
+
 }
 
 
@@ -478,3 +478,20 @@ print.summation.analysis <- function(x, ...)
   print(head(summation.analysis))
   
 }
+
+
+print.chisq <- function(x)
+{
+  cat(paste0(x$methods, ": X-squared = ", round(x$statistic, 7), " on ", x$parameter, " DF, ", "p-value: ", format.pval(x$p.value), "\n"))
+}
+
+print.ks <- function(x)
+{
+  cat(paste0(x$method, ": D = ", round(x$statistic, 7), ", critical value = ", round(x$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+}
+
+print.MAD <- function(x)
+{
+  cat("Mean Absolute Deviation (MAD): ", x, "\n")
+}
+

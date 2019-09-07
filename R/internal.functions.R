@@ -442,9 +442,17 @@ excess.kurtosis <- function(x)
   (mean((x - mean(x))^4)/(mean((x - mean(x))^2)^2)) - 3
 }
 
-
 skewness <- function(x)
 {
   (mean((x - mean(x))^3)/(mean((x - mean(x))^2)^(3/2)))
+}
+
+abs.diff <- function(x, y)
+{
+  abs(x - y)
+}
+
+squared.diff <- function(x, y){#x: observed frequency; y: espected frenquency
+  ((x - y)^2)/y
 }
 
