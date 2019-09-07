@@ -60,3 +60,8 @@ The \code{plot} method for "Benford" objects.
 If both \code{select} and \code{except} arguments have been provided, but only \code{select} will be considered and \code{except} ignored.
 For more flexibility in plotting, use (`separate plots here`)...
 }
+\references{
+J. W. Tukey (1977), Exploratory Data Analysis. Addison Wesley, Reading, MA.
+
+M. Friendly (2000), Visualizing Categorical Data. SAS Institute, Cary, NC.
+}
