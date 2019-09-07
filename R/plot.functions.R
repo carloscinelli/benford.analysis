@@ -10,11 +10,22 @@
 ##' 
 ##' @param  x a "Benford" object
 ##' @param select it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.
+##' Currently, you can choose from 13 plots:\itemize{
+##' \item \code{"digits": }{a barplot concerning the observation frequencies with respect to its first-order digits, comparing it with the value expected by the Benford's Law. }
+##' \item \code{"rootogram digits": }{the hanging rootogram is variation of the histogram with the vertical axis showing the frequencies hanging from fitted or expected frequencies (here by Benford's Law) so that the discrepancies are visualized against a straight line (the axis) rather than against a curve.}
+##' \item \code{"obs vs exp": }{a scatter plot of the observed frequencies versus expected frequencies.}
+##' \item \code{"second order": }{a barplot concerning the count for the ordered data difference}
+##' \item \code{"rootogram second order": }{is similar to \code{"rootogram digits"}. The observed frequencies of the ordered data difference are displayed as bars and the expected frequencies by the Benford's Law as a line.}
+##' \item \code{"last two digits": }{a barplot concerning the observation frequencies with respect to its last two digits, comparing it with the value expected by the Benford's Law. }
+##' \item \code{"summation": }{a barplot concerning the deviations of summation values from expected values.}
+##' \item \code{"mantissa": }{a plot concerning the ordered mantissas.}
+##' \item \code{"mantissa arc": }{a plot of mantissa arc test.}
+##' \item \code{"chi square": }{a needle plot concerns the chi-squared statistics consisting of deviations of observed values from expected values.}
+##' \item \code{"abs diff": }{a needle plot concerning the absolute difference of observed values from expected values.}
+##' \item \code{"ex summation": }{a needle plot concerning the excess summation of observed values from expected values.}
+##' \item \code{"diff vs ex summation": }{a scatter plot of the difference between observed and observed frequencies versus excess summations.}
+##' }
 ##' @param except it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-##' Currently, you can choose from 13 plots: "digits", "rootogram digits", "obs vs exp", "second order", "rootogram second order", "last two digits", "summation",
-##' "mantissa", "mantissa arc", "chi square", "abs diff", "ex summation", "diff vs ex summation". If you want to plot all, just
-##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
-##' put except = "all"
 ##' @param multiple logical; if TRUE, all plots are grouped in the same window.
 ##' @param mfrow A vector of the form c(`nr`, `nc`). Subsequent figures will be drawn in an `nr`-by-`nc` array on the device by columns (`mfcol`), or rows (`mfrow`), respectively. For more details see `?par()`.
 ##' @param col.bar a color to be used to fill the bars. The default is lightblue.
