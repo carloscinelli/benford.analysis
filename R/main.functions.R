@@ -135,10 +135,18 @@ NULL
 ##' plot(bfd.cp) #plots
 ##' 
 ##' @export
-benford <- function(data, number.of.digits = 2, 
-                    sign = "positive", 
-                    discrete=TRUE, round=3, 
-                    data.name = NULL){
+
+
+benford <-
+function(data, number.of.digits = 2, 
+         sign = "positive", 
+         discrete = TRUE, round = 3, 
+         data.name = NULL)
+{
+  
+  if (!is.numeric(data)) stop("Data must be a numeric vector")
+  
+  if (length(data) == 1) stop("Data comprised of only one observation, no meaningful analysis is possible")
   
   if (is.null(data.name)) {
     data.name <- as.character(deparse(substitute(data)))
@@ -148,30 +156,24 @@ benford <- function(data, number.of.digits = 2,
     
   benford.dist <- generate.benford.distribution(benford.digits)
   
-  empirical.distribution <- generate.empirical.distribution(data, number.of.digits,sign, second.order = FALSE, benford.digits)
+  empirical.distribution <- generate.empirical.distribution(data, number.of.digits, sign = sign, second.order = FALSE, benford.digits = benford.digits)
   
   n <- length(empirical.distribution$data)
   
-  second.order <- generate.empirical.distribution(data, number.of.digits,sign, second.order = TRUE, benford.digits, discrete = discrete, round = round)
+  second.order <- generate.empirical.distribution(data, number.of.digits, sign = sign, second.order = TRUE, benford.digits = benford.digits, discrete = discrete, round = round)
   
   n.second.order <- length(second.order$data)
   
+  last.two.digits <- generate.empirical.distribution(data, sign = sign, last.two.dgts = TRUE, benford.digits = benford.digits)
+  
   benford.dist.freq <- benford.dist*n
   
-  ## calculating useful summaries and differences
+  ## calculating useful summaries and differences:
   difference <- empirical.distribution$dist.freq - benford.dist.freq
-  
   squared.diff <- ((empirical.distribution$dist.freq - benford.dist.freq)^2)/benford.dist.freq
-  
   absolute.diff <- abs(empirical.distribution$dist.freq - benford.dist.freq)
-  
-  ### z-statistic
   z.stat <- z.stat.bfd(benford.dist, empirical.distribution$dist, n)
-  
-  ### chi-squared test
   chisq.bfd <- chisq.test.bfd(squared.diff, data.name)
-  
-  ### MAD
   mean.abs.dev <- sum(abs(empirical.distribution$dist - benford.dist)/(length(benford.dist)))
   
   if (number.of.digits > 3) {
@@ -181,11 +183,7 @@ benford <- function(data, number.of.digits = 2,
     MAD.conformity <- MAD.conformity(MAD = mean.abs.dev, digits.used)$conformity
   }
   
-  
-    
-  
-  
-  ### Summation
+  ## Summation
   summation <- generate.summation(benford.digits,empirical.distribution$data, empirical.distribution$data.digits)
   abs.excess.summation <- abs(summation - mean(summation))
   
@@ -225,20 +223,23 @@ benford <- function(data, number.of.digits = 2,
                  s.o.data = data.table(second.order = second.order$data,
                                        data.second.order.digits = second.order$data.digits),
                  
+                 last.two.digits = data.table(last.two.digits = 0:99,
+                                              data.dist.freq = last.two.digits$dist.freq),
+                 
                  bfd = data.table(digits = benford.digits,
                                   data.dist = empirical.distribution$dist,
-                                  data.second.order.dist = second.order$dist,
                                   benford.dist = benford.dist,
-                                  data.second.order.dist.freq = second.order$dist.freq,
                                   data.dist.freq = empirical.distribution$dist.freq,
                                   benford.dist.freq = benford.dist.freq,
-                                  benford.so.dist.freq = benford.dist*n.second.order,
-                                  data.summation = summation,
-                                  abs.excess.summation = abs.excess.summation,
                                   difference = difference,
                                   squared.diff = squared.diff,
                                   absolute.diff = absolute.diff,
-                                  z.statistic = z.stat),
+                                  z.statistic = z.stat,
+                                  data.second.order.dist = second.order$dist,
+                                  data.second.order.dist.freq = second.order$dist.freq,
+                                  benford.so.dist.freq = benford.dist*n.second.order,
+                                  data.summation = summation,
+                                  abs.excess.summation = abs.excess.summation),
                  
                  mantissa = data.table(statistic = c("Mean Mantissa", 
                                                      "Var Mantissa", 
@@ -265,127 +266,6 @@ benford <- function(data, number.of.digits = 2,
   
 }
 
-##' @title Plot method for Benford Analysis
-##' @description The \code{plot} method for "Benford" objects.
-##' 
-##' @param  x a "Benford" object
-##' @param select it specifies the order and which plots are going to be plotted. If NULL, the parameter except is used.
-##' @param except it specifies which plots are not going to be plotted. If NULL, the parameter select is used.
-##' Currently, you can choose from 9 plots: "digits", "rootogram digits", "second order", "rootogram second order", "summation",
-##' "mantissa", "chi square", "abs diff", "ex summation". If you want to plot all, just
-##' put except = "none". The default is not to plot the "mantissa" and "abs diff". If you want to plot all, just
-##' put except = "all"
-##' @param multiple if TRUE, all plots are grouped in the same window.
-##' @param col.bar a color to be used to fill the bars. The default is lightblue.
-##' @param err.bounds if TRUE, the upper and lower error bounds are draw. The error bounds indicate the binomial root mean square error.
-##' @param alpha it specifies level of confidence interval. The defaults to 95 percent confidence interval,i.e., the error bounds will represent 1.96 standard error from the expected count by Benford's Law.
-##' @param grid if TRUE, adds an rectangular grid to plot.
-##' @param ... arguments to be passed to generic plot functions,
-##' @return Plots the Benford object.
-##' @export
-##' @importFrom graphics abline axis barplot legend lines par plot
-##' @importFrom stats pchisq var
-##' @importFrom utils head
-##' @importFrom stats setNames qnorm
-plot.Benford <- function(x, 
-                         select = c("digits", "second order", "summation", "chi squared", "ex summation"), 
-                         except = NULL, 
-                         multiple = TRUE,  
-                         col.bar = "lightblue", 
-                         err.bounds = FALSE, 
-                         alpha = 0.05, 
-                         grid = TRUE, ...){
-  
-  
-  if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
-  
-  available.plots <- c("digits", "rootogram digits", "second order", "rootogram second order", "summation", "mantissa", "chi squared", "ex summation", "abs diff", "none", "all")
-  
-  if (!is.null(select)) {
-    
-    select <- tolower(select)
-    
-    if (!all(select %in% available.plots)) {
-      idx <- which(!select %in% available.plots)
-      stop("Invalid plot name:", select[idx], "\nType ?plot.Benford for help.")
-    }
-    
-    if (all(select == "all")) {
-      plots <- available.plots[1:9]
-    }else{
-      plots <- select
-    }
-    
-  } else {
-    if (!is.null(except)) {
-      if (!all(except %in% available.plots)) {
-        idx <- which(!except %in% available.plots)
-        stop("Invalid plot name: ", except[idx], "\nType ?plot.Benford for help.")
-      }
-      except <- tolower(except)
-      if (all(except == "none")) {
-        plots <- available.plots[1:9]
-      }else{
-        ap <- available.plots[1:9]
-        plots <- ap[!(ap %in% except)]
-      }
-    }
-  }
-  
-  nGraphics <- length(plots)
-  
-  if (multiple | (nGraphics == 1)) {
-    old.par <- par(no.readonly = TRUE)
-    on.exit(par(old.par))
-    
-    if (nGraphics < 4) {
-      rows = 1; 
-      cols = nGraphics
-    }
-    
-    if (nGraphics >= 4 & nGraphics <= 6) {
-      rows = 2; 
-      cols = 3
-    }
-    if (nGraphics > 6) {
-      rows = 3; 
-      cols = 3
-    }
-    
-    nslots <- rows*cols
-    plot_this <- c(rep("blank", nslots), "legend")
-    plot_this[1:nGraphics] <- plots
-    m <- matrix(c(1:nslots, rep(nslots + 1, cols)), nrow = rows + 1, ncol = cols,byrow = TRUE)
-    layout(mat = m, heights = c(rep(0.9/rows, rows), 0.1)) 
-    lg_size <- ifelse(rows > 1, 1, ifelse(err.bounds, 0.6, 0.7))
-  }else{
-    old.par <- par(no.readonly = TRUE)
-    on.exit(par(old.par))
-    plot_this <- vector("character", nGraphics*2)
-    plot_this[seq(1, nGraphics*2, 2)] <- plots
-    plot_this[seq(2, nGraphics*2, 2)] <- "legend"
-    m <- matrix(c(1,2), nrow = 2, ncol = 1,byrow = TRUE)
-    layout(mat = m, heights = c(0.9, 0.1)) 
-    lg_size <- ifelse(err.bounds, 0.6, 0.7)
-  }
-  
-  for (i in 1:length(plot_this)) {
-    switch(plot_this[i],
-            "digits" = plotting.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-            "rootogram digits" = plotting.rootogram.data.vs.benford(x, col.bar, grid, err.bounds, alpha, ...),
-            "second order" = plotting.second.order(x, col.bar, grid, ...),
-            "rootogram second order" = plotting.rootogram.second.order(x, col.bar, grid, ...),
-            "summation" = plotting.summation(x, col.bar, grid, ...),
-            "mantissa" = plotting.ordered.mantissa(x, grid, ...),
-            "chi squared" = plotting.chi_squared(x, grid, ...),
-            "abs diff" = plotting.abs.diff(x, grid, ...),
-            "ex summation" = plotting.ex.summation(x, grid, ...),
-            "legend" = plotting.legend(x, err.bounds, lg_size),
-            "blank" = plot.new()
-    ) 
-  }
-  
-}
 
 ##' @title Print method for Benford Analysis
 ##' @description The \code{print} method for "Benford" objects.
@@ -397,8 +277,12 @@ plot.Benford <- function(x,
 ##' @param ... arguments to be passed to generic print functions.
 ##' @return Prints the Benford object.
 ##' @export
-print.Benford <- function(x,how.many=5,...){
-  
+
+
+print.Benford <-
+function(x, how.many = 5,...)
+{
+
   if(class(x)!="Benford") stop("Class(x) must be 'Benford'")
   cat("\nBenford object:\n",
       "\nData:", x[["info"]]$data.name,
@@ -432,3 +316,182 @@ print.Benford <- function(x,how.many=5,...){
   absolute.diff <- NULL
   digits <- NULL
 }
+
+
+##' @title Summary method for Benford Analysis
+##' @description The \code{summary} method for "Benford" objects.
+##' 
+##' 
+##' @param object a "Benford" object
+##' @param what options: "first digits", "summation", "last two digits", "second order".
+##' @param sort.by (not implemented)
+##' @param freq (not implemented)
+##' @param ... arguments to be passed to generic summary function.
+##' @return Summary of the Benford object.
+##' @export
+
+summary.Benford <- function(object, what = c("first digits", "summation", "last two digits", "second order"), sort.by = "abs diff", freq = TRUE, ...){
+  
+  if (class(object) != "Benford") stop("Class(object) must be 'Benford'")
+  
+  if(class(object)!="Benford") stop("Class(object) must be 'Benford'")
+  cat("\nBenford object:\n",
+      "\nData:", object[["info"]]$data.name,
+      "\nNumber of observations used (positives, negatives or both?) =", object[["info"]]$n,
+      "\nFirst digits analysed =", object[["info"]]$number.of.digits)   
+  
+  what <- tolower(what)
+  
+  for(i in 1:length(what)){
+    switch(what[i], 
+           "first digits" = {
+             cat("First Digits Analysis:\n\n")
+             print.first.digit.analysis(object)
+             cat("\n\n")
+           },
+           "summation" = {
+             cat("First Digits - Summation Analysis:\n\n")
+             print.summation.analysis(object)
+             cat("\n\n")
+           },
+           "last two digits" = {
+             cat("Last-Two Digits Analysis:\n\n")
+             print.last.two.digits.analysis(object)
+             cat("\n\n")
+           },
+           "second order" = {
+             cat("Second Order Analysis:\n\n")
+             print.second.order.analysis(object)
+             cat("\n\n")
+           }
+    )
+  }
+  
+  cat("Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
+}
+
+
+print.first.digit.analysis <- function(x, freq = TRUE, ...)
+{
+  
+  out <- list()
+  statistics <- getBfd(x)
+  first.digits <- statistics[, c("digits", "data.dist.freq", "benford.dist.freq", "absolute.diff", "squared.diff", "z.statistic")]
+  names(first.digits) <- c("Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(first.digits, topn = 4)
+  
+  cat("---\n")
+  
+  print.MAD(MAD(x))
+  if (!is.na(x[["MAD.conformity"]]))
+    cat("Conclusion:", x[["MAD.conformity"]], "\n")
+  print.chisq(chisq(x))
+  print.ks(ks(x))
+  
+  out$data <- first.digits
+  out$MAD <- MAD(x)
+  if (!is.na(x[["MAD.conformity"]]))
+    out$MAD.Conformity <- x[["MAD.conformity"]]
+  out$chisq <- chisq(x)
+  out$ks <- ks(x)
+  invisible(out)
+}
+
+print.last.two.digits.analysis <- function(x, freq = TRUE, ...)
+{
+  
+  out <- list()
+  last2digits <- x$last.two.digits
+  last2digits$bf <- mean(last2digits$data.dist.freq)
+  absolute.diff <- abs.diff(last2digits$data.dist.freq, last2digits$bf)
+  squared.diff <- squared.diff(last2digits$data.dist.freq, last2digits$bf)
+  ep <- last2digits$bf/sum(last2digits$bf)
+  ap <- last2digits$data.dist.freq/sum(last2digits$data.dist.freq)
+  z.stat <- z.stat.bfd(ep, ap, sum(last2digits$data.dist.freq))
+  last2digits$absolute.diff <- absolute.diff
+  last2digits$squared.diff <- squared.diff
+  last2digits$z.stat <- z.stat
+  names(last2digits) <- c("Last-Two Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(last2digits, topn = 4)
+  cat("---\n")
+  
+  mean.abs.dev <- sum(abs(ep - ap)/(nrow(last2digits)))
+  chisq.bfd <- chisq.test.bfd(squared.diff, "")
+  ks.bfd <- ks.test.bfd(ep, ap, sum(last2digits$Count), "")
+  
+  print.MAD(mean.abs.dev)
+  print.chisq(chisq.bfd)
+  print.ks(ks.bfd)
+  
+  out$data <- last2digits
+  out$MAD <- mean.abs.dev
+  out$chisq <- chisq.bfd
+  out$ks <- ks.bfd
+  invisible(out)
+}
+
+
+print.second.order.analysis <- function(x, ...)
+{
+  
+  out <- list()
+  statistics <- getBfd(x)
+  second.order <- statistics[, c("digits", "data.second.order.dist.freq", "benford.so.dist.freq")]
+  
+  absolute.diff <- abs.diff(second.order$data.second.order.dist.freq , second.order$benford.so.dist.freq)
+  squared.diff <- squared.diff(second.order$data.second.order.dist.freq, second.order$benford.so.dist.freq)
+  ep <- second.order$benford.so.dist.freq/sum(second.order$benford.so.dist.freq)
+  ap <- second.order$data.second.order.dist.freq/sum(second.order$data.second.order.dist.freq)
+  z.stat <- z.stat.bfd(ep, ap, sum(second.order$data.second.order.dist.freq))
+  second.order$absolute.diff <- absolute.diff
+  second.order$squared.diff <- squared.diff
+  second.order$z.stat <- z.stat
+  names(second.order) <- c("Digits", "Count", "Benford's Law", "Absolute Diff.", "Squared Diff.", "Z-statistic")
+  
+  print(second.order, topn = 4)
+  cat("---\n")
+  
+  mean.abs.dev <- sum(abs(ep - ap)/(nrow(second.order)))
+  chisq.bfd <- chisq.test.bfd(squared.diff, "")
+  ks.bfd <- ks.test.bfd(ep, ap, sum(second.order$Count), "")
+  
+  print.MAD(mean.abs.dev)
+  print.chisq(chisq.bfd)
+  print.ks(ks.bfd)
+
+}
+
+
+print.summation.analysis <- function(x, ...)
+{
+  
+  statistics <- getBfd(x)
+  bl <- mean(statistics$data.summation)
+  summation.analysis <- data.table(statistics[, c("digits", "data.summation", "abs.excess.summation")], bl)
+  summation.analysis <- summation.analysis[, c(1,2,4,3)]
+  summation.analysis <- summation.analysis[order(summation.analysis$abs.excess.summation, decreasing = T), ]
+  names(summation.analysis) <- c("Digits", "Summation", "Benford's Law", "Abs. Excess Summation")
+  
+  cat("The largest deviations:\n\n")
+  print(head(summation.analysis))
+  
+}
+
+
+print.chisq <- function(x)
+{
+  cat(paste0(x$methods, ": X-squared = ", round(x$statistic, 7), " on ", x$parameter, " DF, ", "p-value: ", format.pval(x$p.value), "\n"))
+}
+
+print.ks <- function(x)
+{
+  cat(paste0(x$method, ": D = ", round(x$statistic, 7), ", critical value = ", round(x$parameter[1], 7), " for alpha = ", 0.05, "\n"))
+}
+
+print.MAD <- function(x)
+{
+  cat("Mean Absolute Deviation (MAD): ", x, "\n")
+}
+

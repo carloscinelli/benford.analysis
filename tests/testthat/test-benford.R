@@ -4,15 +4,15 @@ test_that("Corporate Payment 1 digit, only >=10",
           {
             data(corporate.payment, envir = environment())
             cp <- corporate.payment$Amount[corporate.payment$Amount >= 10]
-            expect_that(length(cp), equals(177763))
-            bfd1 <- benford(cp,1)
-            expect_that(bfd1$info$n.second.order,equals(64578))
-            expect_that(MAD(bfd1), equals(0.01464, tolerance = 1e-03))
-            expect_that(MAD(1), throws_error("Object must be of class Benford"))
-            bfd2 <- benford(cp,4)
+            expect_equal(length(cp), 177763)
+            bfd1 <- benford(cp, 1)
+            expect_equal(bfd1$info$n.second.order, 64578)
+            expect_equal(MAD(bfd1), 0.01464, tolerance = 1e-03)
+            expect_error(MAD(1), "Object must be of class Benford")
+            bfd2 <- benford(cp, 4)
             expect_true(is.na(bfd2$MAD.conformity))
             # check if object did not change
-            expect_that(bfd1, equals(benford(cp,1)))
+            expect_equal(bfd1, benford(cp, 1))
             
           }
 )
@@ -21,20 +21,20 @@ test_that("Corporate Payment 2 digits, only >=10",
           { 
             data(corporate.payment, envir = environment())
             cp <- corporate.payment$Amount[corporate.payment$Amount >= 10]
-            expect_that(length(cp), equals(177763))
-            bfd2 <- benford(cp,2)
-            expect_that(bfd2$info$n.second.order,equals(64578))
-            expect_that(MAD(bfd2), equals(0.00243, tolerance = 1e-03))
-            expect_that(head(suspectsTable(bfd2, "abs.excess.summation"))$digits,
-                        equals(c(15, 26, 10, 14, 11, 50)))
-            d.test <- data.frame(number = c(50.00,1153.35,1083.45,150.00,988.35,1159.35),
-                                 duplicates = c(6022,2264,1185,1056,1018,976))
+            expect_equal(length(cp), 177763)
+            bfd2 <- benford(cp, 2)
+            expect_equal(bfd2$info$n.second.order, 64578)
+            expect_equal(MAD(bfd2), 0.00243, tolerance = 1e-03)
+            expect_equal(head(suspectsTable(bfd2, "abs.excess.summation"))$digits,
+                         c(15, 26, 10, 14, 11, 50))
+            d.test <- data.frame(number = c(50.00, 1153.35, 1083.45, 150.00, 988.35, 1159.35),
+                                 duplicates = c(6022, 2264, 1185, 1056, 1018, 976))
             d.data <- as.data.frame(head(duplicatesTable(bfd2)))
-            expect_that(d.data, equals(d.test))
-            expect_that(duplicatesTable(1), throws_error("bfd must be a 'Benford' object."))
+            expect_equal(d.data, d.test)
+            expect_error(duplicatesTable(1), "bfd must be a 'Benford' object.")
             
             # check if object did not change
-            expect_that(bfd2, equals(benford(cp, 2)))
+            expect_equal(bfd2, benford(cp, 2))
             
             # check if no warnings 
             # maybe in the future include warning if the data seems discrete
@@ -47,16 +47,16 @@ test_that("Census 2009 data, 2 digits, only >=10",
           {
             data(census.2009, envir = environment())
             pop <- census.2009$pop.2009[census.2009$pop.2009 >= 10]
-            expect_that(length(pop), equals(19482))
+            expect_equal(length(pop), 19482)
             bfd.census <- benford(pop, 2)
-            expect_that(dfactor(bfd.census), equals(0.74, tolerance = 1e-03))
-            expect_that(dfactor(1), throws_error("Object must be of class Benford"))
-            expect_that(round(chisq(bfd.census)$statistic),is_equivalent_to(108))
-            expect_that(chisq(1), throws_error("Object must be of class Benford"))
-            expect_that(ks(1), throws_error("Object must be of class Benford"))
+            expect_equal(dfactor(bfd.census), 0.74, tolerance = 1e-03)
+            expect_error(dfactor(1), "Object must be of class Benford")
+            expect_identical(round(as.numeric(chisq(bfd.census)$statistic)), 108)
+            expect_error(chisq(1), "Object must be of class Benford")
+            expect_error(ks(1), "Object must be of class Benford")
             expect_true(is.numeric(ks(bfd.census)$statistic))
             # check if object did not change
-            expect_that(bfd.census, equals(benford(pop, 2)))
+            expect_equal(bfd.census, benford(pop, 2))
           }
 )
 
@@ -67,15 +67,15 @@ test_that("Negative numbers, simulated log-normal *(-1)",
            data <- data*(-1)
            bfd  <- benford(data, sign = "negative")
            test <- structure(list(statistic = c("Mean Mantissa", "Var Mantissa", 
-                                                "Ex. Kurtosis Mantissa", "Skewness Mantissa"), 
-                                  values = c(0.496354817370674,0.0819078569969828, -1.18345152468828, 0.0122274722811928)), 
+                                                "Ex. Kurtosis Mantissa", "Skewness Mantissa"),
+                                  values = c(0.496354817370674, 0.0819078569969828, -1.18345152468828, 0.0122274722811928)),
                              .Names = c("statistic","values"), row.names = c(NA, -4L), 
                              class = c("data.table", "data.frame"))
            mant <- mantissa(bfd)
-           expect_that(test, equals(mant))
-           expect_that(mantissa(1), throws_error("Object must be of class Benford"))
+           expect_equal(test, mant)
+           expect_error(mantissa(1), "Object must be of class Benford")
            # check if object did not change
-           expect_that(bfd, equals( benford(data, sign = "negative")))
+           expect_equal(bfd, benford(data, sign = "negative"))
          }
 )
 
@@ -85,33 +85,43 @@ test_that("Both signs, simulated log-normal and plots",
             data <- rlnorm(1000, 10, 10)
             data <- data*c(1, -1)
             bfd <- benford(data, sign = "both", discrete = FALSE)
+            
             expect_error(plot.Benford(1))
             expect_error(plot(bfd, except = "xxx", select = NULL))
-            expect_error(plot(bfd, select = "xxx"))
-            plot(bfd, except = c("none"))
-            plot(bfd, except = c("mantissa","abs diff", "second order") )
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation") )
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square", "ex summation"))
-            plot(bfd, except = c("digits","rootogram digits", "rootogram second order",
-                                 "summation", "mantissa","abs diff", "chi squared", "ex summation"))
-            plot(bfd, except = c("mantissa","abs diff", "second order", "summation", 
-                                 "chi square", "ex summation"), err.bounds = TRUE)
-            plot(bfd, except = "none", select = NULL)
-            plot(bfd, except = "mantissa", select = NULL)
-            plot(bfd, select = "digits", err.bounds = TRUE)
-            plot(bfd, select = "rootogram digits", err.bounds = TRUE)
+            expect_error(plot(bfd, except = NULL, select = "xxx"))
+            expect_error(plot(bfd, select = NULL, except = NULL))
+            
+            plot(bfd, select = "all", except = NULL)
+            plot(bfd, select = NULL, except = "none")
+            expect_warning(plot(bfd, select = "all", except = "none"))
+            
+            expect_error(plot(bfd, alpha = 0))
+            expect_error(plot(bfd, alpha = 1))
+            
+            plot(bfd, select = "all")
+            plot(bfd, select = "all", freq = F)
             plot(bfd, select = "all", multiple = FALSE)
+            #plot(bfd, select = "all", err.bounds = TRUE)
+            expect_warning(plot(bfd, select = "all", except = "mantissa"))
+            plot(bfd, select = NULL, except = "mantissa")
+            expect_warning(plot(bfd, except = "none"))
+            plot(bfd, except = "none", select = NULL)
+            plot(bfd, select = c("digits", "rootogram digits", "second order", "rootogram second order"))
+            plot(bfd, select = "digits")
+            #plot(bfd, select = "digits", err.bounds = T, freq = F)
+            plot(bfd, select = "rootogram digits")
             plot(bfd, select = "second order")
+            plot(bfd, select = "rootogram second order")
+            plot(bfd, select = "summation")
             plot(bfd, select = "mantissa")
             plot(bfd, select = "abs diff")
-            plot(bfd, select = "rootogram second order")
-            plot(bfd, select = c("digits","rootogram digits", "rootogram second order", "summation", "mantissa","abs diff"))
+            plot(bfd, select = "chi squared")
+            plot(bfd, select = "obs vs exp")
+            
+            plot(bfd, select=c("digits", "rootogram digits"), multiple=T, mfrow = c(2,1))
             
             # check if object did not change
-            expect_that(bfd, equals(benford(data, sign = "both", discrete = FALSE)))
+            expect_equal(bfd, benford(data, sign = "both", discrete = FALSE))
           }
 )
 
@@ -134,7 +144,7 @@ test_that("Exact printing, this sould not be tested on CRAN!",
                             "4     11          9.21", "5     15          8.03", "", "Stats:", 
                             "", "\tPearson's Chi-squared test", "", "data:  data", "X-squared = 83.095, df = 89, p-value = 0.6564", 
                             "", "", "\tMantissa Arc Test", "", "data:  data", "L2 = 0.0013529, df = 2, p-value = 0.2585", 
-                            "", "","\tKolmogorov-Smirnov test","","data:  data","D = 0.039781, critical value = 0.043007",
+                            "", "","\tKolmogorov-Smirnov test","","data:  data","D = 0.039781, critical value = 0.043007, alpha = 0.050000",
                             "", "Mean Absolute Deviation (MAD): 0.002609809", "MAD Conformity - Nigrini (2012): Nonconformity", 
                             "Distortion Factor: -6.228274", "", "Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!"
             )
@@ -147,6 +157,20 @@ test_that("Internal function",
             x <- seq(0.1, 0.9, length.out = 9)
             y <- seq(0.9, 0.1, length.out = 9)
             expect_equal(round(sum(z.stat.bfd(x, y, 100))), 108)
+          }
+)
+
+test_that("Only one observation",
+          {
+            expect_error(benford(1000))
+          }
+)
+
+test_that("invalid input",
+          {
+            data(corporate.payment, envir = environment())
+            cp <- corporate.payment$Amount[corporate.payment$Amount >= 10]
+            expect_error(benford(as.data.frame(cp)))
           }
 )
 
