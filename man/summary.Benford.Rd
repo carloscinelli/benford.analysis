@@ -4,18 +4,20 @@
 \alias{summary.Benford}
 \title{Summary method for Benford Analysis}
 \usage{
-\method{summary}{Benford}(x, what = c("first digits", "summation",
+\method{summary}{Benford}(object, what = c("first digits", "summation",
   "last two digits", "second order"), sort.by = "abs diff",
-  freq = TRUE)
+  freq = TRUE, ...)
 }
 \arguments{
-\item{x}{a "Benford" object}
+\item{object}{a "Benford" object}
 
 \item{what}{options: "first digits", "summation", "last two digits", "second order".}
 
 \item{sort.by}{(not implemented)}
 
 \item{freq}{(not implemented)}
+
+\item{...}{arguments to be passed to generic summary function.}
 }
 \value{
 Summary of the Benford object.

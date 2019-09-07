@@ -322,22 +322,23 @@ function(x, how.many = 5,...)
 ##' @description The \code{summary} method for "Benford" objects.
 ##' 
 ##' 
-##' @param x a "Benford" object
+##' @param object a "Benford" object
 ##' @param what options: "first digits", "summation", "last two digits", "second order".
 ##' @param sort.by (not implemented)
 ##' @param freq (not implemented)
+##' @param ... arguments to be passed to generic summary function.
 ##' @return Summary of the Benford object.
 ##' @export
 
-summary.Benford <- function(x, what = c("first digits", "summation", "last two digits", "second order"), sort.by = "abs diff", freq = TRUE){
+summary.Benford <- function(object, what = c("first digits", "summation", "last two digits", "second order"), sort.by = "abs diff", freq = TRUE, ...){
   
-  if (class(x) != "Benford") stop("Class(x) must be 'Benford'")
+  if (class(object) != "Benford") stop("Class(object) must be 'Benford'")
   
-  if(class(x)!="Benford") stop("Class(x) must be 'Benford'")
+  if(class(object)!="Benford") stop("Class(object) must be 'Benford'")
   cat("\nBenford object:\n",
-      "\nData:", x[["info"]]$data.name,
-      "\nNumber of observations used (positives, negatives or both?) =", x[["info"]]$n,
-      "\nFirst digits analysed =", x[["info"]]$number.of.digits)   
+      "\nData:", object[["info"]]$data.name,
+      "\nNumber of observations used (positives, negatives or both?) =", object[["info"]]$n,
+      "\nFirst digits analysed =", object[["info"]]$number.of.digits)   
   
   what <- tolower(what)
   
@@ -345,22 +346,22 @@ summary.Benford <- function(x, what = c("first digits", "summation", "last two d
     switch(what[i], 
            "first digits" = {
              cat("First Digits Analysis:\n\n")
-             print.first.digit.analysis(x)
+             print.first.digit.analysis(object)
              cat("\n\n")
            },
            "summation" = {
              cat("Summation Analysis:\n\n")
-             print.summation.analysis(x)
+             print.summation.analysis(object)
              cat("\n\n")
            },
            "last two digits" = {
              cat("Last-Two Digits Analysis:\n\n")
-             print.last.two.digits.analysis(x)
+             print.last.two.digits.analysis(object)
              cat("\n\n")
            },
            "second order" = {
              cat("Second Order Analysis:\n\n")
-             print.second.order.analysis(x)
+             print.second.order.analysis(object)
              cat("\n\n")
            }
     )
@@ -368,7 +369,6 @@ summary.Benford <- function(x, what = c("first digits", "summation", "last two d
   
   cat("Remember: Real data will never conform perfectly to Benford's Law. You should not focus on p-values!")
 }
-
 
 print.first.digit.analysis <- function(x, freq = TRUE, ...)
 {
